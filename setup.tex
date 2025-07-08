@@ -1,0 +1,189 @@
+%%%%% This is a generic preamble for article-like LaTeX documents. I can copy and paste this file into new documents to quickly make LaTeX styling which I like and is consistent with other documents I've typeset
+
+\usepackage[a-3u]{pdfx}                 % PDF document properties
+\usepackage{graphicx,psfrag}            % For postscript graphics files
+    % \graphicspath{ {./images/} }
+\usepackage{amsmath}                    % assumes amsmath package installed
+    \allowdisplaybreaks[1]              % allow eqnarrays to break across pages
+\usepackage{amssymb}                    % assumes amsmath package installed
+\usepackage{url}                        % format hyperlinks correctly
+\usepackage{rotating}                   % allow portrait figures and tables
+\usepackage{multirow}                   % allows merging of rows in tables
+\usepackage{lscape}                     % allows pages to be typeset in landscape mode
+\usepackage{tabularx}                   % allows fixed width tables
+\usepackage{verbatim}                   % enhanced version of built-in verbatim environment
+\usepackage{footnote}                   % allows more control over footnote environments
+\usepackage{float}                      % allows H option on floats to force here placement
+\usepackage{booktabs}                   % improve table line spacing
+\usepackage{lipsum}                     % for adding dummy text here
+\usepackage[base]{babel}                % required for lisum package
+\usepackage{subcaption}                 % for multiple sub-figures in a single float
+\usepackage{siunitx}                    % add SI units
+% \usepackage[dvipsnames]{xcolor}         % More colours
+\usepackage{physics}
+\usepackage{tabto}                      % \tab command
+\usepackage{ragged2e}                   % Better ragged left
+\usepackage{array}
+\usepackage{caption}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{enumitem}
+\usepackage{empheq}
+\usepackage{gensymb}
+\usepackage{textcomp}
+\usepackage[bottom]{footmisc}           % Places footnotes at the bottom of the page
+\usepackage{esvect}                     % For \vv
+% \usepackage[a4paper, margin=1cm, tmargin = 1.5cm, bmargin=2cm, footskip = 1cm]{geometry}
+\usepackage[skip = 10pt]{parskip}
+\usepackage{indentfirst}                % I want my first paragraphs to always be indented
+\usepackage{stackengine}
+\usepackage{scalerel}
+\usepackage{stmaryrd}
+\usepackage{plimsoll}
+\usepackage{titlesec}
+% \usepackage{MnSymbol}
+\usepackage{accents}
+
+
+\author{Benjamin Levi Cookman}
+\begin{filecontents*}{\jobname.xmpdata}
+  \Title{Theoretical and Numerical Combustion Instabilities}
+  \Author{Benjamin Levi Cookman}
+  \Language{en-GB}
+  \Copyrighted{True}
+\end{filecontents*}
+
+
+% \geometry{margin=1cm}
+\titlespacing*{\chapter}{0pt}{-40pt}{10pt}
+
+\newenvironment{boxequ}{\empheq[box=\widefbox]{equation}}{\endempheq}
+\newenvironment{boxali}{\empheq[box=\widefbox]{align}   }{\endempheq}
+\newenvironment{boxaliat}[1]{\empheq[box=\widefbox]{alignat=#1}}{\endempheq}
+
+\newcommand*{\ndt}[1]{%
+  \accentset{\mbox{\large\bfseries .}}{#1}}
+\newcommand*{\nddt}[1]{%
+  \accentset{\mbox{\large\bfseries .\hspace{-0.25ex}.}}{#1}}
+
+% \usepackage{scalerel,stackengine}
+% \stackMath
+% \newcommand\widecheck[1]{%
+% \savestack{\tmpbox}{\stretchto{%
+%   \scaleto{%
+%     \scalerel*[\widthof{\ensuremath{#1}}]{\kern-.6pt\bigwedge\kern-.6pt}%
+%     {\rule[-\textheight/2]{1ex}{\textheight}}   %WIDTH-LIMITED BIG WEDGE
+%   }{\textheight}% 
+% }{0.5ex}}%
+% \stackon[1pt]{\displaystyle #1}{\scalebox{-1}{\tmpbox}}%
+% }
+% \renewcommand\widehat[1]{%
+% \savestack{\tmpbox}{\stretchto{%
+%   \scaleto{%
+%     \scalerel*[\widthof{\ensuremath{#1}}]{\kern-.6pt\bigvee\kern-.6pt}%
+%     {\rule[-\textheight/2]{1ex}{\textheight}}   %WIDTH-LIMITED BIG HAT
+%   }{\textheight}% 
+% }{0.5ex}}%
+% \stackon[1pt]{\displaystyle #1}{\scalebox{-1}{\tmpbox}}%
+% }
+
+\newcommand{\sus}[1]{$^{\mbox{\scriptsize #1}}$}
+\newcommand{\sub}[1]{$_{\mbox{\scriptsize #1}}$}
+\newcommand{\chap}[1]{Chapter~\ref{#1}}
+\newcommand{\sect}[1]{Section~\ref{#1}}
+\newcommand{\fig}[1]{Fig.~\ref{#1}}
+\newcommand{\tabl}[1]{Table~\ref{#1}}
+\newcommand{\equ}[1]{(\ref{#1})}
+\newcommand{\appx}[1]{Appendix~\ref{#1}}
+
+\newcommand{\blue}[1]{\colorlet{saved-blue}{.}\color{NavyBlue}#1\color{saved-blue}}
+\newcommand{\red}[1]{\colorlet{saved-red}{.}\color{Red}#1\color{saved-red}}
+\newcommand{\green}[1]{\colorlet{saved-green}{.}\color{PineGreen}#1\color{saved-green}}
+\newcommand{\purple}[1]{\colorlet{saved-purple}{.}\color{Plum}#1\color{saved-purple}}
+\newcommand{\orange}[1]{\colorlet{saved-orange}{.}\color{YellowOrange}#1\color{saved-orange}}
+\newcommand{\brown}[1]{\colorlet{saved-brown}{.}\color{Brown}#1\color{saved-brown}}
+\newcommand{\pink}[1]{\colorlet{saved-pink}{.}\color{CarnationPink}#1\color{saved-pink}}
+
+
+\renewcommand{\a}{\alpha}
+\renewcommand{\b}{\beta}
+\newcommand{\g}{\gamma}
+\renewcommand{\d}{\delta}
+\newcommand{\e}{\epsilon}
+\newcommand{\z}{\zeta}
+\renewcommand{\th}{\theta}
+\renewcommand{\i}{\iota}
+\renewcommand{\k}{\kappa}
+\renewcommand{\l}{\lambda}
+\renewcommand{\r}{\rho}
+\renewcommand{\t}{\tau}
+\newcommand{\s}{\sigma}
+\renewcommand{\u}{\upsilon}
+\renewcommand{\r}{\rho}
+\newcommand{\vr}{\varrho}
+\newcommand{\w}{\omega}
+\newcommand{\f}{\varphi}
+\newcommand{\G}{\Gamma}
+\newcommand{\D}{\Delta}
+\newcommand{\Th}{\Theta}
+
+\newcommand{\fa}{\forall\:}
+\newcommand{\fe}{\exists\:}
+
+\renewcommand{\rm}{\mathrm}
+\newcommand{\bb}[1]{\mathbbm{#1}}
+\newcommand{\cl}[1]{\mathcal{#1}}
+\newcommand{\fk}[1]{\mathfrak{#1}}
+
+\newcommand{\Le}{\rm{Le}}
+\renewcommand{\Pr}{\rm{Pr}}
+\newcommand{\Ma}{\rm{Ma}}
+\newcommand{\Ze}{\rm{Ze}}
+\newcommand{\Mk}{\cl{M}}
+\newcommand{\Fr}{\rm{Fr}}
+\newcommand{\Pe}{\rm{Pe}}
+\newcommand{\rhs}{\rm{RHS}}
+
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+\newcommand{\lap}{\D}
+
+\def\stacktype{S}
+\newcommand{\hvec}[1]{\stackon[-0.5pt]{#1}{\scaleobj{0.9}{\rightharpoonup}}}
+% \newcommand{\nhat}[1]{\stackon[-3.5pt]{#1}{\scaleobj{0.9}{\textasciicircum}}}
+\newcommand{\nhat}[1]{\widehat{#1}}
+\newcommand{\uvec}[1]{\nhat{\vec{#1}}}
+\newcommand{\ftvar}[1]{\stackon[0.5pt]{#1}{\scaleobj{0.75}{\sim}}}
+
+\newcommand{\ft}{\cl{F}}
+\newcommand{\ift}{\cl{F}^{-1}}
+\DeclareMathOperator{\DFT}{DFT}
+\DeclareMathOperator{\IDFT}{IDFT}
+
+\newcommand{\angs}[1]{\left\langle #1 \right\rangle}
+\newcommand{\ceil}[1]{\left\lceil #1 \right\rceil}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\bbra}[1]{\left\llbracket \mspace{2mu} #1 \mspace{2mu} \right\rrbracket}
+\newcommand{\aang}[1]{\left\llangle #1 \right\rrangle}
+% \newcommand{\ccor}[1]{\ullcorner #1 \ulrcorner}
+\newcommand{\ccor}[1]{\boldsymbol{\ullcorner} #1 \boldsymbol{\ulrcorner}}
+
+\renewcommand{\dim}{N_{\rm{D}}}
+
+\newcommand{\mDv}[1]{\frac{\mathrm{D}}{\mathrm{D} #1}}
+\newcommand{\mdv}[2]{\frac{\mathrm{D} #1}{\mathrm{D} #2}}
+\newcommand{\gbar}{\bar\g}
+
+\newcommand{\tang}{\parallel}
+
+
+
+\captionsetup{width=\textwidth} 
+
+\newcommand*\widefbox[1]{\fbox{\hspace{1.5mm}#1\hspace{1.5mm}}}
+\setlength\fboxsep{3mm}
+
+
+% Note backref=true adds a page number (and hyperlink) to each reference so you can easily go back from the references to the main document. You may prefer backref=false if you need to stick strictly to a given reference style
+\usepackage[style = ieee, backend = biber, backref = false, hyperref = auto]{biblatex}
+\renewcommand*{\bibfont}{\small}
+\DefineBibliographyStrings{english}{backrefpage = {cited on p\adddot},  backrefpages = {cited on pp\adddot}}

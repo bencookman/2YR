@@ -184,7 +184,7 @@
 {
   \ifthenelse{\equal{#1}{thesis}}{A thesis submitted to the University of Manchester for the degree of\ \linebreak Doctor of Philosophy\ \linebreak in the Faculty of \@faculty}{}
   \ifthenelse{\equal{#1}{first}}{Nine month progress report}{}
-  \ifthenelse{\equal{#1}{second}}{End of second year report}{}
+  \ifthenelse{\equal{#1}{second}}{Second Year Report}{}
 }
 \def\maketitle{
   \begin{titlepage}

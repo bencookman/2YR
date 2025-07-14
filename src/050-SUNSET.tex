@@ -1,3 +1,9 @@
+\section{Navier-Stokes Characteristic Boundary Conditions (NSCBC)}
+
+% Include diffusive effects
+
+
+
 \subsection{Locally One-Dimensional Inviscid (LODI)}
 
 % Cite Thompson 1987, 1990, 1987 lectures?
@@ -63,7 +69,7 @@ Note that, because we have the matrix $\undt{S}^{-1}$ not $\undt{S}$, we find th
 
 
 
-\subsubsection{Application to the Gasdynamics Equations}
+\subsection{Application to the Gasdynamics Equations}
 
 % Change enthalpy to energy!! we just use c_v instead of c_p
 
@@ -137,12 +143,12 @@ Evidently, the eigenvalues $\l_1$ and $\l_5$ correspond to the speed of sound bu
 
 
 
-\subsubsection{Acoustically Non-reflective Outflow}
+\subsection{Acoustically Non-reflective Outflow}
 
 
 
 
-\subsubsection{Acoustically Non-reflective Inflow}
+\subsection{Acoustically Non-reflective Inflow}
 
 
 % cite 1990 paper
@@ -150,20 +156,16 @@ Evidently, the eigenvalues $\l_1$ and $\l_5$ correspond to the speed of sound bu
 
 
 
-\subsection{Navier-Stokes Characteristic Boundary Conditions (NSCBC)}
-
-% Include diffusive effects
 
 
 
 
-
-\subsection{LABFM}
+\section{LABFM}
 
 \cite{king2024MeshFreeFrameworkHighOrder, king2020HighOrderDifference, king2024MeshfreeFrameworkHighorder, king2022HighorderSimulationsIsothermal, king2024SunsetFlamesDNSCode}
 
 
-\subsubsection{High-Order Interpolations}
+\subsection{High-Order Interpolations}
 
 % in keeping with other methods, where interpolation is the first step to gradient approximations
 
@@ -228,7 +230,7 @@ where $M$ is a $n \times n$ matrix and $n$ is the number of components of $\vv{C
 % M condition number???? (worth mentioning but not extensively)
 
 
-\subsubsection{High-Order Derivatives}
+\subsection{High-Order Derivatives}
 
 % Like other methods, we may wish to use this method of interpolation to find gradients as well. For classical methods, this is essentially done by differentiating the formulae we have already found. For LABFM, we have the benefit of a formulation where we can simply search for solutions where C = (0, 1, 0, ..) 
 % For use in PDEs, we want gradients at points we have phi_i information at, so x becomes one of the nodes

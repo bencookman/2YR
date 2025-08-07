@@ -15,9 +15,9 @@ L^{\rm{int}}[\phi](\vec{x}) \equiv \sum_{j \in \cl{N}(\vec{x})} \phi_j w^{\rm{in
 \end{equation}
 To find the weights $w^{\rm{int}}(\vec{x}, \vec{x}_j)$, we must observe the contribution of function derivatives into $\phi$ by means on Taylor series. This derivative space is expressed as projections of the vectors of derivatives of $\phi$:
 \begin{equation}
-\vv{D}[\phi] = \left(1, \pdv{\phi}{x}, \pdv{\phi}{x}, \pdv[2]{\phi}{x}, \pdv[2]{\phi}{x}{y}, \pdv[2]{\phi}{x}, \dots \right)^T
+\vv{D}[\phi] = \left(\phi, \pdv{\phi}{x}, \pdv{\phi}{x}, \pdv[2]{\phi}{x}, \pdv[2]{\phi}{x}{y}, \pdv[2]{\phi}{x}, \dots \right)^T
 \quad \text{and} \quad
-\vv{D}_k[\phi] = \left(1, \pdv{\phi}{x}, \pdv{\phi}{x}, \dots, \pdv[k]{\phi}{x}, \dots, \pdv[k]{\phi}{y} \right)^T,
+\vv{D}_k[\phi] = \left(\phi, \pdv{\phi}{x}, \pdv{\phi}{x}, \dots, \pdv[k]{\phi}{x}, \dots, \pdv[k]{\phi}{y} \right)^T,
 \end{equation}
 where we have assumed that $\phi$ is a scalar field over two spatial dimensions $\vec{x}=(x, y)$, although the method may be simply extended to any number of dimensions. In this notation, interpolation is just $\phi(\vec{x}) = \vv{D}[\phi](\vec{x}) \cdot \vv{C}^{\rm{int}} = \vv{D}_k[\phi](\vec{x}) \cdot \vv{C}_k^{\rm{int}}$ where $\vv{C}^{\rm{int}} = (1, 0, 0, 0, 0, 0, \dots)^T$ and $\vv{C}_k^{\rm{int}} = (1, 0, 0, \dots, 0,)^T$, which is of the same length as $\vv{D}_k$. Then, upon introducing vectors of monomials:
 \begin{equation}

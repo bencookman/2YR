@@ -184,8 +184,8 @@
 \newcommand{\titletext}[1]
 {
   \ifthenelse{\equal{#1}{thesis}}{A thesis submitted to the University of Manchester for the degree of\ \linebreak Doctor of Philosophy\ \linebreak in the Faculty of \@faculty}{}
-  \ifthenelse{\equal{#1}{first}}{Nine month progress report}{}
-  \ifthenelse{\equal{#1}{second}}{Second Year Report}{}
+  \ifthenelse{\equal{#1}{first}}{Nine Month Progress Report}{}
+  \ifthenelse{\equal{#1}{second}}{Second Year Progress Report}{}
 }
 \def\maketitle{
   \begin{titlepage}
@@ -199,16 +199,20 @@
 
 
     \begin{center}
-	  \vspace*{\fill}
+      \vskip 4cm
+	%   \vspace*{\fill}
       {\Large \bf \@title}
       \vskip 2cm
       \titletext{\reportyear} \linebreak
 	  \@submitdate
 	  \vskip 2cm
-	  \@author \linebreak
-	  \@department
-	  \vskip 2cm
-	  \@supervisor
+	  By Benjamin L. Cookman$^1$
+	  \vskip 0.5cm
+	  Supervised by Dr Jack King$^1$, Dr Raphaël Assier$^2$ and Dr Steven Lind$^3$
+	  \vskip 1cm
+	  $^1$School of Engineering, University of Manchester \linebreak
+	  $^2$Department of Mathematics, University of Manchester \linebreak
+	  $^3$School of Engineering, University of Cardiff
       \vspace*{\fill}
     \end{center}
 

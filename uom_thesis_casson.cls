@@ -199,15 +199,14 @@
 
 
     \begin{center}
-      \vskip 4cm
-	%   \vspace*{\fill}
+	  \vspace*{\fill}
       {\Large \bf \@title}
-      \vskip 2cm
+      \vskip 5cm
       \titletext{\reportyear} \linebreak
 	  \@submitdate
-	  \vskip 2cm
+	  \vskip 5cm
 	  By Benjamin L. Cookman$^1$
-	  \vskip 0.5cm
+	  \vskip 0cm
 	  Supervised by Dr Jack King$^1$, Dr Raphaël Assier$^2$ and Dr Steven Lind$^3$
 	  \vskip 1cm
 	  $^1$School of Engineering, University of Manchester \linebreak

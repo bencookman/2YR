@@ -180,6 +180,7 @@
 \def\faculty#1{\gdef\@faculty{#1}}
 \def\department#1{\gdef\@department{#1}}
 \def\submitdate#1{\gdef\@submitdate{#1}}
+\def\supervisor#1{\gdef\@supervisor{#1}}
 \newcommand{\titletext}[1]
 {
   \ifthenelse{\equal{#1}{thesis}}{A thesis submitted to the University of Manchester for the degree of\ \linebreak Doctor of Philosophy\ \linebreak in the Faculty of \@faculty}{}
@@ -200,13 +201,14 @@
     \begin{center}
 	  \vspace*{\fill}
       {\Large \bf \@title}
-      \vskip 3cm
-      \titletext{\reportyear}
-      \vskip 3cm
+      \vskip 2cm
+      \titletext{\reportyear} \linebreak
 	  \@submitdate
-	  \vskip 3cm
-	  \@author\ \linebreak
+	  \vskip 2cm
+	  \@author \linebreak
 	  \@department
+	  \vskip 2cm
+	  \@supervisor
       \vspace*{\fill}
     \end{center}
 

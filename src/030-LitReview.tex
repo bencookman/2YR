@@ -1,19 +1,43 @@
-\section{Markstein Flame Modelling}
+% \section{Markstein Flame Modelling}
 
-Finding the Markstein number is crucial to predicting the behaviour of flames.
+% Finding the Markstein number is crucial to predicting the behaviour of flames.
 
-LITERATURE:
-\begin{itemize}
-\item \cite{clavin1982EffectsMolecularDiffusion} the first theoretical prediction of Markstein number from asymptotic theory
-\item \cite{matalon1982FlamesGasdynamicDiscontinuities} also predicted the same Markstein number in the same year from similar asymptotics
-\item \cite{searby1991ParametricAcousticInstability} proposes Mathieu model for secondary thermoacoustic instability. This is used to predict Markstein numbers experimentally by comparing sound frequency at the onset of parametric instability to the acoustic amplitude and comparing this data to theoretical predictions at different Markstein numbers. The disturbance wavenumber is also proposed as a method to find this Markstein number in a similar way.
-\item \cite{delfin2024DeterminationMethodMarkstein} measures Markstein numbers using the proposed method from \cite{searby1991ParametricAcousticInstability} by measuring disturbance wavenumbers at the onset of secondary instability and comparing them to theoretical values.
-\item \cite{day2009TurbulenceEffectsCellular} calculates Markstein numbers from simulation data for lean premixed H2-air combustion by computing JPDFs of flame speed against flame curvature. Each data point in these JPDFs is an \emph{integral tubes} (the area bounded by 3 or more integral curves, in 3D) of $\vec{\nabla} c$ for $c$ the reactant progress variable with values taken at $c=0.98$, representing the position of the flame.
-\item \cite{howarth2022EmpiricalCharacteristicScaling} and \cite{howarth2023ThermodiffusivelyunstableLeanPremixed} follow the same method as \cite{day2009TurbulenceEffectsCellular}, but incorporates the strain term to the right-hand side calculation, uses $c=0.9$. Care is taken to ensure that the chosen flame surface is representative of the flame. They also evaluate individual Markstein numbers for the curvature and strain term on the RHS, as suggested in \cite{clavin2011CurvedStretchedFlames} (TALK ABOUT THIS PAPER ABOVE??).
-\item \cite{davis2002MarksteinNumbersCounterflow} compares markstein numbers calculated from unburnt and burnt velocity values. (NEED TO READ??)
-\item Al Sarraf ??
-\item Aldredge ??
-\end{itemize}
+% LITERATURE:
+% \begin{itemize}
+% \item \cite{clavin1982EffectsMolecularDiffusion} the first theoretical prediction of Markstein number from asymptotic theory
+% \item \cite{matalon1982FlamesGasdynamicDiscontinuities} also predicted the same Markstein number in the same year from similar asymptotics
+% \item \cite{searby1991ParametricAcousticInstability} proposes Mathieu model for secondary thermoacoustic instability. This is used to predict Markstein numbers experimentally by comparing sound frequency at the onset of parametric instability to the acoustic amplitude and comparing this data to theoretical predictions at different Markstein numbers. The disturbance wavenumber is also proposed as a method to find this Markstein number in a similar way.
+% \item \cite{delfin2024DeterminationMethodMarkstein} measures Markstein numbers using the proposed method from \cite{searby1991ParametricAcousticInstability} by measuring disturbance wavenumbers at the onset of secondary instability and comparing them to theoretical values.
+% \item \cite{day2009TurbulenceEffectsCellular} calculates Markstein numbers from simulation data for lean premixed H2-air combustion by computing JPDFs of flame speed against flame curvature. Each data point in these JPDFs is an \emph{integral tubes} (the area bounded by 3 or more integral curves, in 3D) of $\vec{\nabla} c$ for $c$ the reactant progress variable with values taken at $c=0.98$, representing the position of the flame.
+% \item \cite{howarth2022EmpiricalCharacteristicScaling} and \cite{howarth2023ThermodiffusivelyunstableLeanPremixed} follow the same method as \cite{day2009TurbulenceEffectsCellular}, but incorporates the strain term to the right-hand side calculation, uses $c=0.9$. Care is taken to ensure that the chosen flame surface is representative of the flame. They also evaluate individual Markstein numbers for the curvature and strain term on the RHS, as suggested in \cite{clavin2011CurvedStretchedFlames} (TALK ABOUT THIS PAPER ABOVE??).
+% \item \cite{davis2002MarksteinNumbersCounterflow} compares markstein numbers calculated from unburnt and burnt velocity values. (NEED TO READ??)
+% \item Al Sarraf ??
+% \item Aldredge ??
+% \end{itemize}
+
+
+
+
+
+
+
+
+\section{Thermoacoustic Combustion Instabilities}
+
+% Thermoacoustics background - can cover what was in 1YR
+
+\subsection{Primary vs. Secondary Instabilities}
+
+
+
+\subsection{Low-Order Thermoacoustic Modelling}
+
+% n-tau models
+
+
+\subsection{Intrinsic Thermoacoustic Feedback}
+
+% ITA modes!
 
 
 
@@ -68,6 +92,7 @@ LITERATURE:
 
 
 
+\subsection{Impedance Boundaries}
 
 
 
@@ -76,25 +101,4 @@ LITERATURE:
 
 \cite{monaghan1992SmoothedParticleHydrodynamics, vacondio2021GrandChallengesSmoothed}
 
-
-
-
-
-
-\section{Thermoacoustic Combustion Instabilities}
-
-% Thermoacoustics background - can cover what was in 1YR
-
-\subsection{Primary vs. Secondary Instabilities}
-
-
-
-\subsection{Low-Order Thermoacoustic Modelling}
-
-% n-tau models
-
-
-\subsection{Intrinsic Thermoacoustic Feedback}
-
-% ITA modes!
 

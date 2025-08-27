@@ -65,6 +65,8 @@
 
 \section{Numerical Combustion Simulation}
 
+% Mention AVBP and CERFACS?
+
 \cite{orszag1970AnalyticalTheoriesTurbulence, domingo2023RecentDevelopmentsDNS, chen2011PetascaleDirectNumerical, yang2015LargeeddySimulationPresent, veynante2002TurbulentCombustionModeling, moin1998DirectNumericalSimulation, tennekes1972FirstCourseTurbulence}
 
 % The most blunt way to simulate a fluid system would be one where you try to accurately simulate every detail involved in the fluid.
@@ -86,7 +88,7 @@
 
 
 
-\subsection{Characteristic Boundaries}
+\subsection{Navier-Stokes Characteristic Boundary Conditions}
 
 \cite{thompson1987TimeDependentBoundary, thompson1990TimeDependentBoundaryConditions, poinsot1992BoundaryConditionsDirect, poinsot2005TheoreticalNumericalCombustion, sutherland2003ImprovedBoundaryConditions}
 
@@ -113,8 +115,21 @@
 
 
 
-\subsection{Impedance Boundaries}
+\subsection{Time Domain Impedance Boundary Conditions}
 
+
+% Models effect of boundary impedance
+
+
+\subsubsection{Delayed-Time Domain Impedance Boundary Conditions}
+
+Although many variations on TDIBC exist, the 'delayed-time domain Impedance boundary conditions of \cite{douasbin2018DelayedtimeDomainImpedance} are particularly relevant for the simulation of thermoacoustic instabilities. By modelling the effect of an acoustic time delay, a part of the computational domain - say, an exhaust pipe - may be truncated in place of a numerical boundary. Then, the response of this new boundary to incoming acoustics should be a sinusoidal Moiré pattern in the frequency domain. The proposition of \cite{douasbin2018DelayedtimeDomainImpedance} is that this pattern may be modelled via a meromorphic function of $2n$ simple poles. The location of these poles and their residues are then found in a preprocessing step as the values which minimise the least-squares fit with the desired response curve. Each time step then, the resulting constants are used to evaluate the change in acoustic variable at the boundary in such a way that no memory of previous time steps are required. 
+
+After validating the model by testing its response to a Gaussian pressure bump, the model is compared against 
+
+What they find is...
+
+Drawbacks...
 
 
 

@@ -41,11 +41,46 @@
 \label{fig:searby-experiment}
 \end{figure}
 
+\begin{figure}[t]
+\centering
+    \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[height=5cm]{assets/imgs/Searby-92-flame_a.png}
+    \caption{}
+    \label{fig:Searby-92_flames_a}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[height=5cm]{assets/imgs/Searby-92-flame_b.png}
+    \caption{}
+    \label{fig:Searby-92_flames_b}
+    \end{subfigure}
+
+\vspace*{3mm}
+    
+    \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[height=5cm]{assets/imgs/Searby-92-flame_c.png}
+    \caption{}
+    \label{fig:Searby-92_flames_c}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[height=5cm]{assets/imgs/Searby-92-flame_d.png}
+    \caption{}
+    \label{fig:Searby-92_flames_d}
+    \end{subfigure}
+\caption{Photos courtesy of \cite{searby1992AcousticInstabilityPremixed} of flames at different stages of thermoacoustic response. (a) shows the characteristic curved shape of a hydrodynamically unstable flame before any acoustics are significantly effecting the flame shape. (b) is a flame flame under the effect of the primary thermoacoustic instability. (c) shows a cross-sectional slice of a flame rotated by $90\degree$ under the secondary instability. (d) shows a flame after the breakdown of cellular structures, which leads to a self-turbulent flame.}
+\label{fig:Searby-92_flames}
+\end{figure}
+
 
 % be brief, already talked about it in 1YR
 
 
-\subsubsection{Assier and Wu (2014)}
+% Assier and Wu (2014)
 
 \begin{figure}[t]
 \centering
@@ -54,11 +89,15 @@
 \label{fig:AW-flame}
 \end{figure}
 
-% copy in what I put in 1YR? 
+Later on, work by Assier and Wu \cite{assier2014LinearWeaklyNonlinear} studied the stability of a \emph{flame-flow-acoustic} system, where a freely propagating flame in a duct which is periodic to the top and bottom and has one closed and open end to the left and right is considered. \fig{fig:assier-2014} illustrates this geometry, which is reminiscent of the experimental domain shown in \fig{fig:searby-experiment} of \cite{searby1992AcousticInstabilityPremixed}. Results from the hydrodynamic flame theory \cite{matalon1982FlamesGasdynamicDiscontinuities} are used to separate the dynamics within the flame from the outer fluid. This outer region is then separated into the usual $\cl{O}(1)$ hydrodynamic zone and a far-away $\cl{O}(1/\Ma)$ acoustic zone. Further asymptotic analysis is performed in the flame reference frame, which couples these two regions primarily through a time-dependent term in the jump conditions. The same weak non-linearity assumption is made as the MS equation to simplify their form of the flame equation and linear stability analysis is performed about the steady solutions to the MS equation.
 
+They find that, when the acoustic interaction is included these solutions are no longer linearly stable and the maximum growth rate of this instability increases significantly with heat release $q$. They also perform non-linear stability analysis using a solver for the flame position coupled to the dynamical acoustic jump conditions. This is compared to the results of \cite{searby1992AcousticInstabilityPremixed} and they find they are able to qualitatively reproduce the primary instability and the onset of the secondary instability. In the latter case, the unsteady nature of the acoustic coupling to the flame induces an unsteady RT effect as the acoustic acceleration oscillates into and away from the less dense products. This can be viewed as the driving mechanism behind this parametric instability. In a later conference paper \cite{assier2014CombustionInstabilityModel}, they also find that by reintroducing the tangential velocity terms, the values of $\g$ which result in the same behaviour as seen in \cite{searby1992AcousticInstabilityPremixed} more closely match the values of $\g$ we expect. The results of both papers are surprisingly fruitful given their assumption of weak non-linearity despite the large heat releases that their model is tested against.
 
+% Jun and Lee 2023
 
-\subsubsection{Gatón-Pérez et al. (2025)}
+In \cite{jun2023ParametricInstabilityPropagating} the secondary instability in hydrogen enriched methane-air flames is studied numerically in an open-ended tube. The structure of their flames under the full non-linear effect of the secondary instability is an impressive match to the experiment of \cite{ebieto2017DynamicsPremixedFlames}, but this is in spite of a lack of convergence in the phase of sub-harmonic oscillations to the flame front between grid spacings of 100 μm to 50 μm. This may mean that the flame has been poorly resolved numerically. They also find that the Rayleigh Index, $\rm{RI}$ is a good indicator for the onset of the secondary instability and that the violent acoustic output of this parametric instability may also be attributed to the changes in flame surface area strengthening oscillations in heat release which cause the thermoacoustic effect.
+
+% Gatón-Pérez et al. (2025)
 
 \begin{figure}[t]
 \centering
@@ -86,7 +125,7 @@ Simpler analysis is performed by Gatón-Pérez et al. \cite{gaton-perez2025Mitig
 
 
 
-\section{Computational Fluid Dynamics (CFD) Techniques}
+\section{Techniques for Computational Fluid Dynamics (CFD)}
 
 % Mention AVBP and CERFACS?
 

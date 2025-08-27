@@ -1,12 +1,18 @@
-\section{Combustion Equations}
 
 
-
-
-\section{Modelling Physics}
-
-
-
-
-
+Throughout this report, the physics discussed will, broadly speaking, be determined by variations of the governing equations, which are comprised of the following differential equations:
+\begin{subequations} \label{eqn:EQUATIONS-DIFF}
+\begin{boxali}
+\pdv{\r}{t} &+ \vec{\nabla}\cdot(\r\vec{u})= 0, \\
+\r \mdv{\vec{u}}{t} &= -\vec{\nabla}p + \vec{\nabla}\cdot\bb{T} + \r \vec{g} \\ 
+\r \mdv{Y_\a}{t} &= \dot{\o}_\a - \vec{\nabla}\cdot(\r \vec{V}_{\!\a} Y_\a) \qquad (\text{for } \a = 1, \dots, N_{\rm{S}}),
+\r \mdv{E}{t} &= -\vec{\nabla}\cdot \vec{\cl{E}} + \vec{\nabla}\cdot(\bb{S} \vec{u}) + \dot{\cl{E}} + \r \sum_\a Y_\a \vec{g} \cdot (\vec{u} + \vec{V}_{\!\a}),
+\end{boxali}
+\end{subequations}
+as well as the algebraic equations:
+\begin{subequations} \label{eqn:EQUATIONS-ALGE}
+\begin{boxali}
+p &= \r \frac{R_0}{W} T,
+\end{boxali}
+\end{subequations}
 

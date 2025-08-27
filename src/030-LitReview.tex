@@ -48,7 +48,13 @@
 \label{fig:AW-flame}
 \end{figure}
     
-        
+
+
+\subsubsection{Gatón-Pérez et al. (2025)}
+
+
+
+
 
 
 \subsection{Low-Order Thermoacoustic Modelling}
@@ -142,8 +148,8 @@
 \begin{figure}[t]
 \centering
 \includegraphics[scale=0.65]{example-image-a}
-\caption{CAPTION}
-\label{fig:D-TDIBM}
+\caption{D-TDIBC}
+\label{fig:D-TDIBC}
 \end{figure}
         
 Although many variations on TDIBC exist, the \emph{Delayed-Time Domain Impedance Boundary Conditions} (D-TDIBC) of \cite{douasbin2018DelayedtimeDomainImpedance} are particularly relevant for the simulation of thermoacoustic instabilities. By modelling the effect of an acoustic time delay, $t_{\rm{delay}}$, a part of the computational domain - say, an exhaust pipe - may be truncated in place of a numerical boundary. Then, the response of this new boundary to incoming acoustics should be a sinusoidal Moiré pattern in the frequency domain. The proposition of \cite{douasbin2018DelayedtimeDomainImpedance} is that this pattern may be modelled via a meromorphic function of $2n$ simple poles. The location of these poles and their residues are then found in a preprocessing step as the values which minimise the least-squares fit with the desired response curve. Each time step then, the resulting constants are used to evaluate the change in acoustic variable at the boundary in such a way that no memory of previous time steps are required. 

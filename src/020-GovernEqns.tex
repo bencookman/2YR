@@ -49,7 +49,7 @@ The term remaining is the chemical production rate of species $\a$ by mass, $\do
 \begin{equation}
 \sum_\a \nu_{\a, j}^{\rm{L}} \rm{S}_\a \leftrightharpoons \sum_\a \nu_{\a, j}^{\rm{R}} \rm{S}_\a
 \end{equation}
-where $\rm{S}_\a$ are the chemical formulae of each species, individual steps progress at a rate $\cl{Q}_j$ according to
+where $\rm{S}_\a$ are the chemical formulae of each species, individual steps progress at a rate $\cl{Q}_j$ according to \cite{poinsot2005TheoreticalNumericalCombustion}:
 \begin{equation}
 \cl{Q}_j = K_{f, j}\prod_{\a = 1}^{N_{\rm{S}}} \left(\r \frac{Y_\a}{W_\a}\right)^{\nu_{\a, j}^{\rm{L}}} - K_{b, j}\prod_{\a = 1}^{N_{\rm{S}}} \left(\r \frac{Y_\a}{W_\a}\right)^{\nu_{\a, j}^{\rm{R}}}
 \quad \text{where} \quad
@@ -57,16 +57,16 @@ K_{f} = A T^b \exp\left(-\frac{E_a}{R_0 T}\right)
 \end{equation}
 is the forward reaction rate. The backward reaction rate, $K_{b, j}$ is determined by local entropy and is omitted for brevity. This may be transformed into the chemical production rate of an individual species $\dot{\w}_\a$ by considering its contributions from progress rates for each reaction step:
 \begin{equation}
-\dot{\w}_\a = W_\a \sum_{j = 1}^{N_\rm{R}} \nu_{\a, j} \cl{Q}_j.
+\dot{\w}_\a = W_\a \sum_{j = 1}^{N_\rm{R}} \nu_{\a, j} \cl{Q}_j,
 \end{equation}
-Although it doesn't appear in the form of the energy equation shown, also useful is the rate of heat release, $\dot{\w}_T$:
+and although it doesn't appear in the equations shown, the rate of heat release, $\dot{\w}_T$, is also useful:
 \begin{equation}
 \dot{\w}_T = -\sum_\a \D h_{f, \a}^\plimsoll \dot{\w}_\a.
 \end{equation}
 
 Notably excluded in this formulation \cite{williams1985CombustionTheory} are the effects of:
 \begin{enumerate}
-\item Soret \cite{soret1879LetatDequilibreQue} and Dufour \cite{dufour1872DiffusionThermoeffect} effects
+\item Soret and Dufour effects \cite{dufour1872DiffusionThermoeffect, mortimer1980ElementaryTransitionState, soret1879LetatDequilibreQue, kohler2016SoretEffectLiquid}
 \item Pressure-gradient diffusion
 \item Bulk viscosity \cite{buresti2015NoteStokesHypothesis}
 \item Radiant heat flux
@@ -74,6 +74,5 @@ Notably excluded in this formulation \cite{williams1985CombustionTheory} are the
 
 
 
-% what do we exclude?
 
 

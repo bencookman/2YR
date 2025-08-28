@@ -23,48 +23,80 @@ To find the weights $w^{\rm{int}}(\vec{x}, \vec{x}_j)$, we will be evaluating $\
 \begin{equation}
 \vv{D}[\phi] = \left(\phi, \pdv{\phi}{x}, \pdv{\phi}{x}, \pdv[2]{\phi}{x}, \pdv[2]{\phi}{x}{y}, \pdv[2]{\phi}{x}, \dots \right)^T
 \quad \text{and} \quad
-\vv{D}_k[\phi] = \left(\phi, \pdv{\phi}{x}, \pdv{\phi}{x}, \dots, \pdv[k]{\phi}{x}, \dots, \pdv[k]{\phi}{y} \right)^T,
+\vv{D}^k[\phi] = \left(\phi, \pdv{\phi}{x}, \pdv{\phi}{x}, \dots, \pdv[k]{\phi}{x}, \dots, \pdv[k]{\phi}{y} \right)^T,
 \end{equation}
-where we have assumed that $\phi$ is a scalar field over two spatial dimensions $\vec{x}=(x, y)$, although the method may be simply extended to any number of dimensions (with the caveat that the number of nodes required increases greatly with dimension). In this notation, interpolation becomes $\phi(\vec{x}) = \vv{D}[\phi](\vec{x}) \cdot \vv{C}^{\rm{int}} = \vv{D}_k[\phi](\vec{x}) \cdot \vv{C}_k^{\rm{int}}$ where $\vv{D}[\phi](\vec{x})$ is the vector $\vv{D}[\phi]$ evaluated at the location $\vec{x}$, $\vv{C}^{\rm{int}} = (1, 0, 0, 0, 0, 0, \dots)^T$ and $\vv{C}_k^{\rm{int}} = (1, 0, 0, \dots, 0)^T$, is of the same length as $\vv{D}_k$. Introducing the vectors of monomials:
+where we have assumed that $\phi$ is a scalar field over two spatial dimensions $\vec{x}=(x, y)$, although the method may be simply extended to any number of dimensions (with the caveat that the number of nodes required increases greatly with dimension). In this notation, interpolation becomes $\phi(\vec{x}) = \vv{D}[\phi](\vec{x}) \cdot \vv{C}^{\rm{int}} = \vv{D}^k[\phi](\vec{x}) \cdot \vv{C}^{\rm{int}, k}$ where $\vv{D}[\phi](\vec{x})$ is the vector $\vv{D}[\phi]$ evaluated at the location $\vec{x}$, $\vv{C}^{\rm{int}} = (1, 0, 0, 0, 0, 0, \dots)^T$ and $\vv{C}^{\rm{int}, k} = (1, 0, 0, \dots, 0)^T$, is of the same length as $\vv{D}^k$. Introducing the vectors of monomials:
 \begin{equation}
 \vv{X}(\vec{x}) = \left(1, x, y, \frac{1}{2!} x^2, xy, \frac{1}{2!} y^2, \dots \right)^T
 \quad \text{and} \quad
-\vv{X}_k(\vec{x}) = \left(1, x, y, \dots, \frac{1}{k!} x^k, \dots, \frac{1}{k!} y^k \right)^T,
+\vv{X}^k(\vec{x}) = \left(1, x, y, \dots, \frac{1}{k!} x^k, \dots, \frac{1}{k!} y^k \right)^T.
 \end{equation}
 we can simplify down the Taylor expansion of $\phi$ around the point $\vec{x}$ for any $\vec{x}_j$ as:
 \begin{subequations}
 \begin{align}
 \phi_j &= \phi(\vec{x}) + \pdv{\phi}{x}\bigg|_{\vec{x}} (x_j - x) + \pdv{\phi}{y} \bigg|_{\vec{x}} (y_j - y)  \\
 & \qquad  \quad \ \, + \frac{1}{2!} \pdv[2]{\phi}{x}\bigg|_{\vec{x}} (x_j - x)^2 + \pdv[2]{\phi}{x}{y}\bigg|_{\vec{x}} (x_j - x) (y_j - y) + \frac{1}{2!} \pdv[2]{\phi}{y}\bigg|_{\vec{x}} (y_j - y)^2 + \dots \\
-&= \vv{D}[\phi](\vec{x}) \cdot \vv{X} (\vec{x}_j - \vec{x}),
+&= \vv{D}[\phi](\vec{x}) \cdot \vv{X} (\vec{x}_j - \vec{x}).
 \end{align}
 \end{subequations}
-which may be truncated to $\phi_j \approx \vv{D}_k[\phi](\vec{x}) \cdot \vv{X}_k (\vec{x}_j - \vec{x})$ with $\cl{O}(h^{k + 1})$ truncation error. Rewriting \equ{eqn:L} in this formulation:
+This may be truncated to $\phi_j \approx \vv{D}^k[\phi](\vec{x}) \cdot \vv{X}^k (\vec{x}_j - \vec{x})$ with $\cl{O}(h^{k + 1})$ truncation error. Hence, $k$ can be reinterpreted as the maximum order of polynomials $\phi(\vec{x})$ under this approximation which are exactly interpolated.
+
+Rewriting \equ{eqn:L} in this formulation:
 \begin{subequations}
 \begin{align}
 L^{\rm{int}}[\phi](\vec{x}) &= \vv{D}[\phi](\vec{x}) \, \cdot \sum_{j \in \cl{N}(\vec{x})} \vv{X} (\vec{x}_j - \vec{x}) w^{\rm{int}}(\vec{x}, \vec{x}_j) \\
-&\approx \vv{D}_k[\phi](\vec{x}) \, \cdot \sum_{j \in \cl{N}(\vec{x})} \vv{X}_k (\vec{x}_j - \vec{x}) w^{\rm{int}}(\vec{x}, \vec{x}_j) \equiv \vv{D}_k[\phi](\vec{x}) \cdot \vv{B}_k^\rm{int}(\vec{x}) \\
-&\approx \vv{D}_k[\phi](\vec{x}) \cdot \vv{C}_k^{\rm{int}}
+&\approx \vv{D}^k[\phi](\vec{x}) \, \cdot \sum_{j \in \cl{N}(\vec{x})} \vv{X}^k (\vec{x}_j - \vec{x}) w^{\rm{int}}(\vec{x}, \vec{x}_j) \equiv \vv{D}^k[\phi](\vec{x}) \cdot \vv{B}^{\rm{int}, k}(\vec{x}) \\
+&\approx \vv{D}^k[\phi](\vec{x}) \cdot \vv{C}^{\rm{int}, k}
 \end{align}
 \end{subequations}
-So our problem now involves finding the correct values of $w^{\rm{int}}(\vec{x}, \vec{x}_j)$ such that the \emph{vector of moments} $\vv{B}_k^{\rm{int}}(\vec{x})$ of $w^{\rm{int}}$ approximates $\vv{C}_k^\rm{int}$. For consistency then, we require that the first component is independent of $h$:
+So our problem now involves finding values of $w^{\rm{int}}(\vec{x}, \vec{x}_j)$ such that the \emph{vector of moments} $\vv{B}^{\rm{int}, k}(\vec{x})$ of $w^{\rm{int}}$ approximates $\vv{C}^{\rm{int}, k}$. For consistency, then, we require that the first component is independent of $h$:
 \begin{equation}
-1 = C_k^{\rm{int}, 0} \approx B_k^{\rm{int}, 0}(\vec{x}) = \sum_{j \in \cl{N}(\vec{x})} w^{\rm{int}} (\vec{x}, \vec{x}_j),
+1 = C^{\rm{int}, k}_0 \approx B^{\rm{int}, k}_0(\vec{x}) = \sum_{j \in \cl{N}(\vec{x})} w^{\rm{int}} (\vec{x}, \vec{x}_j),
 \end{equation}
-so $w^{\rm{int}} = \cl{O}(h^0)$, where the superscript zeroes represent the leading vector component. The resulting error in this approximation is $\cl{O}(h^{k + 1})$, coming from the combined error from truncating the Taylor expansion of $\phi_j$ and approximating $w^{\rm{int}}$.
+so $w^{\rm{int}} = \cl{O}(h^0)$, where the subscript zeroes represent the leading vector component. The resulting error in this approximation is the combined $\cl{O}(h^{k + 1})$ error of truncating the Taylor expansion of $\phi_j$ and approximating $w^{\rm{int}}$.
 
-What's left is to find the weights of $w^{\rm{int}}$ in a way which can be solved for at any point $\vec{x}$ surrounded by nodes $\vec{x}_j$. To do this, we separate $w^{\rm{int}}$ into some anisotropic dependence of $\vec{x}$ on the surrounding nodes from the contribution that the action of interpolation has. This is done by writing it as the weighted sum of some anisotropic basis functions:
+What's left is to find the weights of $w^{\rm{int}}$ for any point $\vec{x}$ and nodes $\vec{x}_j$. To do this, we separate $w^{\rm{int}}$ into some dependence of $\vec{x}$ on the anisotropic surrounding nodes from the action of interpolation, which will later be generalised to arbitrary derivatives. This is done by writing it as the weighted sum of some anisotropic basis functions:
 \begin{equation}
-w^{\rm{int}}(\vec{x}, \vec{x}_j) = \vv{W}_k(\vec{x}_j - \vec{x}) \cdot \vv{\Psi}_k^{\rm{int}}(\vec{x})
+w^{\rm{int}}(\vec{x}, \vec{x}_j) = \vv{W}^k(\vec{x}_j - \vec{x}) \cdot \vv{\Psi}^{\rm{int}, k}(\vec{x})
 \end{equation}
-where the anisotropy is seen in the dependence of $\vv{W}_k$ on $(\vec{x}_j - \vec{x})$, which includes directional information, rather than $|\vec{x}_j - \vec{x}|$ (contrasting to the radial basis function method). Assuming that $\vv{W}_k$ comprises some known \emph{anisotropic basis functions} (ABFs) [we can find them according to king 2022], we must find the vector of weights $\vv{\Psi}_k^{\rm{int}}(\vec{x})$. This is done by substituting the new form into the vector of moments:
+where the anisotropy is seen in the dependence of $\vv{W}^k$ on $(\vec{x}_j - \vec{x})$ rather than $|\vec{x}_j - \vec{x}|$ (contrasting to the radial basis function, RBF, method). Assuming that $\vv{W}^k$ comprises some suitable \emph{anisotropic basis functions} (ABFs) \cite{king2022HighorderSimulationsIsothermal}, we must find the vector of weights $\vv{\Psi}^{\rm{int}, k}(\vec{x})$. This is done by substituting the new form into the vector of moments:
 \begin{align}
-\vv{C}_k^\rm{int}
-\approx \vv{B}_k^{\rm{int}}(\vec{x})
-= \left( \sum_{j \in \cl{N}(\vec{x})} \vv{X}_k (\vec{x}_j - \vec{x}) \otimes \vv{W}_k(\vec{x}_j - \vec{x}) \right) \cdot \vv{\Psi}_k^{\rm{int}}(\vec{x})
-\equiv M(\vec{x}) \cdot \vv{\Psi}_k^{\rm{int}}(\vec{x})
+\vv{C}^{\rm{int}, k}
+\approx \vv{B}^{\rm{int}, k}(\vec{x})
+= \left( \sum_{j \in \cl{N}(\vec{x})} \vv{X}^k (\vec{x}_j - \vec{x}) \otimes \vv{W}^k(\vec{x}_j - \vec{x}) \right) \cdot \vv{\Psi}^{\rm{int}, k}(\vec{x})
+\equiv M(\vec{x}) \, \vv{\Psi}^{\rm{int}, k}(\vec{x})
 \end{align}
-where $M$ is a $n \times n$ matrix and $n$ is the number of components of $\vv{C}_k^\rm{int}$. The vector of weights $\vv{\Psi}_k^{\rm{int}}(\vec{x})$ is found when the linear system is solved. Carrying over the error terms from previous steps, we expect convergence on the order $\cl{O}(h^{k + 1})$.
+where $M$ is a $n \times n$ matrix and $n$ is the number of components of $\vv{C}^{\rm{int}, k}$. The vector of weights $\vv{\Psi}^{\rm{int}, k}(\vec{x})$ is found when the linear system is solved. Carrying over the error terms from previous steps, we expect convergence on the order $(k + 1)$ as long as the matrix $M$ is well-posed and the values of nodes $\vec{x}_j$ are close enough to $\vec{x}$ such that $h$ is small.
+
+
+\subsection{High-Order Derivatives}
+
+If we choose to evaluate a derivative at $\vec{x}$ instead, very little changes besides the following. Firstly, we assume that the point $\vec{x}$ is itself a node in our stencil, $\vec{x} = \vec{x}_i \in \cl{S}(\vec{x}_i)$. Then, taking a page out of centred finite differences, we redefine our operator via the differences $\phi_{ij} = \phi_j - \phi_i$:
+\begin{equation}
+L[\phi]_i \equiv \sum_{j \in \cl{N}_i} \phi_{ij} w_{i, j}.
+\end{equation}
+This simplifies the derivation by removing the need to include leading order terms from our vectors. So now:
+\begin{equation}
+\vv{D}^k[\phi] = \left(\pdv{\phi}{x}, \pdv{\phi}{x}, \dots, \pdv[k]{\phi}{x}, \dots, \pdv[k]{\phi}{y} \right)^T,
+\qquad
+\vv{X}^k_j = \left(x_j, y_j, \dots, \frac{1}{k!} x_j^k, \dots, \frac{1}{k!} y_j^k \right)^T
+\end{equation}
+and similarly for $\vv{D}[\phi]$ and $\vv{X}_j$. For simplicity, we introduce the notation $\vv{X}^k_{ij} \equiv \vv{X}^k(\vec{x}_j - \vec{x}_i)$. In this altered notation, the desired derivative is picked out through $\vv{C}^k$ and written as $\vv{D}^k[\phi] \cdot \vv{C}^k$. For example, a first derivative in $x$ would use $\vv{C}^k = (1, 0, \dots, 0)^T$ such that $\partial \phi / \partial x |_j = \vv{D}^k[\phi]_j \cdot \vv{C}^k$. Following the same logic as above, we find that
+\begin{align}
+L[\phi]_i
+\approx \vv{D}^k[\phi]_i \, \cdot \sum_{j \in \cl{N}_i} \vv{X}^k_{ij} w_{i, j}
+\equiv \vv{D}^k[\phi]_i \, \cdot \vv{B}^k_i \approx \vv{D}^k[\phi]_i \, \cdot \vv{C}^k
+\end{align}
+where we have reintroduced the vector of moments, $\vv{B}^k_i$, at node $\vec{x}_i$. As above, this approximation has $\cl{O}(h^{k + 1})$ truncation error. In this case, however, to ensure consistency we instead require $w_{i, j} = \cl{O}(h^d)$ where $d$ is the order of derivative we are approximating. This results in a $\cl{O}(h^{k + 1 - d})$ approximation thus far.
+
+Once again, we represent the weights $w_{i, j}$ as a weighted average of the $k$ ABFs:
+\begin{equation}
+w_{i, j} = \vv{W}^k_{ij} \cdot \vv{\Psi}^k_i
+\quad \text{where} \quad
+\vv{W}^k_{ij} \equiv \vv{W}^k(\vec{x}_j - \vec{x}_i)
+\end{equation}
+with the same form of linear system $\vv{C}^k = M_i \, \vv{\Psi}^k_i$ where $M_i \equiv \sum_{j \in \cl{N}_i} \vv{X}^k_{ij} \otimes \vv{W}^k_{ij}$. Once solutions to the linear system are found, we should have weights $w_{i, j}$ to order of accuracy $(k + 1 - d)$ provided again that $M_i$ is well-posed and $h$ remains small [CORRECT CONDITION???].
+
 
 % we require a number of nodes to ensure the linear system has a solution. typically the kernel is non-trivial, so we just need one solution
 % The number of nodes required per stencil ~70 in 2D makes it expensive to calculate the weights for a given position to interpolate to. If you know beforehand where to interpolate to, this becomes cheap as it is done in preprocessing
@@ -76,40 +108,11 @@ where $M$ is a $n \times n$ matrix and $n$ is the number of components of $\vv{C
 % M condition number???? (worth mentioning but not extensively)
 
 
-\subsection{High-Order Derivatives}
-
-% Like other methods, we may wish to use this method of interpolation to find gradients as well. For classical methods, this is essentially done by differentiating the formulae we have already found. For LABFM, we have the benefit of a formulation where we can simply search for solutions where C = (0, 1, 0, ..) 
-% For use in PDEs, we want gradients at points we have phi_i information at, so x becomes one of the nodes
-% Since we are looking for derivatives now, we no longer require information on the absolute value phi_j, but the scalar relative to its value at the centre, phi_ji. The only change to the analysis above is that vectors e.g. X = (1, x, x^2/2, ...) -> X = (x, x^2/2) since the value phi_i = D[phi](x_i)^0 X(x_j - x_i)^0 is not needed
-% Show new 'formula' and write in discrete notation X_ji not X(x_j - x_i)
 
 % Ending - COST: we can do this process in any number of dimensions, although the cost scales rapidly from 2D to 3D as many more nodes x_j are contained within stencils. Usually have 70-80 nodes per stencil in 2D, making it quite expensive
 % good part is that finer geometries are easy to resolve by scattering nodes. Mention how boundaries are discretised with 5 layers of nodes for upwinded finite differencing for outgoing waves
 % Lagrangian methods are hard as above
 
-
-
-
-
-% \blue{
-
-% $$f(x) = y,\quad \text{also}, \quad \overset{\rightsquigarrow}{C}$$
-
-% How do mesh-free methods help us generally, and what does LABFM do which is especially helpful? Mesh-free methods generally:
-% \begin{itemize}
-% \item FEM famously requires meshing which needs to be of high quality, such that a significant portion of the total man-hours are spent actually creating a high-quality mesh. Mesh free methods almost entirely avoid this (the node set still needs to be of high quality though.)
-% \item Mesh free methods are much more suitable to Lagrangian methods, where nodes can move with the simulation. This works well with incompressible and free-surface flows
-% \item Node sets for complex geometries are relatively easy to produce, where finite difference methods are not an option and FEM is difficult to make a node set for (kind of the first point)
-% \end{itemize}
-
-% and LABFM specifically:
-% \begin{itemize}
-% \item 
-% \end{itemize}
-
-% why do we use *anisotropic* basis functions rather than the isotropic ones we may use for sph (is this true?)? we want a general difference operator, which takes nodes unevenly located rotationally so we need to make up for this rotational asymmetry by including it also in our basis functions.
-
-% }
 
 
 

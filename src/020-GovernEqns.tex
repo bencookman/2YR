@@ -40,7 +40,7 @@ where $\bb{I}$ is the three-dimensional identity matrix, we define $\vec{\nabla}
 \end{align}
 where $\l$ is heat conductivity.
 
-Generally speaking one of two models are used for the diffusion velocity $\vec{V}_{\!\a}$: the Fick's law approximation [CITE] and mixture averaging [CITE]. In the case of the former, we choose a diffusion coefficient $D_\a$ for each species and impose Fick's law $\r \vec{V}_{\!\a} Y_\a = - \r D_\a \vec{\nabla} Y_\a$ which assumes each species behaves as though it is diffusing into a single other species (c.f. binary mass diffusion). In the other case, mixture averaging provides a much more detailed model of the diffusion of each species $\a$ into another species $\b$ via the diffusion coefficients $D_{\a\b}$. The full mixture averaging equations are omitted for brevity. This is good enough for theoretical work, but numerical tools under these schemes do not usually impose that $Y_\a \nless 0$ and $Y_\a \ngtr 1$. To rectify this, we instead use \emph{corrected diffusion velocities}, $\vec{V}_{\!\a}^c$, where:
+Generally speaking one of two models are used for the diffusion velocity $\vec{V}_{\!\a}$: the Fick's law approximation \cite{fick1855UeberDiffusion} and mixture averaging \cite{hirschfelder1964MolecularTheoryGases, comsol2023MulticomponentDiffusionMixtureAveraged}. In the case of the former, we choose a diffusion coefficient $D_\a$ for each species and impose Fick's law $\r \vec{V}_{\!\a} Y_\a = - \r D_\a \vec{\nabla} Y_\a$ which assumes each species behaves as though it is diffusing into a single other species (c.f. binary mass diffusion). In the other case, mixture averaging provides a much more detailed model of the diffusion of each species $\a$ into another species $\b$ via the diffusion coefficients $D_{\a\b}$. The full mixture averaging equations are omitted for brevity. This is good enough for theoretical work, but numerical tools under these schemes do not usually impose that $Y_\a \nless 0$ and $Y_\a \ngtr 1$. To rectify this, we instead use \emph{corrected diffusion velocities}, $\vec{V}_{\!\a}^c$, where:
 \begin{equation}
 \r \vec{V}_{\!\a}^c Y_\a = \r \vec{V}_{\!\a} Y_\a - Y_\a \sum_{\b} \r \vec{V}_\b Y_\b.
 \end{equation}
@@ -64,7 +64,7 @@ and although it doesn't appear in the equations shown, the rate of heat release,
 \dot{\w}_T = -\sum_\a \D h_{f, \a}^\plimsoll \dot{\w}_\a.
 \end{equation}
 
-Notably excluded in this formulation \cite{williams1985CombustionTheory} are the effects of:
+Notably excluded in this formulation \cite{williams1985CombustionTheory} are:
 \begin{enumerate}
 \item Soret and Dufour effects \cite{dufour1872DiffusionThermoeffect, mortimer1980ElementaryTransitionState, soret1879LetatDequilibreQue, kohler2016SoretEffectLiquid}
 \item Pressure-gradient diffusion

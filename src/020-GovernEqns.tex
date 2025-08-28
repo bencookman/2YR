@@ -61,9 +61,17 @@ is the forward reaction rate. The backward reaction rate, $K_{b, j}$ is determin
 \end{equation}
 Although it doesn't appear in the form of the energy equation shown, also useful is the rate of heat release, $\dot{\w}_T$:
 \begin{equation}
-\dot{\w}_T = -\sum_\a \D h_{f, \a}^\plimsoll \dot{\w}_\a
+\dot{\w}_T = -\sum_\a \D h_{f, \a}^\plimsoll \dot{\w}_\a.
 \end{equation}
-due to its appearance in the equivalent temperature equation:
+
+Notably excluded in this formulation \cite{williams1985CombustionTheory} are the effects of:
+\begin{enumerate}
+\item Soret \cite{soret1879LetatDequilibreQue} and Dufour \cite{dufour1872DiffusionThermoeffect} effects
+\item Pressure-gradient diffusion
+\item Bulk viscosity \cite{buresti2015NoteStokesHypothesis}
+\item Radiant heat flux
+\end{enumerate}
+
 
 
 % what do we exclude?

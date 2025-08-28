@@ -1,18 +1,65 @@
-
-
-Throughout this report, the physics discussed will, broadly speaking, be determined by variations of the governing equations, which are comprised of the following differential equations:
+Throughout this report, we consider a three-dimensional, reacting, multicomponent mixture of $N_{\rm{S}}$ species (indexed with the variable $\a$) of gases, each with mass fraction $Y_\a$, specific heat capacity $c_{p, \a}$, molecular mass $W_{\a}$ and enthalpy of formation $\D h_{f, \a}^\plimsoll$. The local specific heat capacity and molecular mass of the mixture are given by:
+\begin{equation}
+c_p = \sum_\a Y_\a c_{p, \a}
+\quad \text{and} \quad
+W = 1 \bigg/ \sum_\a \frac{Y_\a}{W_\a},
+\quad \text{where} \quad
+\sum_\a \, (\,\cdot \,) = \sum_{\a=1}^{N_\rm{S}} \, (\,\cdot \,) .
+\end{equation}
+Hence, the following governing equations will be used for density $\r > 0$, velocity $\vec{u} \in \bb{R}^3$, mass fraction $Y_\a \in [0, 1]$, temperature $T > 0$ and energy $E$:
 \begin{subequations} \label{eqn:EQUATIONS-DIFF}
 \begin{boxali}
-\pdv{\r}{t} &+ \vec{\nabla}\cdot(\r\vec{u})= 0, \\
-\r \mdv{\vec{u}}{t} &= -\vec{\nabla}p + \vec{\nabla}\cdot\bb{T} + \r \vec{g} \\ 
-\r \mdv{Y_\a}{t} &= \dot{\o}_\a - \vec{\nabla}\cdot(\r \vec{V}_{\!\a} Y_\a) \qquad (\text{for } \a = 1, \dots, N_{\rm{S}}),
-\r \mdv{E}{t} &= -\vec{\nabla}\cdot \vec{\cl{E}} + \vec{\nabla}\cdot(\bb{S} \vec{u}) + \dot{\cl{E}} + \r \sum_\a Y_\a \vec{g} \cdot (\vec{u} + \vec{V}_{\!\a}),
+\pdv{\r}{t} + \vec{\nabla}\cdot(\r\vec{u})
+&= 0, \\
+\pdv{\r \vec{u}}{t} + \vec{\nabla} \cdot (\r \vec{u} \otimes \vec{u})
+&= -\vec{\nabla}p + \vec{\nabla}\cdot\bb{T} + \r \vec{g} \\ 
+\pdv{\r Y_\a}{t} + \vec{\nabla} \cdot (\r Y_\a \vec{u})
+&= \dot{\w}_\a - \vec{\nabla}\cdot(\r \vec{V}_{\!\a} Y_\a) \qquad (\text{for } \a = 1, \dots, N_{\rm{S}}), \\
+\pdv{\r E}{t} + \vec{\nabla} \cdot (\r E \vec{u})
+&= -\vec{\nabla}\cdot \vec{\cl{E}} + \vec{\nabla}\cdot(\bb{S} \vec{u}) + \dot{\cl{E}} + \r \sum_\a Y_\a \vec{g} \cdot (\vec{u} + \vec{V}_{\!\a}),
 \end{boxali}
 \end{subequations}
-as well as the algebraic equations:
+along with the algebraic equations for closure:
 \begin{subequations} \label{eqn:EQUATIONS-ALGE}
-\begin{boxali}
-p &= \r \frac{R_0}{W} T,
-\end{boxali}
+\begin{align}
+p &= \r \frac{R_0}{W} T, \\
+\r E &= \r E_{\rm{th}} + \r E_{\rm{ch}} + \r E_{\rm{ki}} \\
+  &= \r \int_{T_0}^T c_{p}(T') \dd{T'} - p + \r \sum_\a Y_\a \D h_{f, \a}^\plimsoll + \frac{1}{2} \r \vec{u}\cdot\vec{u}
+\end{align}
 \end{subequations}
+where $R_0 = 8.314$ J K$^{-1}$ mol$^{-1}$ is the universal gas constant, $\r E_{\rm{th}}$ is the thermal (or \emph{sensible}, \cite{poinsot2005TheoreticalNumericalCombustion}) energy, $T_0$ is some reference temperature, $\r E_{\rm{ch}}$ is the chemical energy and $\r E_{\rm{ki}}$ is the kinetic energy. The terms $\r \vec{g}$ and $\dot{\cl{E}}$ are the body force and energy source terms, both of which may take any form depending on the system we are modelling. In most cases in this report, these terms will be neglected. The tensors $\bb{S}$ and $\bb{T}$ are the stress and viscous stress tensors respectively and are given in their usual form by
+\begin{subequations}
+\begin{align}
+\bb{S} &= -p\bb{I} + \bb{T} \\
+\bb{T} &= \mu \left( - \frac{2}{3}\vec{\nabla}\cdot\vec{u} \bb{I} + \vec{\nabla}\vec{u} + (\vec{\nabla}\vec{u})^T \right)
+\end{align}
+\end{subequations}
+where $\bb{I}$ is the three-dimensional identity matrix, we define $\vec{\nabla}\vec{u}$ by its elements $(\vec{\nabla}\vec{u})_{ij} = \pdv{u_j}{x_i}$ and $\mu$ is kinematic viscosity. The energy flux \emph{not} due to fluid stresses is given by
+\begin{align}
+\vec{\cl{E}} = -\l \vec{\nabla} T + \sum_\a \left( \int_{T_0}^T c_{p, \a}(T') \dd{T'} + \D h_{f, \a}^\plimsoll \right) (\r \vec{V}_{\!\a} Y_\a),
+\end{align}
+where $\l$ is heat conductivity.
+
+Generally speaking one of two models are used for the diffusion velocity $\vec{V}_{\!\a}$: the Fick's law approximation [CITE] and mixture averaging [CITE]. In the case of the former, we choose a diffusion coefficient $D_\a$ for each species and impose Fick's law $\r \vec{V}_{\!\a} Y_\a = - \r D_\a \vec{\nabla} Y_\a$ which assumes each species behaves as though it is diffusing into a single other species (c.f. binary mass diffusion). In the other case, mixture averaging provides a much more detailed model of the diffusion of each species $\a$ into another species $\b$ via the diffusion coefficients $D_{\a\b}$. The full mixture averaging equations are omitted for brevity. This is good enough for theoretical work, but numerical tools under these schemes do not usually impose that $Y_\a \nless 0$ and $Y_\a \ngtr 1$. To rectify this, we instead use \emph{corrected diffusion velocities}, $\vec{V}_{\!\a}^c$, where:
+\begin{equation}
+\r \vec{V}_{\!\a}^c Y_\a = \r \vec{V}_{\!\a} Y_\a - Y_\a \sum_{\b} \r \vec{V}_\b Y_\b.
+\end{equation}
+
+The term remaining is the chemical production rate of species $\a$ by mass, $\dot{\w}_\a$. Considering a general reaction mechanism of $N_{\rm{R}}$ reversible steps:
+\begin{equation}
+\sum_\a \nu_{\a, j}^{\rm{L}} \rm{S}_\a \leftrightharpoons \sum_\a \nu_{\a, j}^{\rm{R}} \rm{S}_\a
+\end{equation}
+where $\rm{S}_\a$ are the chemical formulae of each species, individual steps progress at a rate $\cl{Q}_j$ according to
+\begin{equation}
+\cl{Q}_j = K_{f, j}\prod_{\a = 1}^{N_{\rm{S}}} \left(\r \frac{Y_\a}{W_\a}\right)^{\nu_{\a, j}^{\rm{L}}} - K_{b, j}\prod_{\a = 1}^{N_{\rm{S}}} \left(\r \frac{Y_\a}{W_\a}\right)^{\nu_{\a, j}^{\rm{R}}}
+\quad \text{where} \quad
+K_{f} = A T^b \exp\left(-\frac{E_a}{R_0 T}\right)
+\end{equation}
+is the forward reaction rate. The backward reaction rate, $K_{b, j}$ is determined by local entropy and is omitted for brevity. This may be transformed into the chemical production rate of an individual species $\dot{\w}_\a$ by considering its contributions from progress rates for each reaction step:
+\begin{equation}
+\dot{\w}_\a = W_\a \sum_{j = 1}^{N_\rm{R}} \nu_{\a, j} \cl{Q}_j
+\end{equation}
+
+% what do we exclude?
+
 

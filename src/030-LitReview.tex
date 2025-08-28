@@ -34,6 +34,36 @@
 \subsection{Primary vs. Secondary Thermoacoustic Instabilities}
 
 
+% rayleigh1896TheorySound
+% - introduces theoretical condition for a thermoacoustic instability, the Rayleigh criterion, where acoustic pressure and heat release fluctuations are amplified when they are in phase
+
+% searby1992AcousticInstabilityPremixed
+% - First thorough experimental investigation into the ...
+
+% Following this, thermoacoustic oscillations have been observed in a variety of experimentation:
+% delfin2024ThermoacousticParametricInstability
+% - High resolution and speed images of flames under thermoacoustic instability in open-ended tubes as well as clear images of flame structure under parametric instability
+% ebieto2017DynamicsPremixedFlames (THESIS)
+% - high speed imaging of a variety of thermoacoustic flames
+% fichera2001ExperimentalAnalysisThermoacoustic
+% - methane-air combustion in a cylindrical tube
+% - compares against linear and non-linear analysis
+% tachibana2015ExperimentalNumericalInvestigation
+% - spray combustion in a liquid-fuel aero-engine
+% - experiment vs LES
+
+% For high quality examples of thermoacoustic oscillations in motion, one can refer to
+% delfin2024VideoTransientParametric
+% martinez-ruiz2018VideoPremixedflameOscillations
+
+% searby1991ParametricAcousticInstability
+% - the nature of this secondary instability is studied by modelling the flame front as the matthieu equation
+% - when the forcing term exceeds a certain amplitude, a parametric instability is triggered where the flame shape moves at a subharmonic frequency, half the frequency of the forcing acoustic
+% - this is corroborated by images taken in searby1992AcousticInstabilityPremixed
+% - Solving these equations(?) gives them numerical predictions the stability regions of the planar flame, where a stable flat flame is observed if and only if a stability band of of sound intensities occurs between the loudest Darrieus-Landau unstable flame and the quietest parametrically unstable flame.
+% - The sound intensity corresponding to the quietest parametrically unstable flame may then be plotted for a variety of acoustic frequencies (forced via loudspeaker), which results in a curve predicted by the Markstein number of combustion mixture (provided other constants are known so the curves can be predicted from the theory)
+
+
 \begin{figure}[t]
 \centering
 \includegraphics[scale=0.6]{assets/imgs/Searby-92.pdf}
@@ -101,18 +131,65 @@ They find that, when the acoustic interaction is included these solutions are no
 In \cite{jun2023ParametricInstabilityPropagating} the secondary instability in hydrogen enriched methane-air flames is studied numerically in an open-ended tube. The structure of their flames under the full non-linear effect of the secondary instability is an impressive match to the experiment of \cite{ebieto2017DynamicsPremixedFlames}, but this is in spite of a lack of convergence in the phase of sub-harmonic oscillations to the flame front between grid spacings of 100 μm to 50 μm. This may mean that the flame has been poorly resolved numerically. They also find that the Rayleigh Index, $\rm{RI}$ is a good indicator for the onset of the secondary instability and that the violent acoustic output of this parametric instability may also be attributed to the changes in flame surface area strengthening oscillations in heat release which cause the thermoacoustic effect.
 }
 
+
+% veiga-lopez2020ThermoacousticAnalysisLean
+% - Experimental study of H2-air flames in Hele-Shaw cells
+% - Study effects of confinement due to cell geometry, gravity and mixture composition on thermoacoustic oscillations
+% - Heat loss effects are most prevalent for very thin cells, where ...
+
+% flores-montoya2022NonadiabaticModulationPremixedflame
+% - Effects of heat loss through open ends and walls of a 1D tube are studied
+% - Quanitifies the decay of acoustic eigenmodes due to heat losses in the system
+
+
+\subsection{Instability Control}
+
 % Gatón-Pérez et al. (2025)
 
 \begin{figure}[t]
 \centering
 \includegraphics[scale=0.65]{example-image-a}
-\caption{Porous plug}
+\caption{POROUS PLUG}
 \label{fig:porous-plug}
 \end{figure}
 
+% This analysis is further used by Gatón-Pérez to ...
 Simpler analysis is performed by Gatón-Pérez et al. \cite{gaton-perez2025MitigationThermoacousticInstabilities} to evaluate the eigenstates of a one-dimensional closed-open tube containing a porous plug and a flame. Using Darcy's law to model the plug and assuming linear acoustics, the acoustic eigenmodes of the tube are found numerically. Experimental data is then compared against the one-dimensional model, where the heat release parameter, thermal length scale and the plug's permeability set by experimental values. The model is able to predict the flame locations within the tube which are most likely to trigger thermoacoustic resonance despite no consideration of the flame's motion or its thermal response to acoustics being made. These are the locations where the resulting acoustic eigenmodes have the lowest decay imposed by the porous plug. In this way, they show experimentally that the location of the porous plug may be chosen to preferentially mitigate different frequencies and reduce the likelihood of thermoacoustic instability. Evidently though, a simple one-dimensional model of this ilk is restricted in application to strongly one-dimensional, ducted combustors. As soon as a broader combustor or plenum is used, the two-dimensional acoustics (e.g. Helmholtz modes) must also be considered.
 
+% luzzato2015ModellingControlCombustion (THESIS)
 
+% liao2025ActiveControlThermoacoustic
+
+% meadows2015PorousInsertsPassive
+
+% mcmanus1993ReviewActiveControl
+
+
+
+\subsection{Intrinsic Thermoacoustic Feedback}
+
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.65]{example-image-a}
+\caption{INTRINSIC THERMOACOUSTIC FEEDBACK LOOP}
+\label{fig:ita-loop}
+\end{figure}
+
+% Doesn't need to be too elaborate!
+
+% But there are not just acoustic modes, the full set of thermoacoustic instability modes includes ITA too [cite?]
+% explain feedback loop
+% phasors are cool
+% some other stuff i read about
+% cite the good reviews!
+
+\cite{emmert2015IntrinsicThermoacousticInstability}
+\cite{silva2023IntrinsicThermoacousticInstabilities}
+\cite{hoeijmakers2014IntrinsicInstabilityFlame}
+\cite{hoeijmakers2016FlameDominatedThermoacoustic}
+\cite{orchini2025TrackingAcousticIntrinsic}
+\cite{chen2024BiglobalLinearStability}
+% Polifke?
 
 
 
@@ -120,11 +197,9 @@ Simpler analysis is performed by Gatón-Pérez et al. \cite{gaton-perez2025Mitig
 \subsection{Low-Order Thermoacoustic Modelling}
 
 % n-tau models
+% control theory stuff i don't understand
 
-
-\subsection{Intrinsic Thermoacoustic Feedback}
-
-% ITA modes!
+\cite{juniper2018SensitivityNonlinearityThermoacoustic}
 
 
 

@@ -1,4 +1,10 @@
 
+\red{
+we use the SUNSET code to perform combustion simulations [cite]
+
+here are explanations of the methods used therein
+}
+
 
 \section{LABFM}
 
@@ -9,17 +15,17 @@
 
 % in keeping with other methods, where interpolation is the first step to gradient approximations
 
-Before considering gradient approximations, we first consider interpolations, hoping that they are simpler and elucidate a method for us. We consider a location $\vec{x}$ surrounded locally by finitely many nodes $\vec{x}_j \in \cl{S}(\vec{x})$ which are enumerated by $j \in \cl{N}(\vec{x})$, where $\abs{\vec{x} - \vec{x}_j} < h(\vec{x})$ and a function $\phi = \phi(\vec{x})$ which is \emph{smooth enough}.\footnote{Some elaboration.} Then we express the interpolated value $\phi(\vec{x})$ as a linear combination of the surrounding function values $\phi_j = \phi(\vec{x}_j)$:
+Before considering gradient approximations, we choose first to consider interpolations, to make clear the method. We consider a location $\vec{x}$ surrounded locally by finitely many nodes $\vec{x}_j \in \cl{S}(\vec{x})$ which are enumerated by $j \in \cl{N}(\vec{x})$, where $\abs{\vec{x} - \vec{x}_j} < h(\vec{x})$. Assume the function $\phi = \phi(\vec{x})$, which is only known at the points $\phi_j = \phi(\vec{x}_j)$, is \emph{smooth enough}.\footnote{Such that as many derivatives of $\phi$ as are used in the derivation below are available to us.} Then, we express the interpolated value $\phi(\vec{x})$ as a linear combination of the surrounding values $\phi_j$:
 \begin{equation} \label{eqn:L}
 L^{\rm{int}}[\phi](\vec{x}) \equiv \sum_{j \in \cl{N}(\vec{x})} \phi_j w^{\rm{int}}(\vec{x}, \vec{x}_j) \approx \phi(\vec{x}).
 \end{equation}
-To find the weights $w^{\rm{int}}(\vec{x}, \vec{x}_j)$, we must observe the contribution of function derivatives into $\phi$ by means on Taylor series. This derivative space is expressed as projections of the vectors of derivatives of $\phi$:
+To find the weights $w^{\rm{int}}(\vec{x}, \vec{x}_j)$, we will be evaluating $\phi_j$ by means of Taylor series via derivatives of $\phi$. Each derivative is a projection from the vector of derivatives of $\phi$:
 \begin{equation}
 \vv{D}[\phi] = \left(\phi, \pdv{\phi}{x}, \pdv{\phi}{x}, \pdv[2]{\phi}{x}, \pdv[2]{\phi}{x}{y}, \pdv[2]{\phi}{x}, \dots \right)^T
 \quad \text{and} \quad
 \vv{D}_k[\phi] = \left(\phi, \pdv{\phi}{x}, \pdv{\phi}{x}, \dots, \pdv[k]{\phi}{x}, \dots, \pdv[k]{\phi}{y} \right)^T,
 \end{equation}
-where we have assumed that $\phi$ is a scalar field over two spatial dimensions $\vec{x}=(x, y)$, although the method may be simply extended to any number of dimensions. In this notation, interpolation is just $\phi(\vec{x}) = \vv{D}[\phi](\vec{x}) \cdot \vv{C}^{\rm{int}} = \vv{D}_k[\phi](\vec{x}) \cdot \vv{C}_k^{\rm{int}}$ where $\vv{C}^{\rm{int}} = (1, 0, 0, 0, 0, 0, \dots)^T$ and $\vv{C}_k^{\rm{int}} = (1, 0, 0, \dots, 0,)^T$, which is of the same length as $\vv{D}_k$. Then, upon introducing vectors of monomials:
+where we have assumed that $\phi$ is a scalar field over two spatial dimensions $\vec{x}=(x, y)$, although the method may be simply extended to any number of dimensions (with the caveat that the number of nodes required increases greatly with dimension). In this notation, interpolation becomes $\phi(\vec{x}) = \vv{D}[\phi](\vec{x}) \cdot \vv{C}^{\rm{int}} = \vv{D}_k[\phi](\vec{x}) \cdot \vv{C}_k^{\rm{int}}$ where $\vv{D}[\phi](\vec{x})$ is the vector $\vv{D}[\phi]$ evaluated at the location $\vec{x}$, $\vv{C}^{\rm{int}} = (1, 0, 0, 0, 0, 0, \dots)^T$ and $\vv{C}_k^{\rm{int}} = (1, 0, 0, \dots, 0)^T$, is of the same length as $\vv{D}_k$. Introducing the vectors of monomials:
 \begin{equation}
 \vv{X}(\vec{x}) = \left(1, x, y, \frac{1}{2!} x^2, xy, \frac{1}{2!} y^2, \dots \right)^T
 \quad \text{and} \quad

@@ -105,15 +105,14 @@ w_{i, j} = \vv{W}^k_{ij} \cdot \vv{\Psi}^k_i
 \quad \text{where} \quad
 \vv{W}^k_{ij} \equiv \vv{W}^k(\vec{x}_{ij})
 \end{equation}
-with the same form of linear system $\vv{C}^k = M_i \, \vv{\Psi}^k_i$ where $M_i \equiv \sum_{j \in \cl{N}_i} \vv{X}^k_{ij} \otimes \vv{W}^k_{ij}$. Once solutions to the linear system are found, we should have weights $w_{i, j}$ to order of accuracy $(k + 1 - d)$ provided again that $M_i$ is well-posed and $h_i$ remains small. Provided these conditions are met, this means we can approximate any derivative we like to arbitrary order simply by preprocessing the values of $w_{i, j}$ at each node \footnote{Only provided the nodes do not move. This precludes a Lagrangian formulation for LABFM.} and evaluating the value of $L[\phi]_i$ during the simulation as we like. The fact that $w_{i, j}$ are evaluated in a preprocessing step is crucial as it means all that has to be done is calculate the sum in \equ{eqn:labfm-L} every time a derivative of an arbitrary function $\phi$ is required at a node $i$.
+with the same form of linear system $\vv{C}^k = M_i \, \vv{\Psi}^k_i$ where $M_i \equiv \sum_{j \in \cl{N}_i} \vv{X}^k_{ij} \otimes \vv{W}^k_{ij}$. Once solutions to the linear system are found, we should have weights $w_{i, j}$ to order of accuracy $(k + 1 - d)$ provided again that $M_i$ is well-posed and $h_i$ remains small.
 
 
 
 
+\subsection{Matrix Conditioning and Choice of ABFs}
 
-\subsection{Further Conditions}
-
-\subsubsection{Matrix Conditioning}
+% Choice of ABFs? Practically speaking Hermite and Legendre ABFs are useful as they are orthogonal polynomials, which improves the conditioning of M for higher values of k.
 
 Mentioned above is the conditioning of the matrix $M_i$, which is important to ensure the accuracy of the vector $\vv{\Psi}^k_i$ when the linear system is solved. Given we expect a disordered set of nodes $\cl{S}_i$ close to $\vec{x}_i$ for the moment, there are no further assumptions we can make on $\vv{X}^k_{ij}$ for now. It is convenient, though, to ensure that the weight values $w_{i ,j}$ do not change with the specific stencil size $h_i$ which we have taken. This is equivalent to ensuring the analysis may be done in a non-dimensional sense - so derivative operators may be scaled to whatever dimensions are required in a particular simulation. In general, our ABFs already do not scale with $h_i$, but the vector of monomials $X^k_{ij}$ does. We can cancel out this dependence by simply introducing the matrix $H_i = \rm{diag}(h, h, h^2, h^2, h^2, ..., h^k)$ and instead solving the system $H_i^{-1} \vv{C}^k = (H_i^{-1} M_i) \, \vv{\Psi}^k_i$ where instead $H_i^{-1} M_i = \sum_{j \in \cl{N}_i} (H_i^{-1} \vv{X}^k_{ij}) \otimes \vv{W}^k_{ij}$. This system condition number can no longer scale with $h_i$, since:
 \begin{equation}
@@ -125,23 +124,29 @@ The subscript $m$ is used for vector components, as above, and the index $n(m)$ 
 
 
 
-\subsubsection{Choice of ABFs}
+
+\subsection{Stencil Size, Computational Cost and Sampling}
+
+One major advantage of LABFM and other unstructured methods, is that the distance between nodes $x_ij$ and the resulting stencil size is allowed to vary in space. This means we can move from a region of low-density nodes in, for example, a non-reacting part of our computational domain, to a high-density region where the flame is. But there is a limit to how fast this variation can occur, since any given order of polynomial reconstruction $k$, has $n(k)$ ABFs which must each be accurately sampled. Equivalently, this means we require at least one node per each of the $2k$ even slices of the circular stencil (each with angle $\pi / k$), assuming two-dimensions \cite{king2020HighOrderDifference}. This, of course, means that there is a practical lower limit to the number of nodes $N_{\rm{st}}$ required in a stencil which is well above the lower limit of $n(k)$ nodes required by compact methods like \cite{jensen1972FiniteDifferenceTechniques}. This results in a quadratic growth in required nodes as the slices get smaller, since $k \propto h \propto \sqrt{N}$. Often, the stencil is increased furthermore to ensure a reliable sampling and improve stability and accuracy properties in spite of a strongly uneven node distribution. In a typical configuration, at $k = 4$ we may use $N_{\rm{st}} \approx 40$ and for $k = 6$ we may use $N_{\rm{st}} \approx 80$ [CHANGE THE NUMBERS TO BE RIGHT??]. In three-dimensions this would be a cubic growth instead, since $k \propto h \propto N^{\frac{1}{3}}$. Another obvious consequence of the sampling requirement, is that the order of LABFM used must be decreased at boundaries as no nodes are available to accurately sample the ABFs outside the computational domain.
+
 
 
 % we require a number of nodes to ensure the linear system has a solution. typically the kernel is non-trivial, so we just need one solution
 % The number of nodes required per stencil ~70 in 2D makes it expensive to calculate the weights for a given position to interpolate to. If you know beforehand where to interpolate to, this becomes cheap as it is done in preprocessing
 
-% Cannot yet show convergence information unless I code this stuff myself (which I don't want to do)
-
-% Stability?
-
-% M condition number???? (worth mentioning but not extensively)
+% values of $N_st$ are usually much larger than the numbers required for similar centrered finite difference. This is because we make no requirement of compactness is made, and we allow $N_st$ to be large to improve the accuracy and stability properties
 
 
+Provided these conditions are met, this means we can approximate any derivative we like to arbitrary order simply by preprocessing the values of $w_{i, j}$ at each node\footnote{Only provided the nodes do not move. This precludes a Lagrangian formulation for LABFM.} and evaluating $L[\phi]_i$ during the simulation as we like. The preprocessing step is crucial as it means all that has to be done is calculate the sum in \equ{eqn:labfm-L} every time a derivative of an arbitrary function $\phi$ is required at a node $i$. The computational complexity of this operation is just $\cl{O}(N_{\rm{st}})$. For a simulation of $N_{\rm{tot}}$ nodes, each with a constant stencil size of $N_{\rm{tot}}$ nodes, the cost becomes $\cl{O}(N_{\rm{tot}} N_{\rm{st}})$ to evaluate the same derivative for each node.
 
-% Ending - COST: we can do this process in any number of dimensions, although the cost scales rapidly from 2D to 3D as many more nodes x_j are contained within stencils. Usually have 70-80 nodes per stencil in 2D, making it quite expensive
-% good part is that finer geometries are easy to resolve by scattering nodes. Mention how boundaries are discretised with 5 layers of nodes for upwinded finite differencing for outgoing waves
-% Lagrangian methods are hard as above
+
+
+
+
+\subsection{Stability}
+
+% we require extra filtering on higher wavenumber inaccuracies
+
 
 
 
@@ -156,7 +161,7 @@ The subscript $m$ is used for vector components, as above, and the index $n(m)$ 
 
 
 
-\subsection{Locally One-Dimensional Inviscid (LODI)}
+\subsection{The Locally One-Dimensional Inviscid (LODI) Approximation}
 
 % Cite Thompson 1987, 1990, 1987 lectures?
 

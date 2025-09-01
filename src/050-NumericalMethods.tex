@@ -149,12 +149,12 @@ Numerical approximations to differential operators such as the above contain err
 
 
 
-\section{Navier-Stokes Characteristic Boundary Conditions (NSCBC)}
+\section{Navier-Stokes Characteristic Boundary Conditions}
 
 Alongside spatial discretisation, boundary conditions comprise one of the most important parts of any simulation code. Not least because of the modelling which is enforced, but also because of changes to a simulation code's architecture which are necessitated as a result. The \emph{Navier-Stokes Characteristic Boundary Condition} formulation represents not a specific type of boundary condition, but a sort of instruction set to be applied to whichever boundary it concerns. The method was first outlined in \cite{thompson1987TimeDependentBoundary,thompson1987LecturesSeriesComputational,thompson1990TimeDependentBoundaryConditions} for non-reacting one-dimensional flows, in what is now known as the \emph{Locally One-Dimensional Inviscid} (LODI) approximation. The \emph{Navier-Stokes Characteristic Boundary Conditions} (NSCBC) formulation \cite{poinsot1992BoundaryConditionsDirect,poinsot2005TheoreticalNumericalCombustion} was made as an extension of this to higher-dimensional, reacting flows of imperfect gases, where diffusive effects are included in extra physical conditions on top of those prescribed in the LODI case.
 
 
-\subsection{The Locally One-Dimensional Inviscid (LODI) Approximation}
+\subsection{The Locally One-Dimensional Inviscid Approximation}
 
 Any hyperbolic system can be written in the form:
 \begin{equation} \label{eqn:hyp-source}
@@ -217,7 +217,7 @@ Note that, because we have the matrix $\undt{S}^{-1}$ not $\undt{S}$, we find th
 
 
 
-\subsection{Application to Reacting Flows}
+\subsection{Application to Perfect Reacting Gases}
 
 \begin{figure}[t]
 \centering

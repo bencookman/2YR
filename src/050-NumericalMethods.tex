@@ -1,4 +1,17 @@
 
+\section{Sunset Combustion Code}
+
+
+
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.6]{assets/imgs/DNS-computational-domain.pdf}
+\caption{DNS COMPUTATIONAL DOMAIN}
+\label{fig:DNS-domain}
+\end{figure}
+
+
+
 \red{
 we use the SUNSET code to perform combustion simulations [cite]
 
@@ -129,7 +142,7 @@ Provided these conditions are met, this means we can approximate any derivative 
 
 \subsection{Operator Stability and Filtering}
 
-Numerical approximations to differential operators such as the above contain error of two different behaviours: diffusive and dispersive. The former promotes the spurious damping of the signal, and the latter results in an incorrect phase velocity $c(\tilde{k})$ for a given wavenumber mode $\tilde{k}$ in the signal. These can be seen as the real and imaginary parts of eigenvalues to the linear stability problem concerning the operator. Unsurprisingly, the amplitude of these error terms gets smaller, faster, when the order of method increases. The same is true in the case of LABFM, with the unfortunate caveat that the higher order formulations result in eigenvalues which have positive real parts for the highest wavenumbers. This corresponds to an inverted diffusion effect for the shortest wavelength inaccuracies, such that any small floating-point errors destroy the simulation after only a few time steps. The natural solution to this, is to preprocess weights $w^{\rm{HV}}_{i, j}$ for a \emph{hyperviscosity} operator $-\D^2$, $\D^3$ or $-\D^4$ and apply this hyperviscosity at the end of each time step. This results in a filter where the wavenumber modes close to and above the \emph{Nyquist} wavenumber \cite{nyquist1928CertainTopicsTelegraph} are severely damped, without affecting the broader solution comprised of lower wavenumbers. Compared to other filtering methods, such as the direct removal of high wavenumber modes via spectral Fourier analysis, this has the obvious benefit of being easily calculated under the same LABFM formulation as the other derivatives (usually first- and second-order derivatives in the case of Navier-Stokes).
+Numerical approximations to differential operators such as the above contain error of two different behaviours: diffusive and dispersive. The former promotes the spurious damping of the signal, and the latter results in an incorrect phase velocity $c(\tilde{k})$ for a given wavenumber mode $\tilde{k}$ in the solution. These can be seen as the real and imaginary parts of eigenvalues to the linear stability problem concerning the operator. Unsurprisingly, the amplitude of these error terms gets smaller, faster, when the order of method increases. The same is true in the case of LABFM, with the unfortunate caveat that the higher order formulations result in eigenvalues which have positive real parts for the highest wavenumbers. This corresponds to an inverted diffusion effect for the shortest wavelength inaccuracies, such that any small floating-point errors destroy the simulation after only a few time steps. The natural solution to this, is to preprocess weights $w^{\rm{HV}}_{i, j}$ for a \emph{hyperviscosity} operator $-\D^2$, $\D^3$ or $-\D^4$ and apply this hyperviscosity at the end of each time step. This results in a filter where the wavenumber modes close to and above the \emph{Nyquist} wavenumber \cite{nyquist1928CertainTopicsTelegraph} are severely damped, without affecting the broader solution comprised of lower wavenumbers. Compared to other filtering methods, such as the direct removal of high wavenumber modes via spectral Fourier analysis, this has the obvious benefit of being easily calculated under the same LABFM formulation as the other derivatives (usually first- and second-order derivatives in the case of Navier-Stokes).
 
 
 
@@ -140,6 +153,7 @@ Numerical approximations to differential operators such as the above contain err
 
 % Include diffusive effects
 
+% The first approximation made being for 
 
 
 \subsection{The Locally One-Dimensional Inviscid (LODI) Approximation}
@@ -151,35 +165,35 @@ Any hyperbolic system can be written in the form:
 \pdv{\und{U}}{t} + \vec{\nabla}\cdot\und{\vec{F}} + \und{B} = 0,
 \end{equation}
 where $\und{U}$ are the $N_\rm{V}$ conservative variables, $\und{\vec{F}}$ are the fluxes for each of these variables in each dimension and $\und{B}$ are source terms. Since we do not include diffusion effects, we assume that these terms are non-diffusive. % Also explain notation -> space in bold, variables underlined, matrices double underlined
-This equation is unique up to linear combinations of the conserved variables, but can be transformed into a form for the primitive variables $\und{u}$, from which the characteristics will arise:
+This equation is unique up to linear combinations of the conserved variables, but can be transformed into a form for the primitive variables $\und{V}$, from which the characteristics will arise:
 \begin{equation}
-\pdv{\und{u}}{t} + \undt{\vec{A}} \cdot \vec{\nabla} \und{u} + \und{b} = 0
+\pdv{\und{V}}{t} + \undt{\vec{A}} \cdot \vec{\nabla} \und{V} + \und{b} = 0
 \end{equation}
 where
 \begin{equation}
 P_{ij} \equiv \pdv{U_i}{u_j},
 \quad
-\vec{\Phi}_{ij} \equiv \pdv{\vec{F}_i}{u_j},
+\boldsymbol{\Phi}_{ij} \equiv \pdv{\vec{F}_i}{u_j},
 \quad
-\undt{\vec{A}} \equiv \undt{J}^{-1}\undt{\vec{\Phi}}
+\undt{\vec{A}} \equiv \undt{P}^{-1}\undt{\boldsymbol{\Phi}}
 \quad \text{and} \quad
 \und{b} \equiv \undt{{P}}^{-1}\und{B}.
 \end{equation}
-The matrix $\undt{P}$ is the Jacobian matrix, $\undt{\vec{A}}$ represents the convection of the variables due to the other variables and themselves (e.g. $(\vec{u} \cdot \vec{\nabla})\vec{u}$ in the momentum equation) and $\und{\cl{S}}$ are source terms acting on primitive variables. Using this form, we can isolate the $x$-derivatives to observe the characteristics in that direction:
+The matrix $\undt{P}$ is the Jacobian matrix, $\undt{\vec{A}}$ represents the convection of the variables due to the other variables and themselves (e.g. resulting in $(\vec{u} \cdot \vec{\nabla})\vec{u}$ in the momentum equation) and $\und{\cl{S}}$ are source terms acting on primitive variables. Using this form, we can isolate the $x$-derivatives to observe the characteristics in that direction:
 \begin{equation} \label{eqn:with_A}
-\pdv{\und{u}}{t} + \undt{A}^x \pdv{\und{u}}{x} + \und{C} = 0
+\pdv{\und{V}}{t} + \undt{A}^x \pdv{\und{V}}{x} + \und{c} = 0
 \quad \text{where, in 3D} \quad
-\und{c} \equiv \und{b} + \undt{A}^y \pdv{\und{u}}{y} + \undt{A}^z \pdv{\und{u}}{z}
+\und{c} \equiv \und{b} + \undt{A}^y \pdv{\und{V}}{y} + \undt{A}^z \pdv{\und{V}}{z}
 \quad \text{and} \quad
-\und{c} \equiv \undt{P}^{-1} \und{C}.
+\und{C} \equiv \undt{P} \und{c}.
 \end{equation}
-The statement that the system is hyperbolic is now the statement that the $N_\rm{V}$ eigenvalues $\l_m = \l_m(\und{u})$ of $\undt{A}^x$ are real and can be ordered like $\l_1 \leq \dots \leq \l_{N_\rm{V}}$. Owing to this, we consider the left-eigenvectors $\und{l}_m = \und{l}_m(\und{u})$ of $\undt{A}^x$:
+The statement that the system is hyperbolic is now the statement that the $N_\rm{V}$ eigenvalues $\l_m = \l_m(\und{V})$ of $\undt{A}^x$ are real and can be ordered like $\l_1 \leq \dots \leq \l_{N_\rm{V}}$. Owing to this, we consider the left-eigenvectors $\und{l}_m = \und{l}_m(\und{V})$ of $\undt{A}^x$:
 \begin{equation}
 \und{l}_m^T \undt{A}^x = \l_m \und{l}_m^T.
 \end{equation}
-Multiplying equation \equ{eqn:with_A} by an eigenvector we project our equation into a solution space containing only the $m$\sus{th} characteristic invariant, $J_m$, which satisfies $\dd{J_m} = \und{l}_m^T \dd{\und{u}}$:
+Multiplying equation \equ{eqn:with_A} by an eigenvector we project our equation into a solution space containing only the $m$\sus{th} characteristic invariant, $J_m$, which satisfies $\dd{J_m} = \und{l}_m^T \dd{\und{V}}$:
 \begin{boxequ} \label{eqn:single_char_prob}
-\und{l}_m^T \pdv{\und{u}}{t} + \l_m \und{l}_m^T \pdv{\und{u}}{x} + \und{l}_m^T \und{c} = 0,
+\und{l}_m^T \pdv{\und{V}}{t} + \l_m \und{l}_m^T \pdv{\und{V}}{x} + \und{l}_m^T \und{c} = 0,
 \quad \iff \quad
 \pdv{J_m}{t} + \l_m \pdv{J_m}{x} + \und{l}_m^T \und{c} = 0.
 \end{boxequ}
@@ -187,17 +201,18 @@ We notice that along any trajectory $\vec{x}_m(t)$ which satisfies $\dd{\vec{x}_
 \begin{equation}
 \dv{J_m}{t} = - \und{l}_m^T \und{c}.
 \end{equation}
-This tells gives us an equation for each characteristic of the system, but numerically $J_m$ is not so useful since it needs to be transformed back into the primitive variables anyway for a simulation. Instead we use the form of the equation in primitive or conservative variables under the transformation $\undt{A}^x = \undt{S} \undt{\L} \undt{S}^{-1}$ where $\undt{\L}$ is the diagonal matrix of eigenvalues $\L_{l m} = \l_m \d_{l m}$ and rows of the matrix $\undt{S}^{-1}$ are the left eigenvectors $\und{l}_m^T$:
-\begin{equation}
-\cl{L}_m \equiv \l_m \pdv{J_m}{x} \equiv \l_m \und{l}_m^T \pdv{\und{u}}{x},
-\quad \implies \quad
+This tells gives us an equation for each characteristic of the system, but numerically $J_m$ is not so useful since it needs to be transformed back into the primitive variables anyway for a simulation. Instead we use the form of the equation in primitive or conservative variables under the transformation $\undt{A}^x = \undt{S} \undt{\L} \undt{S}^{-1}$ where $\undt{\L}=\rm{diag}(\l_1, \dots, \l_{N_\rm{V}})$ is the diagonal matrix of eigenvalues and rows of the matrix $\undt{S}^{-1}$ are the corresponding \emph{left eigenvectors} $\und{l}_m^T$:
+\begin{gather}
+\cl{L}_m \equiv \l_m \pdv{J_m}{x} \equiv \l_m \und{l}_m^T \pdv{\und{V}}{x}, \\
+\implies \quad
 \boxed{
-\pdv{\und{u}}{t} + \undt{S} \und{\cl{L}} + \und{c} = 0
+\pdv{\und{V}}{t} + \undt{S} \und{\cl{L}} + \und{c} = 0
 \quad \text{and} \quad
 \pdv{\und{U}}{t} + \undt{P} \undt{S} \und{\cl{L}} + \und{C} = 0,
 }
-\end{equation}
-where $\und{\cl{L}} = (\cl{L}_1, \dots, \cl{L}_{N_\rm{V}})$. So each value $\cl{L}_m$ then represents the convection of the m\sus{th} characteristic wave at a point in space. The \emph{Locally One-Dimensional Inviscid} (LODI) characteristic boundary formulation \footnote{So-called as we preclude diffusive effects in any hyperbolic system of equations and we only observe characteristic waves moving over a boundary normal to a single dimension, i.e. not at a corner.} focuses on points at the boundary of a computational domain, and posits that outgoing characteristics through this boundary can be calculated as normal via upwinding, but characteristics entering the domain (such as an acoustic reflection) must instead be modelled. The key to LODI then, is that these incoming waves may be controlled by imposing their respective values of $\cl{L}_m$ at that boundary.
+\label{eqn:char-bcs-end}
+\end{gather}
+where $\und{\cl{L}} = (\cl{L}_1, \dots, \cl{L}_{N_\rm{V}})$. So each value $\cl{L}_m$ then represents the convection of the m\sus{th} characteristic wave at a point in space. The \emph{Locally One-Dimensional Inviscid} (LODI) characteristic boundary formulation\footnote{So-called as we preclude diffusive effects in any hyperbolic system of equations and we only observe characteristic waves moving over a boundary normal to a single dimension, i.e. not at a corner.} focuses on points at the boundary of a computational domain, and posits that outgoing characteristics through this boundary can be calculated as normal via upwinding, but characteristics entering the domain (such as an acoustic reflection) must instead be modelled. The key to LODI then, is that these incoming waves may be controlled by imposing their respective values of $\cl{L}_m$ at that boundary.
 
 Note that, because we have the matrix $\undt{S}^{-1}$ not $\undt{S}$, we find the flux term $\und{d} \equiv \undt{S}\und{\cl{L}}$ by solving the linear system:
 \begin{equation}
@@ -207,96 +222,116 @@ Note that, because we have the matrix $\undt{S}^{-1}$ not $\undt{S}$, we find th
 
 
 
-\subsection{Application to Combustion}
+\subsection{Application to Reacting Flows}
 
-% Change enthalpy to energy!! we just use c_v instead of c_p
-
-Controlling the characteristic waves in the inert equations with a single, inviscid, perfect gas will do a good job of how boundaries may be modelled as non-reflective for a more general mixture of viscous, reacting gases. These conservation equations are, in three-dimensions:
+Applying the LODI approximation to reacting equations first requires the form of their conservation equation. In three-dimensions, these are:
 \begin{subequations}
 \begin{alignat}{3}
 \pdv{\r}{t} &+ \vec{\nabla} \cdot (\r \vec{u}) && &&= 0 \\
-\pdv{\r \vec{u}}{t} &+ \vec{\nabla} \cdot (\r \vec{u}\otimes \vec{u} + p \bb{1}) && - \r \vec{g} &&= 0 \\
-\pdv{\r E}{t} &+ \vec{\nabla} \cdot [(\r E + p) \vec{u}] && - \r \vec{g} \cdot \vec{u} &&= 0
+\pdv{\r \vec{u}}{t} &+ \vec{\nabla} \cdot (\r \vec{u}\otimes \vec{u} + p \bb{I}) && - \r \vec{g} &&= 0 \\
+\pdv{\r e}{t} &+ \vec{\nabla} \cdot [(\r e + p) \vec{u}] && - \r \vec{g} \cdot \vec{u} &&= 0 \\
+\pdv{\r Y_\a}{t} &+ \vec{\nabla} \cdot [\r Y_\a \vec{u}] && - \dot{\w}_\a &&= 0
 \end{alignat}
 \end{subequations}
-with the algebraic equations for ideal gas and internal energy (so we ignore the constant chemical potential) for closure:
-\begin{subequations}
-\begin{align}
-p &= (\gamma - 1) \e
-\quad \text{and} \\
-\r E = \r ( E_{\rm{th}} + E_{\rm{ki}} ) &= \e + \frac{1}{2} \r \vec{u} \cdot \vec{u}.
-\end{align}
-\end{subequations}
-In this case, for $d = 2$ dimensions the vectors of conservative variables, fluxes and source terms are:
+for $\a = 1, \dots, N_{\rm{S}}$. The energy $e$ modelled here is the internal inergy rather than the total energy specified in \chap{ch:govern-eqns}. The algebraic equations for ideal gas and internal energy (so we ignore the constant chemical potential) for closure are:
 \begin{equation}
-\und{U} = \begin{pmatrix} \r \\ \r u^x \\ \r u^y \\ \r u^z \\ \r E \end{pmatrix},
-\quad
-\und{u} = \begin{pmatrix} \r \\ u^x \\ u^y \\ u^z \\ E \end{pmatrix},
-\quad
-\und{F}^x = \begin{pmatrix} \r u^x \\ \r u^x u^x + p \\ \r u^x u^y \\ \r u^x u^z \\ (\r E + p) u^x \end{pmatrix},
+\r e = \r E_{\rm{th}} + \r E_{\rm{ki}},
+\quad \text{where} \quad
+\r E_{\rm{th}} = \frac{p}{\gamma - 1}
 \quad \text{and} \quad
-\und{B} = \begin{pmatrix} 0 \\ - \r g^x \\ - \r g^y \\ - \r g^z \\ - \r \vec{g} \cdot \vec{u} \end{pmatrix}.
+\r E_{\rm{ki}} = \frac{1}{2} \r \vec{u} \cdot \vec{u}.
 \end{equation}
-Hence, defining our primitive variables as $\und{u} = (\r, u^x, u^y, u^z, p)$ we evaluate the relevant matrices:
+In this case, the vectors of conservative variables, fluxes and source terms are:
+\begin{equation}
+\und{U} = \begin{pmatrix} \r \\ \r u^x \\ \r u^y \\ \r u^z \\ \r e  \\ \r Y_1 \\ \vdots \end{pmatrix},
+\quad
+\und{V} = \begin{pmatrix} \r \\ u^x \\ u^y \\ u^z \\ e \\ Y_1 \\ \vdots \end{pmatrix},
+\quad
+\und{F}^x = \begin{pmatrix} \r u^x \\ \r u^x u^x + p \\ \r u^x u^y \\ \r u^x u^z \\ (\r e + p) u^x \\ \r Y_1 u^x \\ \vdots \end{pmatrix},
+\quad \text{and} \quad
+\und{B} = \begin{pmatrix} 0 \\ - \r g^x \\ - \r g^y \\ - \r g^z \\ - \r \vec{g} \cdot \vec{u} \\ -\dot{\w}_1 \\ \vdots \end{pmatrix}.
+\end{equation}
+Hence, we evaluate the relevant matrices:
 \begin{equation}
 \undt{P} = \begin{pmatrix}
-1 & 0 & 0 & 0 & 0  \\
-u^x & \r & 0 & 0 & 0  \\
-u^y & 0 & \r & 0 & 0  \\
-u^z & 0 & 0 & \r & 0  \\
-\frac{1}{2} \vec{u} \cdot \vec{u} & \r u^x & \r u^y & \r u^z & 1/(\g - 1)
+1   & 0  & 0 & 0 & 0 & 0 &  \\
+u^x & \r & 0 & 0 & 0 & 0 &  \\
+u^y & 0 & \r & 0 & 0 & 0 & \cdots \\
+u^z & 0 & 0 & \r & 0 & 0 &  \\
+\frac{1}{2} \vec{u} \cdot \vec{u} & \r u^x & \r u^y & \r u^z & 1/(\g - 1) & 0 & \\
+Y_1 & 0 & 0 & 0 & 0 & \r & \\
+ &  & \vdots &  &  &  & \ddots
 \end{pmatrix}
-\quad \text{so} \quad
+\end{equation}
+so
+\begin{equation}
 \undt{A}^x = \begin{pmatrix}
-u^x & \r & 0 & 0 & 0  \\
-0 & u^x & 0 & 0 & 1 / \r  \\
-0 & 0 & u^x & 0 & 0  \\
-0 & 0 & 0 & u^x & 0  \\
-0 & \g p & 0 & 0 & u^x
+u^x & \r & 0 & 0 & 0 & 0 & \\
+0 & u^x & 0 & 0 & 1 / \r & 0 & \\
+0 & 0 & u^x & 0 & 0 & 0 & \\
+0 & 0 & 0 & u^x & 0 & 0 & \\
+0 & \g p & 0 & 0 & u^x & 0 &  \\
+0 & 0 & 0 & 0 & 0 & u^x & \\
+ &  & \vdots &  &  &  & \ddots
 \end{pmatrix}
 \quad \text{and} \quad
-\und{c} = \begin{pmatrix} 0 \\ -g^x \\ -g^y \\ -g^z \\ 0 \end{pmatrix}
+\und{b} = \begin{pmatrix} 0 \\ -g^x \\ -g^y \\ -g^z \\ 0 \\ -\dot{\w}_1 / \r \\ \vdots\end{pmatrix}.
 \end{equation}
-which essentially gives us the full equations in the primitive variables, the full form of which is omitted. Considering the eigenvalue problem of $\undt{A}^x$, we have:
+This gives us the full equations in the primitive variables, the full form of which is omitted. Considering the eigenvalue problem of $\undt{A}^x$, we have:
 \begin{subequations}
 \begin{alignat}{5}
-\l_1 &= u^x - c  \qquad && \und{l}^T_1 &&= (0, -\r c, 0, 0, 1) \quad && \text{and} \quad \cl{L}_1 &&= \l_1 \left(\pdv{p}{x} - \r c \pdv{u^x}{x}\right), \\
-\l_2 &= u^x      \qquad && \und{l}^T_2 &&= (c^2, 0, 0, 0, -1)  \quad && \text{and} \quad \cl{L}_2 &&= \l_2 \left(c^2 \pdv{\r}{x} - \pdv{p}{x}\right), \\
-\l_3 &= u^x      \qquad && \und{l}^T_3 &&= (0, 0, 1, 0, 0)     \quad && \text{and} \quad \cl{L}_3 &&= \l_3 \pdv{u^y}{x}, \\
-\l_4 &= u^x      \qquad && \und{l}^T_4 &&= (0, 0, 0, 1, 0)     \quad && \text{and} \quad \cl{L}_4 &&= \l_4 \pdv{u^z}{x}, \\
-\l_5 &= u^x + c  \qquad && \und{l}^T_5 &&= (0, \r c, 0, 1)     \quad && \text{and} \quad \cl{L}_5 &&= \l_5 \left(\pdv{p}{x} + \r c \pdv{u^x}{x}\right).
+\l_1 &= u^x - c  \qquad && \und{l}^T_1 &&= (0, -\r c, 0, 0, 1, 0, \dots) \quad && \text{and} \quad \cl{L}_1 &&= \l_1 \left(\pdv{p}{x} - \r c \pdv{u^x}{x}\right), \\
+\l_2 &= u^x      \qquad && \und{l}^T_2 &&= (c^2, 0, 0, 0, -1, 0, \dots)  \quad && \text{and} \quad \cl{L}_2 &&= \l_2 \left(c^2 \pdv{\r}{x} - \pdv{p}{x}\right), \\
+\l_3 &= u^x      \qquad && \und{l}^T_3 &&= (0, 0, 1, 0, 0, 0, \dots)     \quad && \text{and} \quad \cl{L}_3 &&= \l_3 \pdv{u^y}{x}, \\
+\l_4 &= u^x      \qquad && \und{l}^T_4 &&= (0, 0, 0, 1, 0, 0, \dots)     \quad && \text{and} \quad \cl{L}_4 &&= \l_4 \pdv{u^z}{x}, \\
+\l_5 &= u^x + c  \qquad && \und{l}^T_5 &&= (0, \r c, 0, 0, 1, 0, \dots)     \quad && \text{and} \quad \cl{L}_5 &&= \l_5 \left(\pdv{p}{x} + \r c \pdv{u^x}{x}\right), \\
+\l_{5 + 1} &= u^x      \qquad && \und{l}^T_{5 + 1} &&= (0, 0, 0, 0, 0, 1, \dots)     \quad && \text{and} \quad \cl{L}_{5 + 1} &&= \l_{5 + 1} \pdv{Y_1}{x}
 \end{alignat}
 \end{subequations}
-And considering the inverse problem:
+and so on. For the inverse problem:
 \begin{subequations}
 \begin{alignat}{5}
 & \pdv{\r}{x}   &&= \frac{1}{c^2} \left[ \frac{\cl{L}_2}{\l_2} + \frac{1}{2} \left( \frac{\cl{L}_5}{\l_5} + \frac{\cl{L}_1}{\l_1} \right) \right] && \quad \text{and} \quad && d_1 &&= \frac{1}{c^2}\left[\cl{L}_2 + \frac{1}{2} \left( \cl{L}_5 + \cl{L}_1 \right) \right], \\
 & \pdv{u^x}{x} &&= \frac{1}{2 \r c}\left(\frac{\cl{L}_5}{\l_5} - \frac{\cl{L}_1}{\l_1}\right) && \quad \text{and} \quad && d_2 &&= \frac{1}{2 \r c}(\cl{L}_5 - \cl{L}_1), \\
 & \pdv{u^y}{x} &&= \frac{\cl{L}_3}{\l_3} && \quad \text{and} \quad && d_3 &&= \cl{L}_3, \\
 & \pdv{u^z}{x} &&= \frac{\cl{L}_4}{\l_4} && \quad \text{and} \quad && d_4 &&= \cl{L}_4, \\
-& \pdv{p}{x}   &&= \frac{1}{2}\left(\frac{\cl{L}_5}{\l_5} + \frac{\cl{L}_1}{\l_1}\right) && \quad \text{and} \quad && d_5 &&= \frac{1}{2}(\cl{L}_5 + \cl{L}_1).
+& \pdv{p}{x}   &&= \frac{1}{2}\left(\frac{\cl{L}_5}{\l_5} + \frac{\cl{L}_1}{\l_1}\right) && \quad \text{and} \quad && d_5 &&= \frac{1}{2}(\cl{L}_5 + \cl{L}_1), \\
+& \pdv{Y_1}{x} &&= \frac{\cl{L}_{5 + 1}}{\l_{5 + 1}} && \quad \text{and} \quad && d_{5 + 1} &&= \cl{L}_{5 + 1}
 \end{alignat}
 \end{subequations}
-Evidently, the eigenvalues $\l_1$ and $\l_5$ correspond to the speed of sound but since positive $x$ points into the domain, only one of these corresponds to an acoustic wave entering the domain.
+and so on. Evidently, the eigenvalues $\l_1$ and $\l_5$ correspond to the speed of sound but since positive $x$ points into the domain, only one of these corresponds to an acoustic wave entering the domain.
+
+
+\subsection{Non-Reflecting Subsonic Boundaries}
+
+\subsubsection{Outflows}
+
+The first non-reflective boundaries under this formulation come from \cite{thompson1987TimeDependentBoundary} in the case of the one-dimensional, subsonic, inviscid, non-isothermal Euler equations (the equations above if we lower the dimension of $\vec{x}$ and $\vec{u}$ and drop the mass fraction equations). This was promptly extended to the set of equations shown above in \cite{poinsot1992BoundaryConditionsDirect} for reacting flows. In both cases, a simple condition for acoustically non-reflecting boundaries was found by requiring that the Riemann invariant corresponding to the entering acoustic wave remain constant under the assumption that transverse terms can be neglected. At a subsonic outflow boundary on the left end of the computational domain, where $0 < u^x < c$, this means the invariant $J_5$ should remain constant at the boundary, provided transverse derivatives vanish. Equivalently, we require
+\begin{equation}
+0 = \und{l}^T_5 \pdv{\und{V}}{t} = \left( \pdv{p}{t} + \r c \pdv{u^x}{t} \right)
+\end{equation}
+given that, from equation \equ{eqn:single_char_prob}:
+\begin{equation}
+0 = \und{l}^T_5 \pdv{\und{V}}{t} + \cl{L}_5 + \und{l}^T_5 \und{b} = \left( \pdv{p}{t} + \r c \pdv{u^x}{t} \right) + \cl{L}_5 - \r c g^x.
+\end{equation}
+So we must enforce $\cl{L}_5 = \r c g^x$. Similarly, a subsonic outflow at the right end of the computational domain requires $\cl{L}_1 = - \r c g^x$.
+
+\subsubsection{Inflows}
+
+For subsonic outflows, regardless which side of the domain they reside, the only characteristic wave which enters the domain are either $\cl{L}_5$ for left-side boundaries and $\cl{L}_1$ for right-side boundaries. All the other $\cl{L}_m$ values required in \equ{eqn:char-bcs-end} may be found via the one-sided derivatives mentioned above
+
+
+
+\subsection{Extra Boundary Considerations}
+
+% What specifically is used in the code
+% - Diffusive conditions (zero normal flux...) [Sutherland and Kennedy]
+% - Yoo and Im tangential convection term
+% - P controlled inflow/outflow
+% - Wall boundaries
 
 
 
 
-% cite 1990 paper
 
 
-
-
-\section{Sunset Combustion Code}
-
-
-
-
-\begin{figure}[t]
-\centering
-\includegraphics[scale=0.6]{assets/imgs/DNS-computational-domain.pdf}
-\caption{DNS COMPUTATIONAL DOMAIN}
-\label{fig:DNS-domain}
-\end{figure}
-    
-    

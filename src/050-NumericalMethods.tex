@@ -240,7 +240,7 @@ Applying the LODI approximation to reacting equations first requires the form of
 \pdv{\r Y_\a}{t} &+ \vec{\nabla} \cdot [\r Y_\a \vec{u}] && - \dot{\w}_\a &&= 0
 \end{alignat}
 \end{subequations}
-for $\a = 1, \dots, N_{\rm{S}}$. The energy $e$ modelled here is the internal inergy rather than the total energy specified in \chap{ch:govern-eqns}. The algebraic equations for ideal gas and internal energy (so we ignore the constant chemical potential) for closure are:
+for $\a = 1, \dots, N_{\rm{S}}$. The energy $e$ modelled here is the internal energy \emph{of a perfect gas} rather than the total energy specified in \chap{ch:govern-eqns}. The algebraic equations for ideal gas and internal energy (so we ignore the constant chemical potential) for closure are:
 \begin{equation}
 \r e = \r E_{\rm{th}} + \r E_{\rm{ki}},
 \quad \text{where} \quad
@@ -325,7 +325,7 @@ So we must enforce $\cl{L}_5 = \r c g^x$. Similarly, a subsonic outflow at the r
 
 \subsubsection{Inflows}
 
-For subsonic outflows, regardless which side of the domain they reside, the only characteristic wave which enters the domain are either $\cl{L}_5$ for left-side boundaries and $\cl{L}_1$ for right-side boundaries, as shown in \fig{fig:NSCBC}. All the other $\cl{L}_m$ values required in \equ{eqn:char-bcs-end} may be found via the one-sided derivatives mentioned above. For inflows the situation flips on its head. We instead have access to \emph{only} $\cl{L}_1$ for left-side boundaries and $\cl{L}_5$ for right-side boundaries and all others represent waves which must be modelled as we have no information on in the interior and boundary of the domain.
+For subsonic outflows, regardless which side of the domain they reside, the only characteristic wave which enters the domain are either $\cl{L}_5$ for left-side boundaries and $\cl{L}_1$ for right-side boundaries, as shown in \fig{fig:NSCBC}. All the other $\cl{L}_m$ values required in \equ{eqn:char-bcs-end} may be found via the one-sided derivatives mentioned above. For inflows the situation flips on its head. We instead have access to \emph{only} $\cl{L}_1$ for left-side boundaries and $\cl{L}_5$ for right-side boundaries and all others represent waves which must be modelled as we have no information on in the interior and boundary of the domain. Presuming our inflow is on the left end of the computational domain, then $\cl{L}_1$ may be found from the interior, as above, $\cl{L}_5$ may be found using the acoustic non-reflection condition for the outflows, also as above, and the rest must model some sensible physics on waves entering the domain. For example, the entrance of shear waves into the domain are given by $\cl{L}_{3}$ and $\cl{L}_{4}$, but may be removed simply by assigning $\cl{L}_{3} = g^y$ and $\cl{L}_{4} = g^z$. The entropy and species density waves $\cl{L}_{2}$ and $\cl{L}_{5 + \a}$ are assigned zero as the corresponding source terms in $\und{b}$ vanish.
 
 
 

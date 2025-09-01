@@ -212,7 +212,7 @@ This tells gives us an equation for each characteristic of the system, but numer
 }
 \label{eqn:char-bcs-end}
 \end{gather}
-where $\und{\cl{L}} = (\cl{L}_1, \dots, \cl{L}_{N_\rm{V}})$. So each value $\cl{L}_m$ then represents the convection of the m\sus{th} characteristic wave at a point in space. The \emph{Locally One-Dimensional Inviscid} (LODI) characteristic boundary formulation\footnote{So-called as we preclude diffusive effects in any hyperbolic system of equations and we only observe characteristic waves moving over a boundary normal to a single dimension, i.e. not at a corner.} focuses on points at the boundary of a computational domain, and posits that outgoing characteristics through this boundary can be calculated as normal via upwinding, but characteristics entering the domain (such as an acoustic reflection) must instead be modelled. The key to LODI then, is that these incoming waves may be controlled by imposing their respective values of $\cl{L}_m$ at that boundary.
+where $\und{\cl{L}} = (\cl{L}_1, \dots, \cl{L}_{N_\rm{V}})$. So each value $\cl{L}_m$ then represents the convection of the m\sus{th} characteristic wave at a point in space. The \emph{Locally One-Dimensional Inviscid} (LODI) characteristic boundary formulation\footnote{So-called as we preclude diffusive effects in any hyperbolic system of equations and we only observe characteristic waves moving over a boundary normal to a single dimension, i.e. not at a corner.} focuses on points at the boundary of a computational domain, and posits that outgoing characteristics through this boundary can be calculated as normal using one-sided derivatives -- which are innately upwinded -- but characteristics entering the domain, such as an acoustic reflection, must instead be modelled. The key to LODI then, is that these incoming waves may be controlled by imposing their respective values of $\cl{L}_m$ at that boundary.
 
 Note that, because we have the matrix $\undt{S}^{-1}$ not $\undt{S}$, we find the flux term $\und{d} \equiv \undt{S}\und{\cl{L}}$ by solving the linear system:
 \begin{equation}
@@ -223,6 +223,13 @@ Note that, because we have the matrix $\undt{S}^{-1}$ not $\undt{S}$, we find th
 
 
 \subsection{Application to Reacting Flows}
+
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.65]{example-image-a}
+\caption{MANDATORY NSCBC DIAGRAM}
+\label{fig:NSCBC}
+\end{figure}
 
 Applying the LODI approximation to reacting equations first requires the form of their conservation equation. In three-dimensions, these are:
 \begin{subequations}
@@ -318,7 +325,8 @@ So we must enforce $\cl{L}_5 = \r c g^x$. Similarly, a subsonic outflow at the r
 
 \subsubsection{Inflows}
 
-For subsonic outflows, regardless which side of the domain they reside, the only characteristic wave which enters the domain are either $\cl{L}_5$ for left-side boundaries and $\cl{L}_1$ for right-side boundaries. All the other $\cl{L}_m$ values required in \equ{eqn:char-bcs-end} may be found via the one-sided derivatives mentioned above
+For subsonic outflows, regardless which side of the domain they reside, the only characteristic wave which enters the domain are either $\cl{L}_5$ for left-side boundaries and $\cl{L}_1$ for right-side boundaries, as shown in \fig{fig:NSCBC}. All the other $\cl{L}_m$ values required in \equ{eqn:char-bcs-end} may be found via the one-sided derivatives mentioned above. For inflows the situation flips on its head. We instead have access to \emph{only} $\cl{L}_1$ for left-side boundaries and $\cl{L}_5$ for right-side boundaries and all others represent waves which must be modelled as we have no information on in the interior and boundary of the domain.
+
 
 
 

@@ -2,8 +2,7 @@
 
 For the simulations performed in the remainder of this report, we use the \emph{Scalable Unstructured Node-SET} (SUNSET) code \cite{king2024SunsetFlamesDNSCode,king2024MeshFreeFrameworkHighOrdera}, to perform DNS of the governing equations (described in \chap{ch:govern-eqns}) with high accuracy in domains of arbitrary complex geometries and highly variable node densities. That it is DNS allows us to simulate turbulent combustion without requiring any model for the subgrid-scale vortices present in turbulent flows. For the simulations performed in \chap{ch:results} we actually simulate laminar, not turbulent flows, but the simulation code nevertheless provides high accuracy discretisations such that discretisation error is reliably minimised. The method used to this end is the \emph{Local Anisotropic Basis Function Method} (LABFM), and is explained thoroughly in the following section. Boundary conditions are provided via the \emph{Navier-Stokes Characteristic Boundary Conditions} (NSCBC) formalism, and are detailed in \sect{sec:NSCBC}.
 
-
-Time integration makes use of the explicit Runge-Kutta scheme denoted as RK3(2)4[2R+]C under the classification of \cite{kennedy2000LowStorageExplicitRunge}, which is a third order, low storage (only requiring two or three registers per field per node), four step method in time with embedded second order error estimation. Even under turbulent combustion, error accumulated in time stems primarily from spatial detail (such as thin reacting zones, small Kolmogorov vorticies etc.) rather than temporal dynamics (such as the vortex energy cascade, acoustics and diffusion). Thus, a third order error correcting scheme is suitable and our focus remains on the discretisation scheme used.
+Time integration makes use of the explicit Runge-Kutta scheme denoted as RK3(2)4[2R+]C under the classification of \cite{kennedy2000LowStorageExplicitRunge}, which is a third order, low storage (only requiring two or three registers per field per node), four step method in time with embedded second order error estimation. Even under turbulent combustion, error accumulated in time stems primarily from spatial detail (such as thin reacting zones, small Kolmogorov vortices etc.) rather than temporal dynamics (such as the vortex energy cascade, acoustics and diffusion). Thus, a third order error correcting scheme is suitable and our focus remains on the discretisation scheme used.
 
 To ensure the stability of numerical solution, time steps $\d t$ are chosen dynamically. Specifically, such that the fastest travelling information in the solution may travel only $\cl{O}(\d x)$ where $\d x$ is the discretisation length scale \cite{courant1928UeberPartiellenDifferenzengleichungen}. Considering only the travelling of acoustic waves and diffusion terms through a computational domain of nodes $\vec{x}_i$ for $i \in \cl{I}$:
 \begin{equation} \label{eqn:dt-stab}
@@ -17,19 +16,7 @@ where a subscript $i$ represents the value of that field at node $\vec{x}_i$. Va
 \end{equation}
 and the constants $C_\rm{aco}$, $C_\rm{mom}$, $C_\rm{sp}$ and $C_\rm{th}$ are determined separately by the stability of time integrator.
 
-
-
-
-% time integration is done using RK... \cite{}
-% Time steps are dynamic and based on the maximum allowed time step from the cfl and parabolic conditions (copy from 1YR)
-
-% Parallelism is very effectively included via domain decomposition, exploiting the local nature of the discretisation method 
-
-
-
-
-
-
+Parallelism is primarily implemented via domain decomposition, exploiting the local nature of the discretisation method by splitting the domain into $N_{\rm{procs}}$ smaller sub-domains used by each of the $N_{\rm{procs}}$ processors. Under the architecture of a distributed system, each processor stores data of the nodes in its subdomain and information is passed between processors via the MPI \cite{walker1996MPIStandardMessage} standard where needed. Load balancing is achieved simply by ensuring the number of nodes per processor is roughly the same. Due to the size of stencils required by LABFM, there is a minimum size of $\cl{O}(1000)$ nodes per processor, meaning there is a practical maximum number of processors which may be used to parallelise a given discretisation of the computational domain.
 
 
 

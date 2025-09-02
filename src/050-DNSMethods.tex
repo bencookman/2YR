@@ -1,29 +1,32 @@
 
-\section{Sunset Combustion Code}
+\section{Scalable Unstructured Node-SET Combustion Code}
 
+For the simulations performed in the remainder of this report, we use the \emph{Scalable Unstructured Node-SET} (SUNSET) DNS code \cite{king2024SunsetFlamesDNSCode,king2024MeshFreeFrameworkHighOrdera}, which allows us to simulate the equations from chapter \chap{ch:govern-eqns} with high accuracy in domains of arbitrary complex geometries and highly variable node densities. That it is DNS allows us to simulate turbulent combustion without requiring any model for the subgrid-scale vortices present in turbulent flows. For the simulations performed in \chap{ch:results} we actually simulate laminar, not turbulent flows, but the simulation code nevertheless provides high accuracy discretisations such that discretisation error is reliably minimised. The method used to this end is the \emph{Local Anisotropic Basis Function Method} (LABFM), and is explained thoroughly in the following section. Boundary conditions are provided via the \emph{Navier-Stokes Characteristic Boundary Conditions} (NSCBC) formalism, and are detailed in \sect{sec:NSCBC}.
 
-\cite{king2024SunsetFlamesDNSCode,king2024MeshFreeFrameworkHighOrdera}
+% Boundary conditions are provided through the NSCBC formulation and is detailed in section \sect{}
 
-% 
+% time integration is done using RK... \cite{}
+% Time steps are dynamic and based on the maximum allowed time step from the cfl and parabolic conditions (copy from 1YR)
 
-
-\red{
-we use the SUNSET code to perform combustion simulations [cite]
-
-here are explanations of the methods used therein
-}
+% Parallelism is very effectively included via domain decomposition, exploiting the local nature of the discretisation method 
 
 
 
 
-\section{The Local Anisotropic Basis Function Method}
 
-The \emph{Local Anisotropic Basis Function Method} (LABFM) \cite{king2024MeshFreeFrameworkHighOrder, king2020HighOrderDifference, king2024MeshFreeFrameworkHighOrdera, king2022HighOrderSimulationsIsothermal, king2024SunsetFlamesDNSCode, broadley2025HighorderMeshfreeDirect, starepravo2025CanNeuralNetworks} is a high order spatial method used particularly in the computation of fluid flows. It allows for the calculation of arbitrary order approximations to spatial derivatives with arbitrary orders of accuracy, all on unstructured, mesh-free node sets. In keeping with the tradition set forth in prior methods (e.g. finite differences), polynomial interpolation is used as a first step before making derivative approximations. Specifically, we choose to set out the method in the context of making a high order interpolation based off finitely many discrete function values $\phi_j$, before extending this to high-order derivatives, where further assumptions can be made to simplify derivation
+
+
+
+
+
+\section{The Local Anisotropic Basis Function Method (LABFM)}
+
+LABFM \cite{king2024MeshFreeFrameworkHighOrder, king2020HighOrderDifference, king2024MeshFreeFrameworkHighOrdera, king2022HighOrderSimulationsIsothermal, king2024SunsetFlamesDNSCode, broadley2025HighorderMeshfreeDirect, starepravo2025CanNeuralNetworks} is a high order spatial method used particularly in the computation of fluid flows. It allows for the calculation of arbitrary order approximations to spatial derivatives with arbitrary orders of accuracy, all on unstructured, mesh-free node sets. In keeping with the tradition set forth in prior methods (e.g. finite differences), polynomial interpolation is used as a first step before making derivative approximations. Specifically, we choose to set out the method in the context of making a high order interpolation based off finitely many discrete function values $\phi_j$, before extending this to high-order derivatives, where further assumptions can be made to simplify derivation
 
 
 \subsection{High-Order Interpolations}
 
-Consider a location $\vec{x}$ surrounded locally by finitely many nodes $\vec{x}_j \in \cl{S}(\vec{x})$ which are enumerated by $j \in \cl{N}(\vec{x})$, where $\abs{\vec{x} - \vec{x}_j} < h(\vec{x})$. Assume the function $\phi = \phi(\vec{x})$, which is only known at the points $\phi_j = \phi(\vec{x}_j)$, is \emph{smooth enough}.\footnote{Such that as many derivatives of $\phi$ as are used in the derivation below are available to us.} Then, we express the interpolated value $\phi(\vec{x})$ as a linear combination of the surrounding values $\phi_j$:
+Consider a location $\vec{x}$ surrounded locally by finitely many nodes $\vec{x}_j \in \cl{S}(\vec{x})$ which are enumerated by $j \in \cl{N}(\vec{x})$, where $\abs{\vec{x} - \vec{x}_j} < h(\vec{x})$ for all $j$. Assume the function $\phi = \phi(\vec{x})$, which is only known at the points $\phi_j = \phi(\vec{x}_j)$, is \emph{smooth enough}.\footnote{Such that as many derivatives of $\phi$ as are used in the derivation below are available to us.} Then, we express the interpolated value $\phi(\vec{x})$ as a linear combination of the surrounding values $\phi_j$:
 \begin{equation} \label{eqn:L}
 L^{\rm{int}}[\phi](\vec{x}) \equiv \sum_{j \in \cl{N}(\vec{x})} \phi_j w^{\rm{int}}(\vec{x}, \vec{x}_j) \approx \phi(\vec{x}).
 \end{equation}
@@ -146,9 +149,9 @@ Numerical approximations to differential operators such as the above contain err
 
 
 
-\section{Navier-Stokes Characteristic Boundary Conditions}
+\section{Navier-Stokes Characteristic Boundary Conditions (NSCBC)} \label{sec:NSCBC}
 
-Alongside spatial discretisation, boundary conditions comprise one of the most important parts of any simulation code. Not least because of the modelling which is enforced, but also because of changes to a simulation code's architecture which are necessitated as a result. The \emph{Navier-Stokes Characteristic Boundary Condition} formulation represents not a specific type of boundary condition, but a sort of instruction set to be applied to whichever boundary it concerns. The method was first outlined in \cite{thompson1987TimeDependentBoundary,thompson1987LecturesSeriesComputational,thompson1990TimeDependentBoundaryConditions} for non-reacting one-dimensional flows, in what is now known as the \emph{Locally One-Dimensional Inviscid} (LODI) approximation. The \emph{Navier-Stokes Characteristic Boundary Conditions} (NSCBC) formulation \cite{poinsot1992BoundaryConditionsDirect,poinsot2005TheoreticalNumericalCombustion} was made as an extension of this to higher-dimensional, reacting flows of imperfect gases, where diffusive effects are included in extra physical conditions on top of those prescribed in the LODI case.
+Alongside spatial discretisation, boundary conditions comprise one of the most important parts of any simulation code. Not least because of the modelling which is enforced, but also because of changes to a simulation code's architecture which are necessitated as a result. The NSCBC \cite{poinsot1992BoundaryConditionsDirect,poinsot2005TheoreticalNumericalCombustion} formulation represents not a specific type of boundary condition, but a sort of instruction set to be applied to whichever boundary it concerns. The method was first outlined in \cite{thompson1987TimeDependentBoundary,thompson1987LecturesSeriesComputational,thompson1990TimeDependentBoundaryConditions} for non-reacting one-dimensional flows, in what is now known as the \emph{Locally One-Dimensional Inviscid} (LODI) approximation. The NSCBC formulation was developed as an extension of this to higher-dimensional, reacting flows of imperfect gases, where diffusive effects are included in extra physical conditions on top of those prescribed in the LODI case.
 
 
 \subsection{The Locally One-Dimensional Inviscid Approximation}

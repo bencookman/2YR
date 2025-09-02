@@ -2,14 +2,9 @@
 \section{Sunset Combustion Code}
 
 
+\cite{king2024SunsetFlamesDNSCode,king2024MeshFreeFrameworkHighOrdera}
 
-\begin{figure}[t]
-\centering
-\includegraphics[scale=0.6]{assets/imgs/DNS-computational-domain.pdf}
-\caption{DNS COMPUTATIONAL DOMAIN}
-\label{fig:DNS-domain}
-\end{figure}
-
+% 
 
 
 \red{
@@ -19,7 +14,9 @@ here are explanations of the methods used therein
 }
 
 
-\section{LABFM}
+
+
+\section{The Local Anisotropic Basis Function Method}
 
 The \emph{Local Anisotropic Basis Function Method} (LABFM) \cite{king2024MeshFreeFrameworkHighOrder, king2020HighOrderDifference, king2024MeshfreeFrameworkHighorder, king2022HighorderSimulationsIsothermal, king2024SunsetFlamesDNSCode, broadley2025HighorderMeshfreeDirect, starepravo2025CanNeuralNetworks} is a high order spatial method used particularly in the computation of fluid flows. It allows for the calculation of arbitrary order approximations to spatial derivatives with arbitrary orders of accuracy, all on unstructured, mesh-free node sets. In keeping with the tradition set forth in prior methods (e.g. finite differences), polynomial interpolation is used as a first step before making derivative approximations. Specifically, we choose to set out the method in the context of making a high order interpolation based off finitely many discrete function values $\phi_j$, before extending this to high-order derivatives, where further assumptions can be made to simplify derivation
 
@@ -221,8 +218,8 @@ Note that, because we have the matrix $\undt{S}^{-1}$ not $\undt{S}$, we find th
 
 \begin{figure}[t]
 \centering
-\includegraphics[scale=0.65]{example-image-a}
-\caption{MANDATORY NSCBC DIAGRAM}
+\includegraphics[scale=0.6]{assets/imgs/NSCBC-L.pdf}
+\caption{Diagram of $\cl{L}_m$ values for a three-dimensional computational domain simulating a reacting flow. The direction and colour of arrows signifies the direction and strength of the corresponding wave speed $\l_m$.}
 \label{fig:NSCBC}
 \end{figure}
 
@@ -235,7 +232,7 @@ The LODI approximation of the governing equations of perfect, reacting gases fir
 \pdv{\r Y_\a}{t} &+ \vec{\nabla} \cdot [\r Y_\a \vec{u}] && - \dot{\w}_\a &&= 0
 \end{alignat}
 \end{subequations}
-for $\a = 1, \dots, N_{\rm{S}}$. The energy $e$ modelled here is the \emph{internal energy of a perfect gas} rather than the total energy specified in \chap{ch:govern-eqns}. The algebraic equations for internal energy and pressure are:
+for $\a = 1, \dots, N_{\rm{S}}$. The energy $e$ modelled here is the \emph{internal energy of a perfect gas} rather than the total energy specified in \chap{ch:govern-eqns}. The algebraic equations for internal energy and pressure are, in three-dimensions:
 \begin{equation}
 \r e = \r E_{\rm{th}} + \r E_{\rm{ki}},
 \quad \text{where} \quad

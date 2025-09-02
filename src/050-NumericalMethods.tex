@@ -18,7 +18,7 @@ here are explanations of the methods used therein
 
 \section{The Local Anisotropic Basis Function Method}
 
-The \emph{Local Anisotropic Basis Function Method} (LABFM) \cite{king2024MeshFreeFrameworkHighOrder, king2020HighOrderDifference, king2024MeshfreeFrameworkHighorder, king2022HighorderSimulationsIsothermal, king2024SunsetFlamesDNSCode, broadley2025HighorderMeshfreeDirect, starepravo2025CanNeuralNetworks} is a high order spatial method used particularly in the computation of fluid flows. It allows for the calculation of arbitrary order approximations to spatial derivatives with arbitrary orders of accuracy, all on unstructured, mesh-free node sets. In keeping with the tradition set forth in prior methods (e.g. finite differences), polynomial interpolation is used as a first step before making derivative approximations. Specifically, we choose to set out the method in the context of making a high order interpolation based off finitely many discrete function values $\phi_j$, before extending this to high-order derivatives, where further assumptions can be made to simplify derivation
+The \emph{Local Anisotropic Basis Function Method} (LABFM) \cite{king2024MeshFreeFrameworkHighOrder, king2020HighOrderDifference, king2024MeshFreeFrameworkHighOrdera, king2022HighorderSimulationsIsothermal, king2024SunsetFlamesDNSCode, broadley2025HighorderMeshfreeDirect, starepravo2025CanNeuralNetworks} is a high order spatial method used particularly in the computation of fluid flows. It allows for the calculation of arbitrary order approximations to spatial derivatives with arbitrary orders of accuracy, all on unstructured, mesh-free node sets. In keeping with the tradition set forth in prior methods (e.g. finite differences), polynomial interpolation is used as a first step before making derivative approximations. Specifically, we choose to set out the method in the context of making a high order interpolation based off finitely many discrete function values $\phi_j$, before extending this to high-order derivatives, where further assumptions can be made to simplify derivation
 
 
 \subsection{High-Order Interpolations}
@@ -67,7 +67,7 @@ What's left is to find the weights of $w^{\rm{int}}$ for any point $\vec{x}$ and
 \begin{equation}
 w^{\rm{int}}(\vec{x}, \vec{x}_j) = \vv{W}^k(\vec{x}_j - \vec{x}) \cdot \vv{\Psi}^{\rm{int}, k}(\vec{x})
 \end{equation}
-where the anisotropy is seen in the dependence of $\vv{W}^k$ on $(\vec{x}_j - \vec{x})$ rather than $|\vec{x}_j - \vec{x}|$ (contrasting to the radial basis function, RBF, method). Assuming that $\vv{W}^k$ comprises some suitable \emph{anisotropic basis functions} (ABFs) \cite{king2022HighorderSimulationsIsothermal}, we must find the vector of weights $\vv{\Psi}^{\rm{int}, k}(\vec{x})$. This is done by substituting the new form into the vector of moments:
+where the anisotropy is seen in the dependence of $\vv{W}^k$ on $(\vec{x}_j - \vec{x})$ rather than $|\vec{x}_j - \vec{x}|$ (contrasting to the radial basis function, RBF, method). Assuming that $\vv{W}^k$ comprises some suitable \emph{anisotropic basis functions} (ABFs) \cite{king2022HighOrderSimulationsIsothermal}, we must find the vector of weights $\vv{\Psi}^{\rm{int}, k}(\vec{x})$. This is done by substituting the new form into the vector of moments:
 \begin{align}
 \vv{C}^{\rm{int}, k}
 \approx \vv{B}^{\rm{int}, k}(\vec{x})

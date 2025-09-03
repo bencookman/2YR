@@ -44,7 +44,7 @@
 % \usepackage{MnSymbol}
 \usepackage{accents}
 \usepackage[super]{nth}
-\usepackage{alphabeta}  % Enter greek characters with unicode characters! α, β etc.
+\usepackage{unicode-math}  % Enter greek characters with unicode characters! α, β etc.
 % \usepackage[T1,T2A]{fontenc}
 % \usepackage[english, greek]{babel}
 \usepackage{textalpha}
@@ -104,29 +104,29 @@
 \newcommand{\pink}[1]{\colorlet{saved-pink}{.}\color{CarnationPink}#1\color{saved-pink}}
 
 
-\renewcommand{\a}{\alpha}
-\renewcommand{\b}{\beta}
-\newcommand{\g}{\gamma}
-\renewcommand{\d}{\delta}
-\newcommand{\e}{\epsilon}
-\newcommand{\z}{\zeta}
-\renewcommand{\th}{\theta}
-\renewcommand{\i}{\iota}
-\renewcommand{\k}{\kappa}
-\renewcommand{\l}{\lambda}
-\renewcommand{\r}{\rho}
-\renewcommand{\t}{\tau}
-\newcommand{\s}{\sigma}
-\renewcommand{\u}{\upsilon}
-\renewcommand{\r}{\rho}
-\newcommand{\vr}{\varrho}
-\newcommand{\w}{\omega}
-\newcommand{\f}{\varphi}
-\renewcommand{\L}{\Lambda}
-\newcommand{\G}{\Gamma}
-\newcommand{\D}{\Delta}
-\newcommand{\Th}{\Theta}
-\newcommand{\W}{\Omega}
+% \renewcommand{α}{\alpha}
+% \renewcommand{β}{\beta}
+% \newcommand{γ}{\gamma}
+% \renewcommand{δ}{\delta}
+% \newcommand{\e}{\epsilon}
+% \newcommand{\z}{\zeta}
+% \renewcommand{\th}{\theta}
+% \renewcommand{\i}{\iota}
+% \renewcommand{\k}{\kappa}
+% \renewcommand{λ}{\lambda}
+% \renewcommand{ρ}{\rho}
+% \renewcommand{\t}{\tau}
+% \newcommand{\s}{\sigma}
+% \renewcommand{\u}{\upsilon}
+% \renewcommand{ρ}{\rho}
+% \newcommand{\vr}{\varrho}
+% \newcommand{ω}{\omega}
+% \newcommand{\f}{\varphi}
+% \renewcommand{Λ}{\Lambda}
+% \newcommand{\G}{\Gamma}
+% \newcommand{Δ}{\Delta}
+% \newcommand{\Th}{\Theta}
+% \newcommand{Ω}{\Omega}
 
 \newcommand{\fa}{\forall\:}
 \newcommand{\fe}{\exists\:}
@@ -146,7 +146,6 @@
 \newcommand{\rhs}{\rm{RHS}}
 
 \renewcommand{\vec}[1]{\mathbf{#1}}
-\newcommand{\lap}{\D}
 
 \def\stacktype{S}
 \newcommand{\hvec}[1]{\stackon[-0.5pt]{#1}{\scaleobj{0.9}{\rightharpoonup}}}
@@ -175,7 +174,7 @@
 
 \newcommand{\mDv}[1]{\frac{\mathrm{D}}{\mathrm{D} #1}}
 \newcommand{\mdv}[2]{\frac{\mathrm{D} #1}{\mathrm{D} #2}}
-\newcommand{\gbar}{\bar\g}
+\newcommand{\gbar}{\barγ}
 
 \newcommand{\tang}{\parallel}
 

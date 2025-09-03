@@ -3,20 +3,60 @@
 \subsection{Thermoacoustic Instability}
 
 
-Combustion for engineering applications typically happens in systems of chambers, connected by long ducts. Although the chemical and hydrodynamic scales remain relatively short, and are localised to specific areas, e.g. the combustion chamber, acoustics travel throughout the system without significant damping due to the acoustically reflective materials used. Hence, the dominant acoustic eigenmodes of a system are therefore free to interact with the flame as they please. The resulting thermoacoustic instabilities are classed as a form of chamber instability due to the reliance of the flame's spontaneous acoustics on specific geometries. The effect of thermoacoustics was first noticed in \cite{mallard1883RecherchesExperimentalesTheoriques}, where it was observed that flames can produce their own acoustic oscillations. Following this, \cite{rayleigh1896TheorySound} introduced a theoretical condition for a \emph{primary thermoacoustic instability}, so called the \emph{Rayleigh criterion}, where fluctuations in pressure and heat release from the flame are amplified whenever they are in phase. To explain this in more detail, periodic changes to pressure are coupled to changes in acoustic velocity. This has a convective effect on the shape of the curved, hydrodynamically unstable \cite{darrieus1945PropagationFrontFlamme,landau1944TheorySlowCombustion,matalon2018DarrieusLandauInstability} flames, resulting in an oscillation of the total heat release. This causes further oscillations to the radiated acoustic pressure from the flame, which closes this feedback mechanism. The primary thermoacoustic instability can, hence, only occur when the oscillating pressure around the flames results in heat release oscillations which add to the acoustic pressure amplitude. Mathematically, instability is triggered whenever:
+Combustion for engineering applications typically happens in systems of chambers, connected by long ducts. Although the chemical and hydrodynamic scales remain relatively short, and are localised to specific areas, e.g. the combustion chamber, acoustics travel throughout the system without significant damping due to the acoustically reflective materials used. Hence, the dominant acoustic eigenmodes of a system are therefore free to interact with the flame as they please. The resulting \emph{thermoacoustic} (TA) instabilities are classed as a form of chamber instability due to the reliance of the flame's spontaneous acoustics on specific geometries. The effect of thermoacoustics was first noticed in \cite{mallard1883RecherchesExperimentalesTheoriques}, where it was observed that flames can produce their own acoustic oscillations. Following this, \cite{rayleigh1896TheorySound} introduced a theoretical condition for a \emph{primary} TA instability, so called the \emph{Rayleigh criterion}, where fluctuations in pressure and heat release from the flame are amplified whenever they are in phase. To explain this in more detail, periodic changes to pressure are coupled to changes in acoustic velocity. This has a convective effect on the shape of the curved, hydrodynamically unstable \cite{darrieus1945PropagationFrontFlamme,landau1944TheorySlowCombustion,matalon2018DarrieusLandauInstability} flames, resulting in an oscillation of the total heat release. This causes further oscillations to the radiated acoustic pressure from the flame, which closes this feedback mechanism. The primary TA instability can, hence, only occur when the oscillating pressure around the flames results in heat release oscillations which add to the acoustic pressure amplitude. Mathematically, instability is triggered whenever:
 \begin{equation}
 \rm{RI} \equiv \oint p' Q' \dd{t} > 0
 \end{equation}
 where $\rm{RI}$ is the \emph{Rayleigh Index}, $p'$ and $Q'$ represent fluctuations in the pressure and total heat release, respectively. The closed integral sign represents the integral over a single of the above mentioned periods. This statement translates to the statement that $p'$ and $Q'$ must be in phase with one another for instability to occur. This phase is controlled by the acoustics of the combustion chamber itself so small changes to combustor system's geometry can result in large qualitative changes to stability. When they are in phase, the feedback loop takes the form of a clockwise p-V cycle \cite{polifke2004CombustionInstabilities}, equivalent to an Otto cycle. This means the mechanism can generate mechanical work which, when confined to an engine, can take the form of a damaging force on engine parts, such as the damage observed in \cite{lieuwen2006CombustionInstabilitiesGas}.
 
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.6]{assets/imgs/Searby-92.pdf}
+\caption{Illustration of the experimental apparatus of \cite{searby1992AcousticInstabilityPremixed}.}
+\label{fig:searby-experiment}
+\end{figure}
 
-|
+A crucial experiment into thermoacoustics was performed by Searby in 1992 \cite{searby1992AcousticInstabilityPremixed}, which studied the correlation between the acoustics detected in a long, thin tube and the speed and shape of the laminar premixed flame within, depicted in \fig{fig:searby-experiment}. Propane-air mixtures were lit at the top end of the tube and propagate down, with any acoustic disturbance detected by a pressure sensor at the bottom. Additionally, a small laser beam was place near the top of the tube to detect the flame as thermal gradients deflect the light. This triggers a digital oscilloscope to record pressure disturbances from the pressure sensor. A short exposure video camera was used to image the flame surface and observe its structure as it propagates. Since propane (C$_3$H$_8$) is a relatively heavy fuel with a species diffusion rate lower than methane's, the lean and stoichiometric mixtures used have Lewis numbers which are never below the critical Lewis number, $\Le_\rm{crit}$, required for \emph{thermodiffusive instabilities} \cite{zeldovich1944TheoryCombustionDetonation,barenblatt1962DiffusionalThermalStabilIty,sivashinsky1977DiffusionalThermalTheoryCellular} to have an effect. Note that the downward propagating flames will have been somewhat stabilised by the \emph{Rayleigh-Taylor} (RT) instability. The primary instability is observed alongside a secondary, which is associated with a different feedback mechanism, acoustic envelopes and flame dynamics.
+
+\begin{figure}[t]
+\centering
+    \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[height=5cm]{assets/imgs/Searby-92-flame_a.png}
+    \caption{}
+    \label{fig:Searby-92_flames_a}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[height=5cm]{assets/imgs/Searby-92-flame_b.png}
+    \caption{}
+    \label{fig:Searby-92_flames_b}
+    \end{subfigure}
+
+\vspace*{3mm}
+
+    \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[height=5cm]{assets/imgs/Searby-92-flame_c.png}
+    \caption{}
+    \label{fig:Searby-92_flames_c}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[height=5cm]{assets/imgs/Searby-92-flame_d.png}
+    \caption{}
+    \label{fig:Searby-92_flames_d}
+    \end{subfigure}
+\caption{Photos courtesy of \cite{searby1992AcousticInstabilityPremixed} of flames at different stages of thermoacoustic response. (a) shows the characteristic curved shape of a hydrodynamically unstable flame before any acoustics are significantly effecting the flame shape. (b) is a flame flame under the effect of the primary thermoacoustic instability. (c) shows a cross-sectional slice of a flame rotated by $90\degree$ under the secondary instability. (d) shows a flame after the breakdown of cellular structures, which leads to a self-turbulent flame.}
+\label{fig:Searby-92_flames}
+\end{figure}
+
+Initially, the flame curves as a result of the hydrodynamic instability, as imaged in \fig{fig:Searby-92_flames_a}. After some time, the acoustic amplitude increases due to primary instability. As the acoustic amplitude increases the flame flattens, as shown in \fig{fig:Searby-92_flames_b}, resulting in a decrease in flame speed due to the decreased fuel consumption rate. In some of the flames tested, only the primary instability is observed, but in some others it progresses beyond this to the secondary instability -- often before the fully flattened flame is observed. At the immediate onset of the secondary instability, if it occurs, a cellular structure of a given wavenumber appears and corresponds to a rapid increase in the acoustic amplitude. This onset is much more rapid than for the primary instability, and eventually the cellular structure transitions into a symmetric flame structure similar to \fig{fig:Searby-92_flames_c}. Provided the flame has not yet reached the end of the tube it may also devolve into a self-turbulent flame similar to that shown in \fig{fig:Searby-92_flames_d}. The flame structures resulting from the secondary instability have significantly higher velocities as a result of their massively increased flame surface area and are viewed as a violent instability. The self-turbulent regime marks a significant decline to the acoustic amplitude as there is no regular release of pressure fluctuations from the flame.
 
 
 
-A crucial experiment in the field was performed by Searby in 1992 \cite{searby1992AcousticInstabilityPremixed}, which studied the correlation between the acoustics detected in a long, thin tube and the speed and shape of the laminar premixed flame within. Propane-air mixtures were lit at the top end of the tube and propagate down, with any acoustic disturbance (that is disturbances $p_a$ away from the mean pressure $\bar{p}$, where $p = \bar{p} + p_a$) detected by a pressure sensor at the bottom. Additionally, a small laser beam was place near the top of the tube to detect the flame as thermal gradients deflect the light. This triggered a digital oscilloscope to record pressure disturbances from the pressure sensor. A short exposure video camera was used to image the flame surface and observe its structure as it propagates. Since propane (C$_3$H$_8$) is a relatively heavy fuel with a species diffusion rate lower than methane's, the lean and stoichiometric mixtures used have Lewis numbers which are never below the critical Lewis number, $\Le_\rm{crit}$, required for thermodiffusive instabilities to have an effect. We also note that the downward propagating flames will have been somewhat stabilised by the RT instability. This acoustic instability was observed in two qualitatively different modes depending on the amplitude of acoustic perturbations, called the \emph{primary} and \emph{secondary} thermoacoustic instabilities. These are associated with different physical mechanisms, resulting acoustic profiles and their effect on the flame surface and interaction with flame instability
-
-Initially, the flame curves as a result of the hydrodynamic instability, as imaged in \fig{fig:Searby-92_flames_a}. After some time, the acoustic amplitude starts to increase as a result of the primary instability. As the acoustic amplitude increases we get the flat flame shown in \fig{fig:Searby-92_flames_b}, which also results in a decrease in the flame speed since the flame's surface area - and therefore fuel consumption rate - has gone down. In some of the flames that are tested only the primary instability is observed, but in some others it progresses beyond this to the secondary instability. At the immediate onset of the secondary instability, if it occurs, a cellular structure of a given wavenumber appears and corresponds to a rapid increase in the acoustic amplitude. This onset is much more rapid than for the primary instability, and eventually the cellular structure transitions into a symmetric flame structure similar to \fig{fig:Searby-92_flames_c}. Provided the flame has not yet reached the end of the tube it may also devolve into a self-turbulent flame similar to that shown in \fig{fig:Searby-92_flames_d}. The flame structures resulting from the secondary instability have significantly higher velocities as a result of their massively increased surface area and are viewed as a \emph{violent} instability. The self-turbulent regime marks a significant decline to the acoustic amplitude as there is no regular release of pressure fluctuations from the flame.
 
 The mechanism described by \cite{searby1992AcousticInstabilityPremixed} as the potential cause of the primary instability is as follows.
 
@@ -71,48 +111,6 @@ An experiment was also performed by \cite{searby1991ParametricAcousticInstabilit
 % - Solving these equations(?) gives them numerical predictions the stability regions of the planar flame, where a stable flat flame is observed if and only if a stability band of of sound intensities occurs between the loudest Darrieus-Landau unstable flame and the quietest parametrically unstable flame.
 % - The sound intensity corresponding to the quietest parametrically unstable flame may then be plotted for a variety of acoustic frequencies (forced via loudspeaker), which results in a curve predicted by the Markstein number of combustion mixture (provided other constants are known so the curves can be predicted from the theory)
 
-
-\begin{figure}[t]
-\centering
-\includegraphics[scale=0.6]{assets/imgs/Searby-92.pdf}
-\caption{Illustration of the experimental apparatus of \cite{searby1992AcousticInstabilityPremixed}.}
-\label{fig:searby-experiment}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-    \begin{subfigure}{0.49\textwidth}
-    \centering
-    \includegraphics[height=5cm]{assets/imgs/Searby-92-flame_a.png}
-    \caption{}
-    \label{fig:Searby-92_flames_a}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{0.49\textwidth}
-    \centering
-    \includegraphics[height=5cm]{assets/imgs/Searby-92-flame_b.png}
-    \caption{}
-    \label{fig:Searby-92_flames_b}
-    \end{subfigure}
-
-\vspace*{3mm}
-
-    \begin{subfigure}{0.49\textwidth}
-    \centering
-    \includegraphics[height=5cm]{assets/imgs/Searby-92-flame_c.png}
-    \caption{}
-    \label{fig:Searby-92_flames_c}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{0.49\textwidth}
-    \centering
-    \includegraphics[height=5cm]{assets/imgs/Searby-92-flame_d.png}
-    \caption{}
-    \label{fig:Searby-92_flames_d}
-    \end{subfigure}
-\caption{Photos courtesy of \cite{searby1992AcousticInstabilityPremixed} of flames at different stages of thermoacoustic response. (a) shows the characteristic curved shape of a hydrodynamically unstable flame before any acoustics are significantly effecting the flame shape. (b) is a flame flame under the effect of the primary thermoacoustic instability. (c) shows a cross-sectional slice of a flame rotated by $90\degree$ under the secondary instability. (d) shows a flame after the breakdown of cellular structures, which leads to a self-turbulent flame.}
-\label{fig:Searby-92_flames}
-\end{figure}
 
 
 

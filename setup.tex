@@ -44,10 +44,10 @@
 % \usepackage{MnSymbol}
 \usepackage{accents}
 \usepackage[super]{nth}
-\usepackage{unicode-math}  % Enter greek characters with unicode characters! α, β etc.
 % \usepackage[T1,T2A]{fontenc}
 % \usepackage[english, greek]{babel}
-\usepackage{textalpha}
+% \usepackage{textalpha}
+\usepackage{unicode-math}  % Enter greek characters with unicode characters! α, β etc.
 
 
 
@@ -145,13 +145,12 @@
 \newcommand{\Pe}{\rm{Pe}}
 \newcommand{\rhs}{\rm{RHS}}
 
-\renewcommand{\vec}[1]{\mathbf{#1}}
-
+\renewcommand{\vb}[1]{\symbf{#1}}
 \def\stacktype{S}
 \newcommand{\hvec}[1]{\stackon[-0.5pt]{#1}{\scaleobj{0.9}{\rightharpoonup}}}
 % \newcommand{\nhat}[1]{\stackon[-3.5pt]{#1}{\scaleobj{0.9}{\textasciicircum}}}
 \newcommand{\nhat}[1]{\widehat{#1}}
-\newcommand{\uvec}[1]{\nhat{\vec{#1}}}
+\newcommand{\uvec}[1]{\nhat{\vb{#1}}}
 \newcommand{\ftvar}[1]{\stackon[0.5pt]{#1}{\scaleobj{0.75}{\sim}}}
 \newcommand{\vvt}[1]{\vv{\vv{#1}}}
 \newcommand{\und}[1]{\underline{#1}}

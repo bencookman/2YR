@@ -4,13 +4,13 @@ For the simulations performed in the remainder of this report, we use the \emph{
 
 Time integration makes use of the explicit Runge-Kutta scheme denoted as RK3(2)4[2R+]C under the classification of \cite{kennedy2000LowStorageExplicitRunge}, which is a third order, low storage (only requiring two or three registers per field per node), four step method in time with embedded second order error estimation. Even under turbulent combustion, error accumulated in time stems primarily from spatial detail (such as thin reacting zones, small Kolmogorov vortices etc.) rather than temporal dynamics (such as the vortex energy cascade, acoustics and diffusion). Thus, a third order error correcting scheme is suitable and our focus remains on the discretisation scheme used.
 
-To ensure the stability of numerical solution, time steps $δ t$ are chosen dynamically. Specifically, such that the fastest travelling information in the solution may travel only $\cl{O}(δ x)$ where $δ x$ is the discretisation length scale \cite{courant1928UeberPartiellenDifferenzengleichungen}. Considering only the travelling of acoustic waves and diffusion terms through a computational domain of nodes $\vec{x}_i$ for $i \in \cl{I}$:
+To ensure the stability of numerical solution, time steps $δ t$ are chosen dynamically. Specifically, such that the fastest travelling information in the solution may travel only $\cl{O}(δ x)$ where $δ x$ is the discretisation length scale \cite{courant1928UeberPartiellenDifferenzengleichungen}. Considering only the travelling of acoustic waves and diffusion terms through a computational domain of nodes $\vb{x}_i$ for $i \in \cl{I}$:
 \begin{equation} \label{eqn:dt-stab}
 \boxed{
-\delta t = \min_{i\,\in\,\cl{I}}\left[ \min \left( C_{\rm{aco}} \frac{δ x_i}{|\vec{u}_i| + c_i}, \: C_{\rm{mom}} \frac{δ x_i^2}{\cl{D}_{\rm{mom}, i}}, \:  C_{\rm{sp}} \frac{δ x_i^2}{\min_α \cl{D}_{α, i}}, \: C_{\rm{th}} \frac{δ x_i^2}{\cl{D}_{\rm{th}, i}} \right) \right]
+\delta t = \min_{i\,\in\,\cl{I}}\left[ \min \left( C_{\rm{aco}} \frac{δ x_i}{|\vb{u}_i| + c_i}, \: C_{\rm{mom}} \frac{δ x_i^2}{\cl{D}_{\rm{mom}, i}}, \:  C_{\rm{sp}} \frac{δ x_i^2}{\min_α \cl{D}_{α, i}}, \: C_{\rm{th}} \frac{δ x_i^2}{\cl{D}_{\rm{th}, i}} \right) \right]
 }
 \end{equation}
-where a subscript $i$ represents the value of that field at node $\vec{x}_i$. Variables $\cl{D}_{\rm{mom}, i}$, $\cl{D}_{α, i}$ and $\cl{D}_{\rm{th}, i}$ are local diffusion scales corresponding to viscosity, species mass transport and heat diffusion:
+where a subscript $i$ represents the value of that field at node $\vb{x}_i$. Variables $\cl{D}_{\rm{mom}, i}$, $\cl{D}_{α, i}$ and $\cl{D}_{\rm{th}, i}$ are local diffusion scales corresponding to viscosity, species mass transport and heat diffusion:
 \begin{equation}
 \cl{D}_{\rm{mom}} = \frac{μ}{ρ}, \quad \cl{D}_{α} = D_α, \quad \cl{D}_{\rm{th}} = \frac{λ}{ρ c_p},
 \end{equation}
@@ -28,58 +28,58 @@ LABFM \cite{king2024MeshFreeFrameworkHighOrder, king2020HighOrderDifference, kin
 
 \subsection{High-Order Interpolations}
 
-Consider a location $\vec{x}$ surrounded locally by finitely many nodes $\vec{x}_j \in \cl{S}(\vec{x})$ which are enumerated by $j \in \cl{N}(\vec{x})$, where $\abs{\vec{x} - \vec{x}_j} < h(\vec{x})$ for all $j$. Assume the field $φ(\vec{x})$, which is only known at the points $φ_j = φ(\vec{x}_j)$, is \emph{smooth enough}.\footnote{Such that as many derivatives of $φ$ as are used in the derivation below are available to us.} Then, we express the interpolated value $φ(\vec{x})$ as a linear combination of the surrounding values $φ_j$:
+Consider a location $\vb{x}$ surrounded locally by finitely many nodes $\vb{x}_j \in \cl{S}(\vb{x})$ which are enumerated by $j \in \cl{N}(\vb{x})$, where $\abs{\vb{x} - \vb{x}_j} < h(\vb{x})$ for all $j$. Assume the field $φ(\vb{x})$, which is only known at the points $φ_j = φ(\vb{x}_j)$, is \emph{smooth enough}.\footnote{Such that as many derivatives of $φ$ as are used in the derivation below are available to us.} Then, we express the interpolated value $φ(\vb{x})$ as a linear combination of the surrounding values $φ_j$:
 \begin{equation} \label{eqn:L}
-L^{\rm{int}}[φ](\vec{x}) \equiv \sum_{j \in \cl{N}(\vec{x})} φ_j w^{\rm{int}}(\vec{x}, \vec{x}_j) \approx φ(\vec{x}).
+L^{\rm{int}}[φ](\vb{x}) \equiv \sum_{j \in \cl{N}(\vb{x})} φ_j w^{\rm{int}}(\vb{x}, \vb{x}_j) \approx φ(\vb{x}).
 \end{equation}
-To find the weights $w^{\rm{int}}(\vec{x}, \vec{x}_j)$, we will be evaluating $φ_j$ by means of Taylor series via derivatives of $φ$. Each derivative is a projection from the vector of derivatives of $φ$:
+To find the weights $w^{\rm{int}}(\vb{x}, \vb{x}_j)$, we will be evaluating $φ_j$ by means of Taylor series via derivatives of $φ$. Each derivative is a projection from the vector of derivatives of $φ$:
 \begin{equation}
 \vv{D}[φ] = \left(φ, \pdv{φ}{x}, \pdv{φ}{x}, \pdv[2]{φ}{x}, \pdv[2]{φ}{x}{y}, \pdv[2]{φ}{x}, \dots \right)^T
 \quad \text{and} \quad
 \vv{D}^k[φ] = \left(φ, \pdv{φ}{x}, \pdv{φ}{x}, \dots, \pdv[k]{φ}{x}, \dots, \pdv[k]{φ}{y} \right)^T,
 \end{equation}
-where we have assumed that $φ$ is a scalar field over two spatial dimensions $\vec{x}=(x, y)$, although the method may be simply extended to any number of dimensions (with the caveat that the number of nodes required increases greatly with dimension). In this notation, interpolation becomes $φ(\vec{x}) = \vv{D}[φ](\vec{x}) \cdot \vv{C}^{\rm{int}} = \vv{D}^k[φ](\vec{x}) \cdot \vv{C}^{\rm{int}, k}$ where $\vv{D}[φ](\vec{x})$ is the vector $\vv{D}[φ]$ evaluated at the location $\vec{x}$, $\vv{C}^{\rm{int}} = (1, 0, 0, 0, 0, 0, \dots)^T$ and $\vv{C}^{\rm{int}, k} = (1, 0, 0, \dots, 0)^T$, is of the same length as $\vv{D}^k$. Introducing the vectors of monomials:
+where we have assumed that $φ$ is a scalar field over two spatial dimensions $\vb{x}=(x, y)$, although the method may be simply extended to any number of dimensions (with the caveat that the number of nodes required increases greatly with dimension). In this notation, interpolation becomes $φ(\vb{x}) = \vv{D}[φ](\vb{x}) \cdot \vv{C}^{\rm{int}} = \vv{D}^k[φ](\vb{x}) \cdot \vv{C}^{\rm{int}, k}$ where $\vv{D}[φ](\vb{x})$ is the vector $\vv{D}[φ]$ evaluated at the location $\vb{x}$, $\vv{C}^{\rm{int}} = (1, 0, 0, 0, 0, 0, \dots)^T$ and $\vv{C}^{\rm{int}, k} = (1, 0, 0, \dots, 0)^T$, is of the same length as $\vv{D}^k$. Introducing the vectors of monomials:
 \begin{equation}
-\vv{X}(\vec{x}) = \left(1, x, y, \frac{1}{2!} x^2, xy, \frac{1}{2!} y^2, \dots \right)^T
+\vv{X}(\vb{x}) = \left(1, x, y, \frac{1}{2!} x^2, xy, \frac{1}{2!} y^2, \dots \right)^T
 \quad \text{and} \quad
-\vv{X}^k(\vec{x}) = \left(1, x, y, \dots, \frac{1}{k!} x^k, \dots, \frac{1}{k!} y^k \right)^T.
+\vv{X}^k(\vb{x}) = \left(1, x, y, \dots, \frac{1}{k!} x^k, \dots, \frac{1}{k!} y^k \right)^T.
 \end{equation}
-we can simplify down the Taylor expansion of $φ$ around the point $\vec{x}$ for any $\vec{x}_j$ as:
+we can simplify down the Taylor expansion of $φ$ around the point $\vb{x}$ for any $\vb{x}_j$ as:
 \begin{subequations}
 \begin{align}
-φ_j &= φ(\vec{x}) + \pdv{φ}{x}\bigg|_{\vec{x}} (x_j - x) + \pdv{φ}{y} \bigg|_{\vec{x}} (y_j - y)  \\
-& \qquad  \quad \ \, + \frac{1}{2!} \pdv[2]{φ}{x}\bigg|_{\vec{x}} (x_j - x)^2 + \pdv[2]{φ}{x}{y}\bigg|_{\vec{x}} (x_j - x) (y_j - y) + \frac{1}{2!} \pdv[2]{φ}{y}\bigg|_{\vec{x}} (y_j - y)^2 + \dots \\
-&= \vv{D}[φ](\vec{x}) \cdot \vv{X} (\vec{x}_j - \vec{x}).
+φ_j &= φ(\vb{x}) + \pdv{φ}{x}\bigg|_{\vb{x}} (x_j - x) + \pdv{φ}{y} \bigg|_{\vb{x}} (y_j - y)  \\
+& \qquad  \quad \ \, + \frac{1}{2!} \pdv[2]{φ}{x}\bigg|_{\vb{x}} (x_j - x)^2 + \pdv[2]{φ}{x}{y}\bigg|_{\vb{x}} (x_j - x) (y_j - y) + \frac{1}{2!} \pdv[2]{φ}{y}\bigg|_{\vb{x}} (y_j - y)^2 + \dots \\
+&= \vv{D}[φ](\vb{x}) \cdot \vv{X} (\vb{x}_j - \vb{x}).
 \end{align}
 \end{subequations}
-This may be truncated to $φ_j \approx \vv{D}^k[φ](\vec{x}) \cdot \vv{X}^k (\vec{x}_j - \vec{x})$ with $\cl{O}(h^{k + 1})$ truncation error. Hence, $k$ can be reinterpreted as the maximum order of polynomials $φ(\vec{x})$ under this approximation which are exactly interpolated.
+This may be truncated to $φ_j \approx \vv{D}^k[φ](\vb{x}) \cdot \vv{X}^k (\vb{x}_j - \vb{x})$ with $\cl{O}(h^{k + 1})$ truncation error. Hence, $k$ can be reinterpreted as the maximum order of polynomials $φ(\vb{x})$ under this approximation which are exactly interpolated.
 
 Rewriting \equ{eqn:L} in this formulation:
 \begin{subequations}
 \begin{align}
-L^{\rm{int}}[φ](\vec{x}) &= \vv{D}[φ](\vec{x}) \, \cdot \sum_{j \in \cl{N}(\vec{x})} \vv{X} (\vec{x}_j - \vec{x}) w^{\rm{int}}(\vec{x}, \vec{x}_j) \\
-&\approx \vv{D}^k[φ](\vec{x}) \, \cdot \sum_{j \in \cl{N}(\vec{x})} \vv{X}^k (\vec{x}_j - \vec{x}) w^{\rm{int}}(\vec{x}, \vec{x}_j) \equiv \vv{D}^k[φ](\vec{x}) \cdot \vv{B}^{\rm{int}, k}(\vec{x}) \\
-&\approx \vv{D}^k[φ](\vec{x}) \cdot \vv{C}^{\rm{int}, k}
+L^{\rm{int}}[φ](\vb{x}) &= \vv{D}[φ](\vb{x}) \, \cdot \sum_{j \in \cl{N}(\vb{x})} \vv{X} (\vb{x}_j - \vb{x}) w^{\rm{int}}(\vb{x}, \vb{x}_j) \\
+&\approx \vv{D}^k[φ](\vb{x}) \, \cdot \sum_{j \in \cl{N}(\vb{x})} \vv{X}^k (\vb{x}_j - \vb{x}) w^{\rm{int}}(\vb{x}, \vb{x}_j) \equiv \vv{D}^k[φ](\vb{x}) \cdot \vv{B}^{\rm{int}, k}(\vb{x}) \\
+&\approx \vv{D}^k[φ](\vb{x}) \cdot \vv{C}^{\rm{int}, k}
 \end{align}
 \end{subequations}
-So our problem now involves finding values of $w^{\rm{int}}(\vec{x}, \vec{x}_j)$ such that the \emph{vector of moments} $\vv{B}^{\rm{int}, k}(\vec{x})$ of $w^{\rm{int}}$ approximates $\vv{C}^{\rm{int}, k}$. For consistency, then, we require that the first component is independent of $h$:
+So our problem now involves finding values of $w^{\rm{int}}(\vb{x}, \vb{x}_j)$ such that the \emph{vector of moments} $\vv{B}^{\rm{int}, k}(\vb{x})$ of $w^{\rm{int}}$ approximates $\vv{C}^{\rm{int}, k}$. For consistency, then, we require that the first component is independent of $h$:
 \begin{equation}
-1 = C^{\rm{int}, k}_0 \approx B^{\rm{int}, k}_0(\vec{x}) = \sum_{j \in \cl{N}(\vec{x})} w^{\rm{int}} (\vec{x}, \vec{x}_j),
+1 = C^{\rm{int}, k}_0 \approx B^{\rm{int}, k}_0(\vb{x}) = \sum_{j \in \cl{N}(\vb{x})} w^{\rm{int}} (\vb{x}, \vb{x}_j),
 \end{equation}
 so $w^{\rm{int}} = \cl{O}(h^0)$, where the subscript zeroes represent the leading vector component. The resulting error in this approximation is the combined $\cl{O}(h^{k + 1})$ error of truncating the Taylor expansion of $φ_j$ and approximating $w^{\rm{int}}$.
 
-What's left is to find the weights of $w^{\rm{int}}$ for any point $\vec{x}$ and nodes $\vec{x}_j$. To do this, we separate $w^{\rm{int}}$ into some dependence of $\vec{x}$ on the anisotropic surrounding nodes from the action of interpolation, which will later be generalised to arbitrary derivatives. This is done by writing it as the weighted sum of some anisotropic basis functions:
+What's left is to find the weights of $w^{\rm{int}}$ for any point $\vb{x}$ and nodes $\vb{x}_j$. To do this, we separate $w^{\rm{int}}$ into some dependence of $\vb{x}$ on the anisotropic surrounding nodes from the action of interpolation, which will later be generalised to arbitrary derivatives. This is done by writing it as the weighted sum of some anisotropic basis functions:
 \begin{equation}
-w^{\rm{int}}(\vec{x}, \vec{x}_j) = \vv{W}^k(\vec{x}_j - \vec{x}) \cdot \vv{\Psi}^{\rm{int}, k}(\vec{x})
+w^{\rm{int}}(\vb{x}, \vb{x}_j) = \vv{W}^k(\vb{x}_j - \vb{x}) \cdot \vv{\Psi}^{\rm{int}, k}(\vb{x})
 \end{equation}
-where the anisotropy is seen in the dependence of $\vv{W}^k$ on $(\vec{x}_j - \vec{x})$ rather than $|\vec{x}_j - \vec{x}|$ (contrasting to the radial basis function, RBF, method). Assuming that $\vv{W}^k$ comprises some suitable \emph{anisotropic basis functions} (ABFs) \cite{king2022HighOrderSimulationsIsothermal}, we must find the vector of weights $\vv{\Psi}^{\rm{int}, k}(\vec{x})$. This is done by substituting the new form into the vector of moments:
+where the anisotropy is seen in the dependence of $\vv{W}^k$ on $(\vb{x}_j - \vb{x})$ rather than $|\vb{x}_j - \vb{x}|$ (contrasting to the radial basis function, RBF, method). Assuming that $\vv{W}^k$ comprises some suitable \emph{anisotropic basis functions} (ABFs) \cite{king2022HighOrderSimulationsIsothermal}, we must find the vector of weights $\vv{\Psi}^{\rm{int}, k}(\vb{x})$. This is done by substituting the new form into the vector of moments:
 \begin{align}
 \vv{C}^{\rm{int}, k}
-\approx \vv{B}^{\rm{int}, k}(\vec{x})
-= \left( \sum_{j \in \cl{N}(\vec{x})} \vv{X}^k (\vec{x}_j - \vec{x}) \otimes \vv{W}^k(\vec{x}_j - \vec{x}) \right) \cdot \vv{\Psi}^{\rm{int}, k}(\vec{x})
-\equiv M(\vec{x}) \, \vv{\Psi}^{\rm{int}, k}(\vec{x})
+\approx \vv{B}^{\rm{int}, k}(\vb{x})
+= \left( \sum_{j \in \cl{N}(\vb{x})} \vv{X}^k (\vb{x}_j - \vb{x}) \otimes \vv{W}^k(\vb{x}_j - \vb{x}) \right) \cdot \vv{\Psi}^{\rm{int}, k}(\vb{x})
+\equiv M(\vb{x}) \, \vv{\Psi}^{\rm{int}, k}(\vb{x})
 \end{align}
-where $M$ is a $n \times n$ matrix and $n$ is the number of components of $\vv{C}^{\rm{int}, k}$. The vector of weights $\vv{\Psi}^{\rm{int}, k}(\vec{x})$ is found when the linear system is solved. Carrying over the error terms from previous steps, we expect convergence on the order $(k + 1)$ as long as the matrix $M$ is well-posed and the values of nodes $\vec{x}_j$ are close enough to $\vec{x}$ such that $h$ is small.
+where $M$ is a $n \times n$ matrix and $n$ is the number of components of $\vv{C}^{\rm{int}, k}$. The vector of weights $\vv{\Psi}^{\rm{int}, k}(\vb{x})$ is found when the linear system is solved. Carrying over the error terms from previous steps, we expect convergence on the order $(k + 1)$ as long as the matrix $M$ is well-posed and the values of nodes $\vb{x}_j$ are close enough to $\vb{x}$ such that $h$ is small.
 
 
 \subsection{High-Order Derivatives}
@@ -91,7 +91,7 @@ where $M$ is a $n \times n$ matrix and $n$ is the number of components of $\vv{C
 \label{fig:labfm-stencil}
 \end{figure}
 
-If we choose to evaluate a derivative at $\vec{x}$ instead, very little changes besides the following. Firstly, we assume that the point $\vec{x}$ is itself a node in our stencil, $\vec{x} = \vec{x}_i \in \cl{S}(\vec{x}_i)$, such that $\abs{\vec{x}_{ij}} < h_i$ for all $\vec{x}_j$ provided $\vec{x}_{ij} \equiv \vec{x}_j - \vec{x}_i$. An example discretisation and stencil is shown in \fig{fig:labfm-stencil}. Then, taking a page out of centred finite differences, we redefine our operator via the differences $φ_{ij} \equiv φ_j - φ_i$:
+If we choose to evaluate a derivative at $\vb{x}$ instead, very little changes besides the following. Firstly, we assume that the point $\vb{x}$ is itself a node in our stencil, $\vb{x} = \vb{x}_i \in \cl{S}(\vb{x}_i)$, such that $\abs{\vb{x}_{ij}} < h_i$ for all $\vb{x}_j$ provided $\vb{x}_{ij} \equiv \vb{x}_j - \vb{x}_i$. An example discretisation and stencil is shown in \fig{fig:labfm-stencil}. Then, taking a page out of centred finite differences, we redefine our operator via the differences $φ_{ij} \equiv φ_j - φ_i$:
 \begin{equation} \label{eqn:labfm-L}
 L[φ]_i \equiv \sum_{j \in \cl{N}_i} φ_{ij} w_{i, j}.
 \end{equation}
@@ -101,19 +101,19 @@ This simplifies the derivation by removing the need to include leading order ter
 \qquad
 \vv{X}^k_j \equiv \left(x_j, y_j, \dots, \frac{1}{k!} x_j^k, \dots, \frac{1}{k!} y_j^k \right)^T
 \end{equation}
-and similarly for $\vv{D}[φ]$ and $\vv{X}_j$. For simplicity, we introduce the notation $\vv{X}^k_{ij} \equiv \vv{X}^k(\vec{x}_{ij})$. In this altered notation, the desired derivative is picked out through $\vv{C}^k$ and written as $\vv{D}^k[φ] \cdot \vv{C}^k$. For example, a first derivative in $x$ has $\partial φ / \partial x |_j = \vv{D}^k[φ]_j \cdot \vv{C}^k$ where $\vv{C}^k = (1, 0, \dots, 0)^T$. Following the same logic as above, we find that
+and similarly for $\vv{D}[φ]$ and $\vv{X}_j$. For simplicity, we introduce the notation $\vv{X}^k_{ij} \equiv \vv{X}^k(\vb{x}_{ij})$. In this altered notation, the desired derivative is picked out through $\vv{C}^k$ and written as $\vv{D}^k[φ] \cdot \vv{C}^k$. For example, a first derivative in $x$ has $\partial φ / \partial x |_j = \vv{D}^k[φ]_j \cdot \vv{C}^k$ where $\vv{C}^k = (1, 0, \dots, 0)^T$. Following the same logic as above, we find that
 \begin{align}
 L[φ]_i
 \approx \vv{D}^k[φ]_i \, \cdot \sum_{j \in \cl{N}_i} \vv{X}^k_{ij} w_{i, j}
 \equiv \vv{D}^k[φ]_i \, \cdot \vv{B}^k_i \approx \vv{D}^k[φ]_i \, \cdot \vv{C}^k
 \end{align}
-where we have reintroduced the vector of moments, $\vv{B}^k_i$, at node $\vec{x}_i$. As above, this approximation has $\cl{O}(h_i^{k + 1})$ truncation error. In this case, however, to ensure consistency we instead require $w_{i, j} = \cl{O}(h_i^d)$ where $d$ is the order of derivative we are approximating. This results in a $\cl{O}(h_i^{k + 1 - d})$ approximation thus far.
+where we have reintroduced the vector of moments, $\vv{B}^k_i$, at node $\vb{x}_i$. As above, this approximation has $\cl{O}(h_i^{k + 1})$ truncation error. In this case, however, to ensure consistency we instead require $w_{i, j} = \cl{O}(h_i^d)$ where $d$ is the order of derivative we are approximating. This results in a $\cl{O}(h_i^{k + 1 - d})$ approximation thus far.
 
 Once again, we represent the weights $w_{i, j}$ as a weighted average of the $k$ ABFs:
 \begin{equation}
 w_{i, j} = \vv{W}^k_{ij} \cdot \vv{\Psi}^k_i
 \quad \text{where} \quad
-\vv{W}^k_{ij} \equiv \vv{W}^k(\vec{x}_{ij})
+\vv{W}^k_{ij} \equiv \vv{W}^k(\vb{x}_{ij})
 \end{equation}
 with the same form of linear system $\vv{C}^k = M_i \, \vv{\Psi}^k_i$ where $M_i \equiv \sum_{j \in \cl{N}_i} \vv{X}^k_{ij} \otimes \vv{W}^k_{ij}$. Once solutions to the linear system are found, we should have weights $w_{i, j}$ to order of accuracy $(k + 1 - d)$ provided again that $M_i$ is well-posed and $h_i$ remains small.
 
@@ -122,7 +122,7 @@ with the same form of linear system $\vv{C}^k = M_i \, \vv{\Psi}^k_i$ where $M_i
 
 \subsection{Matrix Conditioning and Choice of ABFs}
 
-The computational accuracy of the solutions in the linear system shown above is determined by the condition number of the matrix $M_i$. Given we expect any disordered set of nodes $\cl{S}_i$ close to $\vec{x}_i$ for the moment, there are no further assumptions we can make on $\vv{X}^k_{ij}$ yet. The choice of ABFs, however, can greatly improve the conditioning of $M_i$ by ensuring a linear independence of its columns, regardless of the order $k$ used. In particular, orthogonal basis functions do this automatically, such as the orthogonal Hermite and Legendre polynomials, and the Fourier basis modes -- combinations of $\sin(nx)$, $\cos(nx)$, $\sin(ny)$ and $\cos(ny)$ for different values of $n < k$.
+The computational accuracy of the solutions in the linear system shown above is determined by the condition number of the matrix $M_i$. Given we expect any disordered set of nodes $\cl{S}_i$ close to $\vb{x}_i$ for the moment, there are no further assumptions we can make on $\vv{X}^k_{ij}$ yet. The choice of ABFs, however, can greatly improve the conditioning of $M_i$ by ensuring a linear independence of its columns, regardless of the order $k$ used. In particular, orthogonal basis functions do this automatically, such as the orthogonal Hermite and Legendre polynomials, and the Fourier basis modes -- combinations of $\sin(nx)$, $\cos(nx)$, $\sin(ny)$ and $\cos(ny)$ for different values of $n < k$.
 
 It is also prudent to ensure that the weight values $w_{i ,j}$ do not change depending on the specific stencil size $h_i$ which we have taken. This is equivalent to ensuring the analysis may be done in a non-dimensional sense -- so derivative operators may be scaled to whatever dimensions are required in a particular simulation. In general, our ABFs already do not scale with $h_i$, but the vector of monomials $\vv{X}^k_{ij}$ does. We can cancel out this dependence by simply introducing the matrix $H_i = \rm{diag}(h, h, h^2, h^2, h^2, ..., h^k)$ and instead solving the system $H_i^{-1} \vv{C}^k = (H_i^{-1} M_i) \, \vv{\Psi}^k_i$ where instead $H_i^{-1} M_i = \sum_{j \in \cl{N}_i} (H_i^{-1} \vv{X}^k_{ij}) \otimes \vv{W}^k_{ij}$. This system condition number can no longer scale with $h_i$, since:
 \begin{equation}
@@ -136,7 +136,7 @@ The subscript $m$ is used for vector components, as above, and the index $n(m)$ 
 
 \subsection{Stencil Size, Computational Cost and Sampling}
 
-One major advantage of LABFM and other unstructured methods, is that the distance between nodes, $\abs{\vec{x}_{ij}}$, and the resulting stencil size, $h_i$, is allowed to vary in space. This means we can move from a region of low-density nodes in, for example, a non-reacting part of our computational domain, to a high-density region where the flame is. But there is a limit to how fast this variation can occur, since any given order of polynomial reconstruction $k$, has $n(k)$ ABFs which must each be accurately sampled. Equivalently, this means we require at least one node per each of the $2k$ even slices of the circular stencil (each with angle $\pi / k$), assuming two-dimensions \cite{king2020HighOrderDifference}. This, of course, means that there is a practical lower limit to the number of nodes $N_{\rm{st}}$ required in a stencil which is well above the lower limit of $n(k)$ nodes required by compact methods like \cite{jensen1972FiniteDifferenceTechniques}. This results in a quadratic growth in required nodes as the slices get smaller, since $k \sim h_i \propto \sqrt{N_{\rm{st}}}$. Often, the stencil is increased furthermore to ensure a reliable sampling and improve stability and accuracy properties in spite of a strongly uneven node distribution. In a typical configuration, at $k = 4$ we may use $N_{\rm{st}} \approx 40$ and for $k = 6$ we may use $N_{\rm{st}} \approx 80$ \red{[CHANGE NUMBERS??]}. In three-dimensions this would be a cubic growth instead, since $k \sim h_i \propto \sqrt[3]{N_{\rm{st}}}$. Another obvious consequence of the sampling requirement, is that the order of LABFM used must be decreased at boundaries as no nodes are available to accurately sample the ABFs outside the computational domain.
+One major advantage of LABFM and other unstructured methods, is that the distance between nodes, $\abs{\vb{x}_{ij}}$, and the resulting stencil size, $h_i$, is allowed to vary in space. This means we can move from a region of low-density nodes in, for example, a non-reacting part of our computational domain, to a high-density region where the flame is. But there is a limit to how fast this variation can occur, since any given order of polynomial reconstruction $k$, has $n(k)$ ABFs which must each be accurately sampled. Equivalently, this means we require at least one node per each of the $2k$ even slices of the circular stencil (each with angle $\pi / k$), assuming two-dimensions \cite{king2020HighOrderDifference}. This, of course, means that there is a practical lower limit to the number of nodes $N_{\rm{st}}$ required in a stencil which is well above the lower limit of $n(k)$ nodes required by compact methods like \cite{jensen1972FiniteDifferenceTechniques}. This results in a quadratic growth in required nodes as the slices get smaller, since $k \sim h_i \propto \sqrt{N_{\rm{st}}}$. Often, the stencil is increased furthermore to ensure a reliable sampling and improve stability and accuracy properties in spite of a strongly uneven node distribution. In a typical configuration, at $k = 4$ we may use $N_{\rm{st}} \approx 40$ and for $k = 6$ we may use $N_{\rm{st}} \approx 80$ \red{[CHANGE NUMBERS??]}. In three-dimensions this would be a cubic growth instead, since $k \sim h_i \propto \sqrt[3]{N_{\rm{st}}}$. Another obvious consequence of the sampling requirement, is that the order of LABFM used must be decreased at boundaries as no nodes are available to accurately sample the ABFs outside the computational domain.
 
 Provided these conditions are met, this means we can approximate any derivative we like to arbitrary order simply by preprocessing the values of $w_{i, j}$ at each node\footnote{Only provided the nodes do not move. This precludes a Lagrangian formulation for LABFM.} and evaluating $L[φ]_i$ during the simulation as we like. The preprocessing step is crucial as it means all that has to be done is calculate the sum in \equ{eqn:labfm-L} every time a derivative of an arbitrary function $φ$ is required at a node $i$. The computational complexity of this operation is $\cl{O}(N_{\rm{st}})$. For a simulation of $N_{\rm{tot}}$ nodes, each with a constant stencil size of $N_{\rm{tot}}$ nodes, the cost becomes $\cl{O}(N_{\rm{tot}} N_{\rm{st}})$ to evaluate the same derivative of $φ$ for each node.
 
@@ -160,23 +160,23 @@ Alongside spatial discretisation, boundary conditions comprise one of the most i
 
 Any hyperbolic system can be written in the form:
 \begin{equation} \label{eqn:hyp-source}
-\pdv{\und{U}}{t} + \vec{\nabla}\cdot\und{\vec{F}} + \und{B} = 0,
+\pdv{\und{U}}{t} + \vb{\nabla}\cdot\und{\vb{F}} + \und{B} = 0,
 \end{equation}
-where $\und{U}$ are the $N_\rm{V}$ conservative variables, $\und{\vec{F}}$ are the fluxes for each of these variables in each dimension and $\und{B}$ are source terms. We assume that these terms are non-diffusive for this approximation. Bold variables represent vectors in space, as usual, with their components determined by superscript indices like $F^x$ being the $x$-component of $\vec{F}$. Vectors and matrices of variables, however, are underlined once and twice, respectively, with the intention of providing more clarity. This equation is unique up to linear combinations of the conserved variables, but can be transformed into a form for the primitive variables $\und{V}$:
+where $\und{U}$ are the $N_\rm{V}$ conservative variables, $\und{\vb{F}}$ are the fluxes for each of these variables in each dimension and $\und{B}$ are source terms. We assume that these terms are non-diffusive for this approximation. Bold variables represent vectors in space, as usual, with their components determined by superscript indices like $F^x$ being the $x$-component of $\vb{F}$. Vectors and matrices of variables, however, are underlined once and twice, respectively, with the intention of providing more clarity. This equation is unique up to linear combinations of the conserved variables, but can be transformed into a form for the primitive variables $\und{V}$:
 \begin{equation}
-\pdv{\und{V}}{t} + \undt{\vec{A}} \cdot \vec{\nabla} \und{V} + \und{b} = 0
+\pdv{\und{V}}{t} + \undt{\vb{A}} \cdot \vb{\nabla} \und{V} + \und{b} = 0
 \end{equation}
 where
 \begin{equation}
 P_{ij} \equiv \pdv{U_i}{u_j},
 \quad
-\boldsymbol{Φ}_{ij} \equiv \pdv{\vec{F}_i}{u_j},
+\boldsymbol{Φ}_{ij} \equiv \pdv{\vb{F}_i}{u_j},
 \quad
-\undt{\vec{A}} \equiv \undt{P}^{-1}\undt{\boldsymbol{Φ}}
+\undt{\vb{A}} \equiv \undt{P}^{-1}\undt{\boldsymbol{Φ}}
 \quad \text{and} \quad
 \und{b} \equiv \undt{{P}}^{-1}\und{B}.
 \end{equation}
-The matrix $\undt{P}$ is the Jacobian matrix, $\undt{\vec{A}}$ represents the convection of the variables due to the other variables and themselves (e.g. resulting in $(\vec{u} \cdot \vec{\nabla})\vec{u}$ in the momentum equation) and $\und{\cl{S}}$ are source terms acting on primitive variables. Using this form, we can isolate the $x$-derivatives to observe the characteristics in that direction:
+The matrix $\undt{P}$ is the Jacobian matrix, $\undt{\vb{A}}$ represents the convection of the variables due to the other variables and themselves (e.g. resulting in $(\vb{u} \cdot \vb{\nabla})\vb{u}$ in the momentum equation) and $\und{\cl{S}}$ are source terms acting on primitive variables. Using this form, we can isolate the $x$-derivatives to observe the characteristics in that direction:
 \begin{equation} \label{eqn:with_A}
 \pdv{\und{V}}{t} + \undt{A}^x \pdv{\und{V}}{x} + \und{c} = 0
 \quad \text{where, in 3D} \quad
@@ -194,7 +194,7 @@ Multiplying equation \equ{eqn:with_A} by an eigenvector we project our equation 
 \quad \iff \quad
 \pdv{J_m}{t} + λ_m \pdv{J_m}{x} + \und{l}_m^T \und{c} = 0.
 \end{boxequ}
-We notice that along any trajectory $\vec{x}_m(t)$ which satisfies $\dd{\vec{x}_m}/\dd{t} = λ_m$ (i.e. the m\sus{th} characteristic has velocity $λ_m$), the invariant obeys:
+We notice that along any trajectory $\vb{x}_m(t)$ which satisfies $\dd{\vb{x}_m}/\dd{t} = λ_m$ (i.e. the m\sus{th} characteristic has velocity $λ_m$), the invariant obeys:
 \begin{equation}
 \dv{J_m}{t} = - \und{l}_m^T \und{c}.
 \end{equation}
@@ -231,10 +231,10 @@ Note that, because we have the matrix $\undt{S}^{-1}$ not $\undt{S}$, we find th
 The LODI approximation of the governing equations of perfect, reacting gases first requires the form of their hyperbolic (non-diffusive) conservation equations. These are:
 \begin{subequations}
 \begin{alignat}{3}
-\pdv{ρ}{t} &+ \vec{\nabla} \cdot (ρ \vec{u}) && &&= 0 \\
-\pdv{ρ \vec{u}}{t} &+ \vec{\nabla} \cdot (ρ \vec{u}\otimes \vec{u} + p \bb{I}) && - ρ \vec{g} &&= 0 \\
-\pdv{ρ e}{t} &+ \vec{\nabla} \cdot [(ρ e + p) \vec{u}] && - ρ \vec{g} \cdot \vec{u} &&= 0 \\
-\pdv{ρ Y_α}{t} &+ \vec{\nabla} \cdot [ρ Y_α \vec{u}] && - \dot{ω}_α &&= 0
+\pdv{ρ}{t} &+ \vb{\nabla} \cdot (ρ \vb{u}) && &&= 0 \\
+\pdv{ρ \vb{u}}{t} &+ \vb{\nabla} \cdot (ρ \vb{u}\otimes \vb{u} + p \bb{I}) && - ρ \vb{g} &&= 0 \\
+\pdv{ρ e}{t} &+ \vb{\nabla} \cdot [(ρ e + p) \vb{u}] && - ρ \vb{g} \cdot \vb{u} &&= 0 \\
+\pdv{ρ Y_α}{t} &+ \vb{\nabla} \cdot [ρ Y_α \vb{u}] && - \dot{ω}_α &&= 0
 \end{alignat}
 \end{subequations}
 for $α = 1, \dots, N_{\rm{S}}$. The energy $e$ modelled here is the \emph{internal energy of a perfect gas} rather than the total energy specified in \chap{ch:govern-eqns}. The algebraic equations for internal energy and pressure are, in three-dimensions:
@@ -243,7 +243,7 @@ for $α = 1, \dots, N_{\rm{S}}$. The energy $e$ modelled here is the \emph{inter
 \quad \text{where} \quad
 ρ E_{\rm{th}} = \frac{p}{\gamma - 1}
 \quad \text{and} \quad
-ρ E_{\rm{ki}} = \frac{1}{2} ρ \vec{u} \cdot \vec{u}.
+ρ E_{\rm{ki}} = \frac{1}{2} ρ \vb{u} \cdot \vb{u}.
 \end{equation}
 In this case, the vectors of conservative variables, fluxes and source terms are:
 \begin{equation}
@@ -253,7 +253,7 @@ In this case, the vectors of conservative variables, fluxes and source terms are
 \quad
 \und{F}^x = \begin{pmatrix} ρ u^x \\ ρ u^x u^x + p \\ ρ u^x u^y \\ ρ u^x u^z \\ (ρ e + p) u^x \\ ρ Y_1 u^x \\ \vdots \end{pmatrix},
 \quad \text{and} \quad
-\und{B} = \begin{pmatrix} 0 \\ - ρ g^x \\ - ρ g^y \\ - ρ g^z \\ - ρ \vec{g} \cdot \vec{u} \\ -\dot{ω}_1 \\ \vdots \end{pmatrix}.
+\und{B} = \begin{pmatrix} 0 \\ - ρ g^x \\ - ρ g^y \\ - ρ g^z \\ - ρ \vb{g} \cdot \vb{u} \\ -\dot{ω}_1 \\ \vdots \end{pmatrix}.
 \end{equation}
 Hence, we evaluate the relevant matrices:
 \begin{equation}
@@ -262,7 +262,7 @@ Hence, we evaluate the relevant matrices:
 u^x & ρ & 0 & 0 & 0 & 0 &  \\
 u^y & 0 & ρ & 0 & 0 & 0 & \cdots \\
 u^z & 0 & 0 & ρ & 0 & 0 &  \\
-\frac{1}{2} \vec{u} \cdot \vec{u} & ρ u^x & ρ u^y & ρ u^z & 1/(γ - 1) & 0 & \\
+\frac{1}{2} \vb{u} \cdot \vb{u} & ρ u^x & ρ u^y & ρ u^z & 1/(γ - 1) & 0 & \\
 Y_1 & 0 & 0 & 0 & 0 & ρ & \\
  &  & \vdots &  &  &  & \ddots
 \end{pmatrix}
@@ -310,7 +310,7 @@ and so on. Evidently, the eigenvalues $λ_1$ and $λ_5$ correspond to the speed 
 
 \subsubsection{Outflows}
 
-The first non-reflective boundaries under this formulation come from \cite{thompson1987TimeDependentBoundary} in the case of the one-dimensional, subsonic, inviscid, non-isothermal Euler equations (the equations above if we lower the dimension of $\vec{x}$ and $\vec{u}$ and drop the mass fraction equations). This was promptly extended to the set of equations shown above in \cite{poinsot1992BoundaryConditionsDirect} for reacting flows. In both cases, a simple condition for acoustically non-reflecting boundaries was found by requiring that the Riemann invariant corresponding to the entering acoustic wave remain constant under the assumption that transverse terms can be neglected. At a subsonic outflow boundary on the left end of the computational domain, where $0 < u^x < c$, this means the invariant $J_5$ should remain constant at the boundary, provided transverse derivatives vanish. Equivalently, we require
+The first non-reflective boundaries under this formulation come from \cite{thompson1987TimeDependentBoundary} in the case of the one-dimensional, subsonic, inviscid, non-isothermal Euler equations (the equations above if we lower the dimension of $\vb{x}$ and $\vb{u}$ and drop the mass fraction equations). This was promptly extended to the set of equations shown above in \cite{poinsot1992BoundaryConditionsDirect} for reacting flows. In both cases, a simple condition for acoustically non-reflecting boundaries was found by requiring that the Riemann invariant corresponding to the entering acoustic wave remain constant under the assumption that transverse terms can be neglected. At a subsonic outflow boundary on the left end of the computational domain, where $0 < u^x < c$, this means the invariant $J_5$ should remain constant at the boundary, provided transverse derivatives vanish. Equivalently, we require
 \begin{equation}
 0 = \und{l}^T_5 \pdv{\und{V}}{t} = \left( \pdv{p}{t} + ρ c \pdv{u^x}{t} \right)
 \end{equation}

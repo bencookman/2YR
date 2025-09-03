@@ -6,17 +6,17 @@ W = 1 \bigg/ \sum_α \frac{Y_α}{W_α},
 \quad \text{where} \quad
 \sum_α \, (\,\cdot \,) = \sum_{α=1}^{N_\rm{S}} \, (\,\cdot \,) .
 \end{equation}
-Hence, the following governing equations will be used for density $ρ > 0$, velocity $\vec{u} \in \bb{R}^3$, mass fraction $Y_α \in [0, 1]$, temperature $T > 0$ and energy $E$:
+Hence, the following governing equations will be used for density $ρ > 0$, velocity $\vb{u} \in \bb{R}^3$, mass fraction $Y_α \in [0, 1]$, temperature $T > 0$ and energy $E$:
 \begin{subequations} \label{eqn:EQUATIONS-DIFF}
 \begin{boxali}
-\pdv{ρ}{t} + \vec{\nabla}\cdot(ρ\vec{u})
+\pdv{ρ}{t} + \vb{\nabla}\cdot(ρ\vb{u})
 &= 0, \\
-\pdv{ρ \vec{u}}{t} + \vec{\nabla} \cdot (ρ \vec{u} \otimes \vec{u})
-&= -\vec{\nabla}p + \vec{\nabla}\cdot\bb{T} + ρ \vec{g} \\ 
-\pdv{ρ Y_α}{t} + \vec{\nabla} \cdot (ρ Y_α \vec{u})
-&= \dot{ω}_α - \vec{\nabla}\cdot(ρ \vec{V}_{\!α} Y_α) \qquad (\text{for } α = 1, \dots, N_{\rm{S}}), \\
-\pdv{ρ E}{t} + \vec{\nabla} \cdot (ρ E \vec{u})
-&= -\vec{\nabla}\cdot \vec{\cl{E}} + \vec{\nabla}\cdot(\bb{S} \vec{u}) + \dot{\cl{E}} + ρ \sum_α Y_α \vec{g} \cdot (\vec{u} + \vec{V}_{\!α}),
+\pdv{ρ \vb{u}}{t} + \vb{\nabla} \cdot (ρ \vb{u} \otimes \vb{u})
+&= -\vb{\nabla}p + \vb{\nabla}\cdot\bb{T} + ρ \vb{g} \\ 
+\pdv{ρ Y_α}{t} + \vb{\nabla} \cdot (ρ Y_α \vb{u})
+&= \dot{ω}_α - \vb{\nabla}\cdot(ρ \vb{V}_{\!α} Y_α) \qquad (\text{for } α = 1, \dots, N_{\rm{S}}), \\
+\pdv{ρ E}{t} + \vb{\nabla} \cdot (ρ E \vb{u})
+&= -\vb{\nabla}\cdot \vb{\cl{E}} + \vb{\nabla}\cdot(\bb{S} \vb{u}) + \dot{\cl{E}} + ρ \sum_α Y_α \vb{g} \cdot (\vb{u} + \vb{V}_{\!α}),
 \end{boxali}
 \end{subequations}
 along with the algebraic equations for closure:
@@ -24,25 +24,25 @@ along with the algebraic equations for closure:
 \begin{align}
 p &= ρ \frac{R_0}{W} T, \\
 ρ E &= ρ E_{\rm{th}} + ρ E_{\rm{ch}} + ρ E_{\rm{ki}} \\
-  &= ρ \int_{T_0}^T c_{p}(T') \dd{T'} - p + ρ \sum_α Y_α Δ h_{f, α}^\plimsoll + \frac{1}{2} ρ \vec{u}\cdot\vec{u}
+  &= ρ \int_{T_0}^T c_{p}(T') \dd{T'} - p + ρ \sum_α Y_α Δ h_{f, α}^\plimsoll + \frac{1}{2} ρ \vb{u}\cdot\vb{u}
 \end{align}
 \end{subequations}
-where $R_0 = 8.314$ J K$^{-1}$ mol$^{-1}$ is the universal gas constant, $ρ E_{\rm{th}}$ is the thermal (or \emph{sensible} \cite{poinsot2005TheoreticalNumericalCombustion}) energy, $T_0$ is some reference temperature, $ρ E_{\rm{ch}}$ is the chemical energy and $ρ E_{\rm{ki}}$ is the kinetic energy. The terms $ρ \vec{g}$ and $\dot{\cl{E}}$ are the body force and energy source terms, both of which may take any form depending on the system we are modelling. In most cases in this report, these terms will be neglected. The tensors $\bb{S}$ and $\bb{T}$ are the stress and viscous stress tensors respectively and are given in their usual form by
+where $R_0 = 8.314$ J K$^{-1}$ mol$^{-1}$ is the universal gas constant, $ρ E_{\rm{th}}$ is the thermal (or \emph{sensible} \cite{poinsot2005TheoreticalNumericalCombustion}) energy, $T_0$ is some reference temperature, $ρ E_{\rm{ch}}$ is the chemical energy and $ρ E_{\rm{ki}}$ is the kinetic energy. The terms $ρ \vb{g}$ and $\dot{\cl{E}}$ are the body force and energy source terms, both of which may take any form depending on the system we are modelling. In most cases in this report, these terms will be neglected. The tensors $\bb{S}$ and $\bb{T}$ are the stress and viscous stress tensors respectively and are given in their usual form by
 \begin{subequations}
 \begin{align}
 \bb{S} &= -p\bb{I} + \bb{T} \\
-\bb{T} &= μ \left( - \frac{2}{3}\vec{\nabla}\cdot\vec{u} \bb{I} + \vec{\nabla}\vec{u} + (\vec{\nabla}\vec{u})^T \right)
+\bb{T} &= μ \left( - \frac{2}{3}\vb{\nabla}\cdot\vb{u} \bb{I} + \vb{\nabla}\vb{u} + (\vb{\nabla}\vb{u})^T \right)
 \end{align}
 \end{subequations}
-where $\bb{I}$ is the three-dimensional identity matrix, we define $\vec{\nabla}\vec{u}$ by its elements $(\vec{\nabla}\vec{u})_{ij} = \partial u_j / \partial x_i$ and $μ$ is kinematic viscosity. The energy flux \emph{not} due to fluid stresses is given by
+where $\bb{I}$ is the three-dimensional identity matrix, we define $\vb{\nabla}\vb{u}$ by its elements $(\vb{\nabla}\vb{u})_{ij} = \partial u_j / \partial x_i$ and $μ$ is kinematic viscosity. The energy flux \emph{not} due to fluid stresses is given by
 \begin{align}
-\vec{\cl{E}} = -λ \vec{\nabla} T + \sum_α \left( \int_{T_0}^T c_{p, α}(T') \dd{T'} + Δ h_{f, α}^\plimsoll \right) (ρ \vec{V}_{\!α} Y_α),
+\vb{\cl{E}} = -λ \vb{\nabla} T + \sum_α \left( \int_{T_0}^T c_{p, α}(T') \dd{T'} + Δ h_{f, α}^\plimsoll \right) (ρ \vb{V}_{\!α} Y_α),
 \end{align}
 where $λ$ is heat conductivity.
 
-Generally speaking one of two models are used for the diffusion velocity $\vec{V}_{\!α}$: the Fick's law approximation \cite{fick1855UeberDiffusion} and mixture averaging \cite{hirschfelder1964MolecularTheoryGases, comsol2023MulticomponentDiffusionMixtureAveraged}. In the case of the former, we choose a diffusion coefficient $D_α$ for each species and impose Fick's law $ρ \vec{V}_{\!α} Y_α = - ρ D_α \vec{\nabla} Y_α$ which assumes each species behaves as though it is diffusing into a single other species (c.f. binary mass diffusion). In the other case, mixture averaging provides a much more detailed model of the diffusion of each species $α$ into another species $β$ via the diffusion coefficients $D_{αβ}$. The full mixture averaging equations are omitted for brevity. This is good enough for theoretical work, but numerical tools under these schemes do not usually impose that $Y_α \nless 0$ and $Y_α \ngtr 1$. To rectify this, we instead use \emph{corrected diffusion velocities}, $\vec{V}_{\!α}^c$, where:
+Generally speaking one of two models are used for the diffusion velocity $\vb{V}_{\!α}$: the Fick's law approximation \cite{fick1855UeberDiffusion} and mixture averaging \cite{hirschfelder1964MolecularTheoryGases, comsol2023MulticomponentDiffusionMixtureAveraged}. In the case of the former, we choose a diffusion coefficient $D_α$ for each species and impose Fick's law $ρ \vb{V}_{\!α} Y_α = - ρ D_α \vb{\nabla} Y_α$ which assumes each species behaves as though it is diffusing into a single other species (c.f. binary mass diffusion). In the other case, mixture averaging provides a much more detailed model of the diffusion of each species $α$ into another species $β$ via the diffusion coefficients $D_{αβ}$. The full mixture averaging equations are omitted for brevity. This is good enough for theoretical work, but numerical tools under these schemes do not usually impose that $Y_α \nless 0$ and $Y_α \ngtr 1$. To rectify this, we instead use \emph{corrected diffusion velocities}, $\vb{V}_{\!α}^c$, where:
 \begin{equation}
-ρ \vec{V}_{\!α}^c Y_α = ρ \vec{V}_{\!α} Y_α - Y_α \sum_{β} ρ \vec{V}_β Y_β.
+ρ \vb{V}_{\!α}^c Y_α = ρ \vb{V}_{\!α} Y_α - Y_α \sum_{β} ρ \vb{V}_β Y_β.
 \end{equation}
 
 The term remaining is the chemical production rate of species $α$ by mass, $\dot{ω}_α$. Considering a general reaction mechanism of $N_{\rm{R}}$ reversible steps:

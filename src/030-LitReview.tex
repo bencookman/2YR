@@ -9,6 +9,8 @@ Combustion for engineering applications typically happens in systems of chambers
 \end{equation}
 where $\rm{RI}$ is the \emph{Rayleigh Index}, $p'$ and $Q'$ represent fluctuations in the pressure and total heat release, respectively. The closed integral sign represents the integral over a single of the above mentioned periods. This statement translates to the statement that $p'$ and $Q'$ must be in phase with one another for instability to occur. This phase is controlled by the acoustics of the combustion chamber itself so small changes to combustor system's geometry can result in large qualitative changes to stability. When they are in phase, the feedback loop takes the form of a clockwise p-V cycle \cite{polifke2004CombustionInstabilities}, equivalent to an Otto cycle. This means the mechanism can generate mechanical work which, when confined to an engine, can take the form of a damaging force on engine parts, such as the damage observed in \cite{lieuwen2006CombustionInstabilitiesGas}.
 
+Stroboscopic imagery of flames propagating through tubes are shown in \cite{guenoche1964ChapterFlamePropagation} and made by periodically exposing the same film to the flame's light using a rotating drum. By establishing four different test configurations of these ducted flames (each of the two ends being either closed or open to the environment), the experiments establish flame structures common between these test cases. For one, all test cases have a flame which decelerates after ignition. They also observe oscillations in the flame's shape, not yet explained by the primary instability mechanism. These flame oscillations, \cite{guenoche1964ChapterFlamePropagation} concludes, are the result of the interaction of the acoustic oscillation of the gas, determined by the tube's acoustics, and the flame front.
+
 \begin{figure}[t]
 \centering
 \includegraphics[scale=0.6]{assets/imgs/Searby-92.pdf}
@@ -16,7 +18,7 @@ where $\rm{RI}$ is the \emph{Rayleigh Index}, $p'$ and $Q'$ represent fluctuatio
 \label{fig:searby-experiment}
 \end{figure}
 
-A crucial experiment into thermoacoustics was performed by Searby in 1992 \cite{searby1992AcousticInstabilityPremixed}, which studied the correlation between the acoustics detected in a long, thin tube and the speed and shape of the laminar premixed flame within, depicted in \fig{fig:searby-experiment}. Propane-air mixtures were lit at the top end of the tube and propagate down, with any acoustic disturbance detected by a pressure sensor at the bottom. Additionally, a small laser beam was place near the top of the tube to detect the flame as thermal gradients deflect the light. This triggers a digital oscilloscope to record pressure disturbances from the pressure sensor. A short exposure video camera was used to image the flame surface and observe its structure as it propagates. Since propane (C$_3$H$_8$) is a relatively heavy fuel with a species diffusion rate lower than methane's, the lean and stoichiometric mixtures used have Lewis numbers which are never below the critical Lewis number, $\Le_\rm{crit}$, required for \emph{thermodiffusive instabilities} \cite{zeldovich1944TheoryCombustionDetonation,barenblatt1962DiffusionalThermalStabilIty,sivashinsky1977DiffusionalThermalTheoryCellular} to have an effect. Note that the downward propagating flames will have been somewhat stabilised by the \emph{Rayleigh-Taylor} (RT) instability. The primary instability is observed alongside a secondary, which is associated with a different feedback mechanism, acoustic envelopes and flame dynamics.
+An insightful experiment into thermoacoustics was performed later in 1992 by Searby \cite{searby1992AcousticInstabilityPremixed} and studied relationships between a cylindrical tube's acoustics as well as the speed and shape of the premixed flame within. The experimental apparatus is depicted in \fig{fig:searby-experiment}. Propane-air mixtures were lit at the top end of the tube and propagate down, with any acoustic disturbance detected by a pressure sensor at the bottom. Additionally, a small laser beam was place near the top of the tube to detect the flame as thermal gradients deflect the light. This triggers a digital oscilloscope to record pressure disturbances from the pressure sensor. A short exposure video camera was used to image the flame surface and observe its structure as it propagates. Since propane (C$_3$H$_8$) is a relatively heavy fuel with a species diffusion rate lower than methane's, the lean and stoichiometric mixtures used have Lewis numbers which are never below the critical Lewis number, $\Le_\rm{crit}$, required for \emph{thermodiffusive instabilities} \cite{zeldovich1944TheoryCombustionDetonation,barenblatt1962DiffusionalThermalStabilIty,sivashinsky1977DiffusionalThermalTheoryCellular} to have an effect. Note that the downward propagating flames will have been somewhat stabilised by the \emph{Rayleigh-Taylor} (RT) instability. The primary instability is observed alongside a secondary, which is associated with a different feedback mechanism, acoustic envelopes and flame dynamics.
 
 \begin{figure}[t]
 \centering
@@ -57,24 +59,23 @@ Initially, the flame curves as a result of the hydrodynamic instability, as phot
 
 % Flat flame under primary can be seen as a limit cycle
 
-Following this, thermoacoustic oscillations have been observed in a variety of experimentation.
+Beyond this, thermoacoustic oscillations have been observed in a variety of experimentation. Methane-air combustion in a cylindrical tube was investigated experimentally in \cite{fichera2001ExperimentalAnalysisThermoacoustic} with data recorded from an optical sensor to detect changes to heat release, a pressure transducer for internal pressure recordings and a microphone for external pressure recordings. Thermoacoustic oscillations were observed and a non-linear analysis into the dynamical behaviour of the flame recordings demonstrate a chaotic nature to these thermoacoustics. The global stability of the flame, which is guaranteed by diffusive effects, is corroborated via calculation of the set of Lyapunov exponents.
 
-Methane-air combustion in a cylindrical tube was investigated experimentally in \cite{fichera2001ExperimentalAnalysisThermoacoustic} with data recorded from an optical sensor to detect changes to heat release, a pressure transducer for internal pressure recordings and a microphone for external pressure recordings. Thermoacoustic oscillations were observed and a non-linear analysis into the dynamical behaviour of the flame recordings demonstrate a chaotic nature to these thermoacoustics. The global stability of the flame, which is guaranteed by diffusive effects, is corroborated via calculation of the set of Lyapunov exponents.
+In the thesis \cite{ebieto2017DynamicsPremixedFlames}, 
 
-SOME NEW CHANGE
 
+
+
+
+% stroboscopic
 
 
 % Following this, thermoacoustic oscillations have been observed in a variety of experimentation:
 % delfin2024ThermoacousticParametricInstability
 % - High resolution and speed images of flames under thermoacoustic instability in open-ended tubes as well as clear images of flame structure under parametric instability
 
-% ebieto2017DynamicsPremixedFlames (THESIS)
+%  (THESIS)
 % - high speed imaging of a variety of thermoacoustic flames
-
-% tachibana2015ExperimentalNumericalInvestigation
-% - spray combustion in a liquid-fuel aero-engine
-% - experiment vs LES
 
 % For high quality examples of thermoacoustic oscillations in motion, one can refer to
 % delfin2024VideoTransientParametric

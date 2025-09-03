@@ -28,7 +28,7 @@ LABFM \cite{king2024MeshFreeFrameworkHighOrder, king2020HighOrderDifference, kin
 
 \subsection{High-Order Interpolations}
 
-Consider a location $\vb{x}$ surrounded locally by finitely many nodes $\vb{x}_j \in \cl{S}(\vb{x})$ which are enumerated by $j \in \cl{N}(\vb{x})$, where $\abs{\vb{x} - \vb{x}_j} < h(\vb{x})$ for all $j$. Assume the field $φ(\vb{x})$, which is only known at the points $φ_j = φ(\vb{x}_j)$, is \emph{smooth enough}.\footnote{Such that as many derivatives of $φ$ as are used in the derivation below are available to us.} Then, we express the interpolated value $φ(\vb{x})$ as a linear combination of the surrounding values $φ_j$:
+Consider a location $\vb{x}$ surrounded locally by finitely many nodes $\vb{x}_j \in \cl{S}(\vb{x})$ which are enumerated by $j \in \cl{N}(\vb{x})$, where $\abs{\vb{x} - \vb{x}_j} < h(\vb{x})$ for all $j$. Assume the field $φ(\vb{x})$, which is only known at the points $φ_j = φ(\vb{x}_j)$, is smooth enough.\footnote{Such that as many derivatives of $φ$ as are used in the derivation below are available to us.} Then, we express the interpolated value $φ(\vb{x})$ as a linear combination of the surrounding values $φ_j$:
 \begin{equation} \label{eqn:L}
 L^{\rm{int}}[φ](\vb{x}) \equiv \sum_{j \in \cl{N}(\vb{x})} φ_j w^{\rm{int}}(\vb{x}, \vb{x}_j) \approx φ(\vb{x}).
 \end{equation}

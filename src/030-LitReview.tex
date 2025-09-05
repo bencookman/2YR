@@ -120,8 +120,6 @@ In \cite{jun2023ParametricInstabilityPropagating} the secondary instability in h
 
 \subsection{Instability Control}
 
-% Gatón-Pérez et al. (2025)
-
 \begin{figure}[t]
 \centering
 \includegraphics[scale=0.6]{assets/imgs/GP-model.pdf}
@@ -129,7 +127,6 @@ In \cite{jun2023ParametricInstabilityPropagating} the secondary instability in h
 \label{fig:GP-model}
 \end{figure}
 
-% This analysis is further used by Gatón-Pérez to ...
 Simpler analysis is performed by Gatón-Pérez et al. \cite{gaton-perez2025MitigationThermoacousticInstabilities} to evaluate the eigenstates of a one-dimensional closed-open tube containing a porous plug and a flame. Using Darcy's law to model the plug and assuming linear acoustics, the acoustic eigenmodes of the tube are found numerically. Experimental data is then compared against the one-dimensional model depicted in \fig{fig:GP-model}, where the heat release parameter, thermal length scale and the plug's permeability set by experimental values. Effects of heat losses through the combustor walls is given by \cite{flores-montoya2022NonadiabaticModulationPremixedflame}. The model is able to predict the flame locations within the tube which are most likely to trigger thermoacoustic resonance despite no consideration of the flame's motion or its thermal response to acoustics being made. These are the locations where the resulting acoustic eigenmodes have the lowest decay imposed by the porous plug. In this way, they show experimentally that the location of the porous plug may be chosen to preferentially mitigate different frequencies and reduce the likelihood of thermoacoustic instability. Evidently though, a simple one-dimensional model of this ilk is restricted in application to strongly one-dimensional, ducted combustors. As soon as a broader combustor or plenum is used, the two-dimensional acoustics (e.g. Helmholtz modes) must also be considered.
 
 % luzzato2015ModellingControlCombustion (THESIS)
@@ -147,7 +144,7 @@ Simpler analysis is performed by Gatón-Pérez et al. \cite{gaton-perez2025Mitig
 
 \begin{figure}[t]
 \centering
-\includegraphics[scale=0.65]{example-image-a}
+\includegraphics[scale=0.65]{assets/imgs/ITA-mech.pdf}
 \caption{INTRINSIC THERMOACOUSTIC FEEDBACK LOOP}
 \label{fig:ita-loop}
 \end{figure}
@@ -177,12 +174,18 @@ Simpler analysis is performed by Gatón-Pérez et al. \cite{gaton-perez2025Mitig
 
 % Mention AVBP and CERFACS?
 
-\cite{orszag1970AnalyticalTheoriesTurbulence, domingo2023RecentDevelopmentsDNS, chen2011PetascaleDirectNumerical, yang2015LargeEddySimulationPresent, veynante2002TurbulentCombustionModeling, moin1998DirectNumericalSimulation, tennekes1972FirstCourseTurbulence}
+\cite{, domingo2023RecentDevelopmentsDNS, chen2011PetascaleDirectNumerical, yang2015LargeEddySimulationPresent, veynante2002TurbulentCombustionModeling, moin1998DirectNumericalSimulation, tennekes1972FirstCourseTurbulence}
 
-% The most blunt way to simulate a fluid system would be one where you try to accurately simulate every detail involved in the fluid.
-% This idea was first studied by Orszag, where he defines direct numerical simulations as a numerical simulation with enough grid points to full resolve the smallest physical phenomena in the system
-% Originally, Orszag studied this in the context of turbulent flows. In turbulent flows, we have vortices not only on the order of the typical flow length scale $L$, called the integral length scale, but also of sizes all the way down to the smallest turbulence scale known as the kolmogorov microscale, where the rate at which viscous dissipation effects dampen vortices far exceeds the inertial forces of the vortex.
+The most brute force way to simulate a fluid system would be one where you try to accurately simulate every detail involved in the fluid. This idea was first studied by Orszag \cite{orszag1970AnalyticalTheoriesTurbulence}, where he defines \emph{direct numerical simulations} (DNS) as a numerical simulation with enough grid points to full resolve the smallest physical phenomena in the system. Originally, Orszag studied this in the context of turbulent flows. In turbulent flows, we have vortices not only on the order of the typical flow length scale $l_T$, called the integral length scale, but also of sizes all the way down to the smallest turbulence scale known as the kolmogorov microscale [CITE], where the rate at which viscous dissipation effects dampen vortices far exceeds the inertial forces of the vortex. In DNS of turbulent combustion, the smallest scale vortices must be resolved in addition to the smallest chemical length scales. In this context, the number of degrees of freedom required to resolve a three-dimensional box of size $L$ is:
+\begin{equation}
+N_{\rm{tot}} = \left( \frac{L}{2 l_T} \right)^3 \, \Da \, \Ka \, \Re_T^{7 / 4}
+\end{equation}
+
+For most turbulence intensities and combustion reactions, this means having a discretisation length scale on the order of 10 - 100 $μ$m.
+
 % The size of this kolmogorov length scale is determined by the turbulent reynolds number and the integral scale with the relationship
+
+% A consequence of this is the extraordinary computational cost to accurately simulate a large domain. To fully resolve DNS of turbulent combustion, for example, the small chemical length scale must be resolved in addition to the smallest scale vortices. 
 
 % An alternative method that is widely used is LES and involves using models to estimate the transfer of energy at the smallest scale rather than fully simulating them [cite les review: Yang 2015]
 % DNS for turbulent combustion are reviewed in \textbf{Domingo and Vervisch 2023} (with connection to LES) and \textbf{Chen 2011}.
@@ -246,11 +249,11 @@ Simpler analysis is performed by Gatón-Pérez et al. \cite{gaton-perez2025Mitig
 \label{fig:D-TDIBC}
 \end{figure}
 
-Although many variations on TDIBC exist, the \emph{Delayed-Time Domain Impedance Boundary Conditions} (D-TDIBC) of \cite{douasbin2018DelayedtimeDomainImpedance} are particularly relevant for the simulation of thermoacoustic instabilities. By modelling the effect of an acoustic time delay, $t_{\rm{delay}}$, a part of the computational domain -- say, an exhaust pipe -- may be truncated in place of a numerical boundary. Then, the response of this new boundary to incoming acoustics should be a sinusoidal Moiré pattern in the frequency domain. The proposition of \cite{douasbin2018DelayedtimeDomainImpedance} is that this pattern may be modelled via a meromorphic function of $2n$ simple poles. The location of these poles and their residues are then found in a preprocessing step as the values which minimise the least-squares fit with the desired response curve. Each time step then, the resulting constants are used to evaluate the change in acoustic variable at the boundary in such a way that no memory of previous time steps are required. 
+Although many variations on TDIBC exist, the \emph{Delayed-Time Domain Impedance Boundary Conditions} (D-TDIBC) of \cite{douasbin2018DelayedtimeDomainImpedance} are particularly relevant for the simulation of thermoacoustic instabilities. By modelling the effect of an acoustic time delay, $τ$, a part of the computational domain -- say, an exhaust pipe -- may be truncated in place of a numerical boundary. Then, the response of this new boundary to incoming acoustics should be a sinusoidal Moiré pattern in the frequency domain. The proposition of \cite{douasbin2018DelayedtimeDomainImpedance} is that this pattern may be modelled via a meromorphic function of $2n$ simple poles. The location of these poles and their residues are then found in a preprocessing step as the values which minimise the least-squares fit with the desired response curve. Each time step then, the resulting constants are used to evaluate the change in acoustic variable at the boundary in such a way that no memory of previous time steps are required. 
 
 After validating the model by testing its response to a Gaussian pressure bump, the model is compared against DNS of methane-air combustion in a 2D flame holder, where the upstream end is closed and the downstream end is open. Comparing this to DNS where the last 25 cm at the downstream end has been truncated to use D-TDIBC, they find that the time delay model accurately recovers the one-, three- and five-quarter eigenmode shapes, with small quantitative errors in their sound spectra. Considering the $\sim 13\%$ reduction in degrees of freedom in the computational domain resulting from the truncation, this can be seen as an impressive recovery of the problem's physics by using what is essentially a one-dimensional low-order model in the truncated region for the acoustics. Since the model constants are calculated as a preprocessing step, the envelope of the acoustic response in the frequency domain may essentially be changed arbitrarily, presenting a benefit in case different pass bands are desired.
 
-Besides the inevitable drawbacks stemming from: the low-order model's inaccuracy and the requirement of a strongly one-dimensional flow at the boundary to match this model, other drawbacks remain prevalent. For one, no method to visualise acoustics residing in the fictitious, truncated domain is provided, potentially leading to a \emph{black-box} of energy where acoustics are essentially stored, but not known. For another, the preprocessing steps are required for each value of $t_{\rm{delay}}$ used. So, if the time delay were to change dynamically during the simulation (e.g. due to an expanding computational domain to ensure the flame remains within), this preprocessing may happen each step, becoming computationally costly.
+Besides the inevitable drawbacks stemming from: the low-order model's inaccuracy and the requirement of a strongly one-dimensional flow at the boundary to match this model, other drawbacks remain prevalent. For one, no method to visualise acoustics residing in the fictitious, truncated domain is provided, potentially leading to a \emph{black-box} of energy where acoustics are essentially stored, but not known. For another, the preprocessing steps are required for each value of $τ$ used. So, if the time delay were to change dynamically during the simulation (e.g. due to an expanding computational domain to ensure the flame remains within), this preprocessing may happen each step, becoming computationally costly.
 
 
 

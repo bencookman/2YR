@@ -178,17 +178,9 @@ Simpler analysis is performed by Gatón-Pérez et al. \cite{gaton-perez2025Mitig
 
 The most brute force way to simulate a fluid system would be one where you try to accurately simulate every detail involved in the fluid. This idea was first studied by Orszag \cite{orszag1970AnalyticalTheoriesTurbulence}, where he defines \emph{direct numerical simulations} (DNS) as a numerical simulation with enough grid points to full resolve the smallest physical phenomena in the system. Originally, Orszag studied this in the context of turbulent flows. In turbulent flows, we have vortices not only on the order of the typical flow length scale $l_T$, called the integral length scale, but also of sizes all the way down to the smallest turbulence scale known as the kolmogorov length scale $l_K$ [CITE], where the rate at which viscous dissipation effects dampen vortices far exceeds the inertial forces of the vortex. In DNS of turbulent combustion, the smallest scale vortices must be resolved in addition to the smallest chemical length scales. In this context, the relevant time scales are chemical $τ_C = l_{\rm{th}} / S_L$, integral $τ_T = l_T / u'$ and Kolmogorov $τ_K = l_K / u'$ given an RMS velocity scale $u'$. Hence, the number of degrees of freedom required to resolve a three-dimensional box of size $L$ is:
 \begin{equation}
-N_{\rm{tot}} = \left( \frac{L}{2 l_T} \right)^3 \, \Da \, \Ka \, \rm{Re}_T^{7 / 4}
+N_{\rm{tot}} = \left( \frac{L}{2 l_T} \right)^3 \Da \: \Ka \: \rm{Re}_T^{7 / 4}
 \end{equation}
-where we define the turbulent Reynolds, Damköhler and Karlovitz numbers by:
-\begin{equation}
-\rm{Re}_T \equiv \left( \frac{l_T}{l_K} \right)^{4 / 3},
-\quad
-\Da \equiv \frac{τ_T}{τ_C}
-\quad \text{and} \quad
-\Ka \equiv \frac{τ_C}{τ_K}
-\end{equation}
-respectively.
+where we define the turbulent Reynolds number by $\rm{Re}_T \equiv ( l_T / l_K )^{4 / 3}$, Damköhler number by $\Da \equiv τ_T / τ_C$ and Karlovitz number by $\Ka \equiv τ_C / τ_K$.
 
 
 For most turbulence intensities and combustion reactions, this means having a discretisation length scale on the order of 10 - 100 $μ$m.

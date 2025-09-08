@@ -171,7 +171,7 @@ Simpler analysis is performed by Gatón-Pérez et al. \cite{gaton-perez2025Mitig
 
 
 
-\section{Techniques for Computational Fluid Dynamics (CFD)}
+\section{Computational Fluid Dynamics (CFD) Techniques Used For Combustion Modelling}
 
 \subsection{The Method of Lines}
 
@@ -183,6 +183,7 @@ The combustion equations from \chap{ch:combust-model} are only analytically solu
 
 \subsection{Direct Numerical Simulation (DNS)}
 
+% turbulence is a fundamentally three-dimensional phenomenon -- the energy cascade from large to small vortices depends on the $(\vb{ω} \cdot \vb{\nabla})\vb{u}$ term on the right-hand side of the equation for vorticity, $\vb{ω} \equiv \vb{\nabla} \cross \vb{u}$.
 The most brute force way to simulate a fluid system would be one where you try to accurately simulate every detail involved in the fluid. This idea was first studied by Orszag \cite{orszag1970AnalyticalTheoriesTurbulence}, where he defines \emph{direct numerical simulation} (DNS) as a numerical simulation with enough grid points to full resolve the smallest physical phenomena in the system. Originally, Orszag studied this in the context of turbulent flows \cite{orszag1970AnalyticalTheoriesTurbulence,orszag1972NumericalSimulationThreeDimensional}. In such flows, we have vortices not only on the order of the typical flow length scale $l_T$, called the integral length scale, but also of sizes all the way down to the smallest turbulence scale known as the kolmogorov length scale $l_K$ \cite{kolmogorov1941LocalStructureTurbulence}, where the rate at which viscous dissipation effects dampen vortices far exceeds the inertial forces of the vortex \cite{tennekes1972FirstCourseTurbulence,moin1998DirectNumericalSimulation}. In DNS of turbulent combustion, the smallest scale vortices must be resolved in addition to the smallest chemical length scales. In this context, the relevant time scales are chemical $τ_C = l_{\rm{th}} / S_L$, integral $τ_T = l_T / u'$ and Kolmogorov $τ_K = l_K / u'$ given an RMS velocity scale $u'$. Hence, the number of degrees of freedom required to resolve a three-dimensional box of size $L$ is \cite{domingo2023RecentDevelopmentsDNS}:
 \begin{equation}
 N_{\rm{tot}} = \left( \frac{L}{2 l_T} \right)^3 \Da \: \Ka \: \rm{Re}_T^{7 / 4}
@@ -197,20 +198,16 @@ Needless to say, the cost of simulation must be decreased before useful research
 
 \subsection{Large Eddy Simulation (LES)}
 
-\cite{yang2015LargeEddySimulationPresent, veynante2002TurbulentCombustionModeling, pitsch2006LargeEddySimulationTurbulent}
+\cite{veynante2002TurbulentCombustionModeling}
 
-To this end, another paradigm is often used for simulations, called \emph{Large Eddy Simulation} (LES) where the same complex physics may be modelled with a coarser resolution. 
-% An alternative method that is widely used is LES and involves using models to estimate the transfer of energy at the smallest scale rather than fully simulating them [cite les review: Yang 2015]
-% DNS for turbulent combustion are reviewed in \textbf{Domingo and Vervisch 2023} (with connection to LES) and \textbf{Chen 2011}.
+% introduce viscosity models $μ_t$ on the subgrid scale -- based of Favre averaging?
+To this end, another paradigm is often used for simulations, called \emph{Large Eddy Simulation} (LES) where the same complex physics may be modelled with a coarser resolution. This relies on the use of a filtering technique to remove turbulence smaller than a filter size $δX$. This allows the discretisation length scale to be increased, so many fewer computations are required, especially in three-dimensions. The remaining kinetic energy is a vast majority of the kinetic energy in the system. The filtered motions, which are referred to as the subgrid scale motions, must now be modelled -- this is where the turbulence models are incorporated \cite{yang2015LargeEddySimulationPresent}. In DNS of inert turbulence, the smallest length scale involved is the turbulent length scale, so the ratio of discretisation scales between LES and DNS, $δX / δx$, is proportional to $(\rm{Re}_{δX} / \rm{Re})^{3/4} = (u'_{δX} δX / S_L l_{\rm{th}})^{3/4}$, such that we have $N_{\rm{tot}, \rm{LES}} / N_{\rm{tot}, \rm{DNS}} = (\rm{Re}_{δX} / \rm{Re})^{9/4}$ in three-dimensions, representing a massive reduction in computational cost \cite{pitsch2006LargeEddySimulationTurbulent}. The reduction in cost is obviously less so in two-dimensions, but this fine because two-dimensional flows are rarely as prohibitively expensive.
 
-
-Filtering technique is used to remove turbulence smaller than a filter size $δX$. The remaining kinetic energy is a vast majority of the kinetic energy in the system. This allows the discretisation length scale to be increased, so many fewer computations are required, especially in three-dimensions. The filtered motions, which are referred to as the subgrid scale motions, must now be modelled instead. This is where the turbulence models are incorporated. Since the smallest length scale is the turbulent length scale here, the ratio of discretisation scales between LES and DNS, $δX / δx$, is $(\rm{Re}_{δX} / \rm{Re})^{3/4} = (u'_{δX} δX / S_L l_{\rm{th}})^{3/4}$, such that we have $N_{\rm{tot}, \rm{LES}} / N_{\rm{tot}, \rm{DNS}} = (\rm{Re}_{δX} / \rm{Re})^{9/4}$ in three-dimensions, which represents a massive reduction in computational cost \cite{pitsch2006LargeEddySimulationTurbulent}. The reduction in cost is obviously less so in two-dimensions, but this fine because two-dimensional flows are rarely as prohibitively expensive. Besides, turbulence is a fundamentally three-dimensional phenomenon -- the energy cascade from large to small vortices depends on the $(\vec{ω} \cdot \vec{\nabla})\vec{u}$ term on the right-hand side of the equation for vorticity, $\vec{ω} \equiv \vec{\nabla} \cross \vec{u}$.
-
-For LES of turbulent combustion, we have a much more complicated system. Assuming our the shortest length scale at the flame is the chemical length scale $l_C$, then these filtered reaction terms must also be modelled at the flame. This poses an issue, since the vast majority of energy released from the combustion reaction happens on the smallest, chemical, length scales instead. This results in the introduction of several flame models depending on the relative intensity of turbulence. Most relevant engineering applications involve a level of turbulence 
-
-
-
-
+% WHat are the flame models?? They are models for the value $S_T$ in our equations, wherever that may enter?
+% The LES model ought to be account for the coupled effect of sgs eddies and combustion, since reaction rates are modulated in premixed combustion entirely by thermal and molecular diffusion, which can be aided by the turbulent mixing of the surrounding reactants.
+For LES of turbulent combustion, we have a much more complicated system. Assuming our the shortest length scale at the flame is the chemical length scale $l_C$, then these filtered reaction terms must also be modelled at the flame. This poses an issue, since the vast majority of energy released from the combustion reaction happens on the smallest, chemical, length scales instead. This results in the introduction of several flame models depending on the relative intensity of turbulence. Most relevant engineering applications involve a level of turbulence corresponding to $\Ka > 1$, or the thin flame regime \cite{pitsch2006LargeEddySimulationTurbulent}.
+% Talk about this more, along with the flamelet regime, which is probably more relevant?
+% Mixing variables?? probably as part of a regime
 
 
 
@@ -219,7 +216,34 @@ For LES of turbulent combustion, we have a much more complicated system. Assumin
 
 \subsection{High-Order Discretisation} \label{sec:high-order}
 
-Regardless of the paradigm used -- DNS, LES or even \emph{Reynolds Averaged Navier Stokes} (RANS), which is not discussed here -- a minimum spatial resolution is required before the method will converge
+Regardless of the paradigm used -- DNS, LES or even \emph{Reynolds Averaged Navier Stokes} (RANS), which is not discussed here -- convergent behaviour between different simulations is only observed once a minimum spatial resolution is used.
+
+% Discretisations are most easily developed in one dimension. The typical canonical example are that of finite difference method (FDM) approximations. Centred finite difference approximations can easily reach high orders when uniform grid points are used. Compact finite differences solve the same linear problem, with the constraint that as few grid points be used in the stencil as possible.
+% In two dimensions, finite differences may easily be applied by a simple Cartesian product: e.g. for a the gradient of a field $\vb{\nabla} f$, each partial derivative may be approximated by finite differences separately in each dimension, as long as a uniform rectangular lattice (cuboid lattice in three-dimensions) is used to discretise the computational domain.
+% Some adaptivity can be implemented in order by simply requiring different grid points use different FDM schemes and different 
+% But three-dimensional domains are restricted to parallelopipeds and we must use an Eulerian regime, where the grid points are fixed in space
+% Centred finite differences also suffer from stability issues because they are not upwinded for the hyperbolic waves. Accounting for this with one-sided upwinded schemes results in a compromise between stencil size and order.
+
+% Try to give examples for each???
+
+% FVM does...
+% Easy to do non-uniform domains, but meshing can be a major problem
+
+
+% FEM does...
+% Weak form, DG method. Something about a polynomial basis
+% Same problem with meshing
+% Can do lagrangian
+% NOT high-order, so converged simulations may have large amounts of diffusive behaviour, especially problematic at discontinuities like the flame
+
+% SEM does...
+% High order method
+
+
+% ENO does ...
+% Essentially non-oscillatory interpolants ... whatever that means
+% for discontinuities, so is often used for combustion problems to to resolve flames and detonation shock waves.
+
 
 % SPH as precursor to LABFM
 % \cite{monaghan1992SmoothedParticleHydrodynamics, vacondio2021GrandChallengesSmoothed}

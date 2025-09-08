@@ -15,6 +15,5 @@ lualatex --synctex=1 --interaction=nonstopmode --output-directory=out --output-f
 mv "./out/main.pdf" # movepdf
 ```
 
-Notice the `git commit` performed at the end, which is done automatically along with the rest of it using latex tools and recipes in VS Code.
-
+Notice no `git commit` is performed at the end, but may done automatically along with the rest of it using latex tools and recipes in VS Code.
 

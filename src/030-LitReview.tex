@@ -183,28 +183,37 @@ The combustion equations from \chap{ch:combust-model} are only analytically solu
 
 \subsection{Direct Numerical Simulation (DNS)}
 
-\cite{yang2015LargeEddySimulationPresent, veynante2002TurbulentCombustionModeling}
-
 The most brute force way to simulate a fluid system would be one where you try to accurately simulate every detail involved in the fluid. This idea was first studied by Orszag \cite{orszag1970AnalyticalTheoriesTurbulence}, where he defines \emph{direct numerical simulation} (DNS) as a numerical simulation with enough grid points to full resolve the smallest physical phenomena in the system. Originally, Orszag studied this in the context of turbulent flows \cite{orszag1970AnalyticalTheoriesTurbulence,orszag1972NumericalSimulationThreeDimensional}. In such flows, we have vortices not only on the order of the typical flow length scale $l_T$, called the integral length scale, but also of sizes all the way down to the smallest turbulence scale known as the kolmogorov length scale $l_K$ \cite{kolmogorov1941LocalStructureTurbulence}, where the rate at which viscous dissipation effects dampen vortices far exceeds the inertial forces of the vortex \cite{tennekes1972FirstCourseTurbulence,moin1998DirectNumericalSimulation}. In DNS of turbulent combustion, the smallest scale vortices must be resolved in addition to the smallest chemical length scales. In this context, the relevant time scales are chemical $τ_C = l_{\rm{th}} / S_L$, integral $τ_T = l_T / u'$ and Kolmogorov $τ_K = l_K / u'$ given an RMS velocity scale $u'$. Hence, the number of degrees of freedom required to resolve a three-dimensional box of size $L$ is \cite{domingo2023RecentDevelopmentsDNS}:
 \begin{equation}
 N_{\rm{tot}} = \left( \frac{L}{2 l_T} \right)^3 \Da \: \Ka \: \rm{Re}_T^{7 / 4}
 \end{equation}
 where we define the turbulent Reynolds number by $\rm{Re}_T \equiv ( l_T / l_K )^{4 / 3}$, Damköhler number by $\Da \equiv τ_T / τ_C$ and Karlovitz number by $\Ka \equiv τ_C / τ_K$. For typical turbulence intensities and combustion reactions, this results a discretisation length scale $δx$ on the order of 10-100 {\textmu}m. For example, in a simulation using $δx = 50$ {\textmu}m with a $10 \times 10 \times 10$ cm$^3$ computational domain, we require roughly 8 billion discretisation points. This workload is not only completely untenable for computation on personal computers, but remains prohibitive even for tier 2 High Performance Computing systems \cite{vlaamssupercomputercentrum2025TieringSystem,archer2020HPCEurope}, requiring resources usually available only at the national level. An example of this scale can be seen in the DNS of a real-size internal combustion engine in \cite{danciu2025DirectNumericalSimulation} -- large scale simulations of turbulent combustion are discussed further in \cite{chen2011PetascaleDirectNumerical}. Larger systems are needed not for their increased serial processing speed, but for the number of available processing units. Even excluding the potential for heterogeneous processing using GPUs, it is still only the largest supercomputers which provide the multiprocessing capability necessary to decompose such a large problem. Furthermore, regardless of the wall clock time taken to compute, it should be noted that any computation requires energy, so even after heavily parallelising the DNS roughly the same amount of overall energy is required (technically more due to the inefficiency in parallelising) to perform the full computation. Therefore, we should be careful of the cost in performing computational research in combustion to aid a clean energy transfer, when the cost requires the burning of fossil fuels.
 
-Needless to say, the cost of simulation must be decreased before useful research may done. A simple way to do this is by modelling simpler physics in DNS than you know is present in the physical system. This is most effectively done by decreasing the number of species which are simulated, usually by removing minor intermediate species which are not a limiting part of the reaction mechanism. In so doing, the number of simulated differential equations goes down for each species removed -- if all species are removed besides product and reactant species, then only one mass fraction equation needs to be simulated. Further simplifications can also be made to the transport processes. But, one should note that benefits to accuracy in DNS are greatly undone when models are used which change the simplify the physical system. To this end, another paradigm is often used for simulations, called \emph{Large Eddy Simulation} (LES) where the same complex physics may be modelled with a coarser resolution. LES is discussed further in the next section. In any case, more efficient simulations may be used, which can be achieved by increasing the order of accuracy in derivative approximations. This is discussed in \sect{sec:high-order}
+Needless to say, the cost of simulation must be decreased before useful research may done. A simple way to do this is by modelling simpler physics in DNS than you know is present in the physical system. This is most effectively done by decreasing the number of species which are simulated, usually by removing minor intermediate species which are not a limiting part of the reaction mechanism. In so doing, the number of simulated differential equations goes down for each species removed -- if all species are removed besides product and reactant species, then only one mass fraction equation needs to be simulated. Further simplifications can also be made to the transport processes. But, one should note that benefits to accuracy in DNS are greatly undone when models are used which change the simplify the physical system. In any case, More efficient simulations may be used, which can be achieved by increasing the order of accuracy in derivative approximations. This is discussed in \sect{sec:high-order}
+
 
 
 
 
 \subsection{Large Eddy Simulation (LES)}
 
+\cite{yang2015LargeEddySimulationPresent, veynante2002TurbulentCombustionModeling, pitsch2006LargeEddySimulationTurbulent}
 
+To this end, another paradigm is often used for simulations, called \emph{Large Eddy Simulation} (LES) where the same complex physics may be modelled with a coarser resolution. 
 % An alternative method that is widely used is LES and involves using models to estimate the transfer of energy at the smallest scale rather than fully simulating them [cite les review: Yang 2015]
 % DNS for turbulent combustion are reviewed in \textbf{Domingo and Vervisch 2023} (with connection to LES) and \textbf{Chen 2011}.
 
 
+% Filtering technique is used to remove turbulence smaller than a filter size. The remaining kinetic energy is a vast majority of the kinetic energy in the system
+% This allows the discretisation length scale to be increased, so many fewer computations are required, especially in three-dimensions
+% The filtered motions must now be modelled instead, which is where the turbulence models are incorporated
+% For LES of turbulent combustion, we have a more complicated situation. Assuming our chemical length scale is the restrictive condition where the flame is, then filtering small scale dynamics means that the reaction source terms must also be modelled at the location of the flame, not just turbulent motions. This poses an issue, because the vast majority of energy released from the combustion reaction happens on the smallest, chemical, length scales instead.
+% This results in the introduction of several flame models 
 
-% \subsection{Mesh-free Methods}
+
+
+
+
 
 
 

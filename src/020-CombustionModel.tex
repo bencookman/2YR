@@ -29,7 +29,7 @@ p &= ρ \frac{R_0}{W} T, \\
   &= ρ \int_{T_0}^T c_{p}(T') \dd{T'} - p + ρ \sum_α Y_α Δ h_{f, α}^\plimsoll + \frac{1}{2} ρ \vb{u}\cdot\vb{u}
 \end{align}
 \end{subequations}
-where $R_0 = 8.314$ J K$^{-1}$ mol$^{-1}$ is the universal gas constant, $ρ E_{\rm{th}}$ is the thermal (or \emph{sensible} \cite{poinsot2005TheoreticalNumericalCombustion}) energy, $T_0$ is some reference temperature, $ρ E_{\rm{ch}}$ is the chemical energy and $ρ E_{\rm{ki}}$ is the kinetic energy. The terms $ρ \vb{g}$ and $\dot{\cl{E}}$ are the body force and energy source terms, both of which may take any form depending on the system we are modelling. In most cases in this report, these terms will be neglected. The tensors $\bb{S}$ and $\bb{T}$ are the stress and viscous stress tensors respectively and are given in their usual form by
+where $R_0 = 8.314$ J K$^{-1}$ mol$^{-1}$ is the universal gas constant, $ρ E_{\rm{th}}$ is the thermal (or \emph{sensible} \cite{poinsot2001TheoreticalNumericalCombustion}) energy, $T_0$ is some reference temperature, $ρ E_{\rm{ch}}$ is the chemical energy and $ρ E_{\rm{ki}}$ is the kinetic energy. The terms $ρ \vb{g}$ and $\dot{\cl{E}}$ are the body force and energy source terms, both of which may take any form depending on the system we are modelling. In most cases in this report, these terms will be neglected. The tensors $\bb{S}$ and $\bb{T}$ are the stress and viscous stress tensors respectively and are given in their usual form by
 \begin{subequations}
 \begin{align}
 \bb{S} &= -p\bb{I} + \bb{T} \\
@@ -51,7 +51,7 @@ The term remaining is the chemical production rate of species $α$ by mass, $\do
 \begin{equation}
 \sum_α \nu_{α, j}^{\rm{L}} \rm{S}_α \leftrightharpoons \sum_α \nu_{α, j}^{\rm{R}} \rm{S}_α
 \end{equation}
-where $\rm{S}_α$ are the chemical formulae of each species, individual steps progress at a rate $\cl{Q}_j$ according to \cite{poinsot2005TheoreticalNumericalCombustion}:
+where $\rm{S}_α$ are the chemical formulae of each species, individual steps progress at a rate $\cl{Q}_j$ according to \cite{poinsot2001TheoreticalNumericalCombustion}:
 \begin{equation}
 \cl{Q}_j = K_{f, j}\prod_{α = 1}^{N_{\rm{S}}} \left(ρ \frac{Y_α}{W_α}\right)^{\nu_{α, j}^{\rm{L}}} - K_{b, j}\prod_{α = 1}^{N_{\rm{S}}} \left(ρ \frac{Y_α}{W_α}\right)^{\nu_{α, j}^{\rm{R}}}
 \quad \text{where} \quad

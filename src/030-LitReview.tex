@@ -181,10 +181,15 @@ The combustion equations from \chap{ch:combust-model} are only analytically solu
 
 
 
-\subsection{Direct Numerical Simulation (DNS)}
+\subsection{DNS and LES}
 
+The most brute force way to simulate a fluid system would be one where you try to accurately simulate every detail involved in the fluid. This idea was first studied by Orszag \cite{orszag1970AnalyticalTheoriesTurbulence}, where he defines \emph{direct numerical simulation} (DNS) as a numerical simulation with enough grid points to full resolve the smallest physical phenomena in the system. Originally, Orszag studied this in the context of turbulent flows \cite{orszag1970AnalyticalTheoriesTurbulence,orszag1972NumericalSimulationThreeDimensional}. A turbulent incompressible flow is largely determined by the transit of its vortices, as expressed by the vorticity equation:
+\begin{equation}
+\pdv{\vb{ω}}{t} + (\vb{u} \cdot \vb{\nabla}) \vb{ω} = (\vb{ω} \cdot \vb{\nabla}) \vb{u} + \frac{μ}{ρ} Δ \vb{ω}
+\end{equation}
 % turbulence is a fundamentally three-dimensional phenomenon -- the energy cascade from large to small vortices depends on the $(\vb{ω} \cdot \vb{\nabla})\vb{u}$ term on the right-hand side of the equation for vorticity, $\vb{ω} \equiv \vb{\nabla} \cross \vb{u}$.
-The most brute force way to simulate a fluid system would be one where you try to accurately simulate every detail involved in the fluid. This idea was first studied by Orszag \cite{orszag1970AnalyticalTheoriesTurbulence}, where he defines \emph{direct numerical simulation} (DNS) as a numerical simulation with enough grid points to full resolve the smallest physical phenomena in the system. Originally, Orszag studied this in the context of turbulent flows \cite{orszag1970AnalyticalTheoriesTurbulence,orszag1972NumericalSimulationThreeDimensional}. In such flows, we have vortices not only on the order of the typical flow length scale $l_T$, called the integral length scale, but also of sizes all the way down to the smallest turbulence scale known as the kolmogorov length scale $l_K$ \cite{kolmogorov1941LocalStructureTurbulence}, where the rate at which viscous dissipation effects dampen vortices far exceeds the inertial forces of the vortex \cite{tennekes1972FirstCourseTurbulence,moin1998DirectNumericalSimulation}. In DNS of turbulent combustion, the smallest scale vortices must be resolved in addition to the smallest chemical length scales. In this context, the relevant time scales are chemical $τ_C = l_{\rm{th}} / S_L$, integral $τ_T = l_T / u'$ and Kolmogorov $τ_K = l_K / u'$ given an RMS velocity scale $u'$. Hence, the number of degrees of freedom required to resolve a three-dimensional box of size $L$ is \cite{domingo2023RecentDevelopmentsDNS}:
+
+In such flows, we have vortices not only on the order of the typical flow length scale $l_T$, called the integral length scale, but also of sizes all the way down to the smallest turbulence scale known as the kolmogorov length scale $l_K$ \cite{kolmogorov1941LocalStructureTurbulence}, where the rate at which viscous dissipation effects dampen vortices far exceeds the inertial forces of the vortex \cite{tennekes1972FirstCourseTurbulence,moin1998DirectNumericalSimulation}. In DNS of turbulent combustion, the smallest scale vortices must be resolved in addition to the smallest chemical length scales. In this context, the relevant time scales are chemical $τ_C = l_{\rm{th}} / S_L$, integral $τ_T = l_T / u'$ and Kolmogorov $τ_K = l_K / u'$ given an RMS velocity scale $u'$. Hence, the number of degrees of freedom required to resolve a three-dimensional box of size $L$ is \cite{domingo2023RecentDevelopmentsDNS}:
 \begin{equation}
 N_{\rm{tot}} = \left( \frac{L}{2 l_T} \right)^3 \Da \: \Ka \: \rm{Re}_T^{7 / 4}
 \end{equation}
@@ -192,22 +197,9 @@ where we define the turbulent Reynolds number by $\rm{Re}_T \equiv ( l_T / l_K )
 
 Needless to say, the cost of simulation must be decreased before useful research may done. A simple way to do this is by modelling simpler physics in DNS than you know is present in the physical system. This is most effectively done by decreasing the number of species which are simulated, usually by removing minor intermediate species which are not a limiting part of the reaction mechanism. In so doing, the number of simulated differential equations goes down for each species removed -- if all species are removed besides product and reactant species, then only one mass fraction equation needs to be simulated. Further simplifications can also be made to the transport processes. But, one should note that benefits to accuracy in DNS are greatly undone when models are used which change the simplify the physical system. In any case, More efficient simulations may be used, which can be achieved by increasing the order of accuracy in derivative approximations. This is discussed in \sect{sec:high-order}
 
+To this end, another paradigm is often used for simulations, called \emph{Large Eddy Simulation} (LES) \cite{yang2015LargeEddySimulationPresent} where the same complex physics may be modelled with a coarser resolution. This relies on the use of a filtering technique called Favre averaging to remove \emph{subgrid scale} (SGS) turbulence smaller than a filter size $Δ$. This allows the discretisation length scale to be increased, so many fewer computations are required, especially in three-dimensions. The remaining kinetic energy is a vast majority of the kinetic energy in the system. The filtered motions must now be modelled. This is where the turbulence models are incorporated, usually consisting of a model for the SGS vortex viscosity values $μ_t$. In DNS of inert turbulence, the smallest length scale involved is the turbulent length scale, so the ratio of discretisation scales between LES and DNS, $Δ / δx$, is proportional to $(\rm{Re}_Δ / \rm{Re})^{3/4} = (u'_Δ Δ / S_L l_{\rm{th}})^{3/4}$, such that we have $N_{\rm{tot}, \rm{LES}} / N_{\rm{tot}, \rm{DNS}} = (\rm{Re}_Δ / \rm{Re})^{9/4}$ in three-dimensions, representing a massive reduction in computational cost \cite{pitsch2006LargeEddySimulationTurbulent}. The reduction in cost is obviously less so in two-dimensions, but this fine because two-dimensional flows are rarely as prohibitively expensive.
 
-
-
-
-\subsection{Large Eddy Simulation (LES)}
-
-\cite{veynante2002TurbulentCombustionModeling}
-
-% introduce viscosity models $μ_t$ on the subgrid scale -- based of Favre averaging?
-To this end, another paradigm is often used for simulations, called \emph{Large Eddy Simulation} (LES) where the same complex physics may be modelled with a coarser resolution. This relies on the use of a filtering technique to remove turbulence smaller than a filter size $δX$. This allows the discretisation length scale to be increased, so many fewer computations are required, especially in three-dimensions. The remaining kinetic energy is a vast majority of the kinetic energy in the system. The filtered motions, which are referred to as the subgrid scale motions, must now be modelled -- this is where the turbulence models are incorporated \cite{yang2015LargeEddySimulationPresent}. In DNS of inert turbulence, the smallest length scale involved is the turbulent length scale, so the ratio of discretisation scales between LES and DNS, $δX / δx$, is proportional to $(\rm{Re}_{δX} / \rm{Re})^{3/4} = (u'_{δX} δX / S_L l_{\rm{th}})^{3/4}$, such that we have $N_{\rm{tot}, \rm{LES}} / N_{\rm{tot}, \rm{DNS}} = (\rm{Re}_{δX} / \rm{Re})^{9/4}$ in three-dimensions, representing a massive reduction in computational cost \cite{pitsch2006LargeEddySimulationTurbulent}. The reduction in cost is obviously less so in two-dimensions, but this fine because two-dimensional flows are rarely as prohibitively expensive.
-
-% WHat are the flame models?? They are models for the value $S_T$ in our equations, wherever that may enter?
-% The LES model ought to be account for the coupled effect of sgs eddies and combustion, since reaction rates are modulated in premixed combustion entirely by thermal and molecular diffusion, which can be aided by the turbulent mixing of the surrounding reactants.
-For LES of turbulent combustion, we have a much more complicated system. Assuming our the shortest length scale at the flame is the chemical length scale $l_C$, then these filtered reaction terms must also be modelled at the flame. This poses an issue, since the vast majority of energy released from the combustion reaction happens on the smallest, chemical, length scales instead. This results in the introduction of several flame models depending on the relative intensity of turbulence. Most relevant engineering applications involve a level of turbulence corresponding to $\Ka > 1$, or the thin flame regime \cite{pitsch2006LargeEddySimulationTurbulent}.
-% Talk about this more, along with the flamelet regime, which is probably more relevant?
-% Mixing variables?? probably as part of a regime
+For LES of turbulent combustion, we have a much more complicated system \cite{veynante2002TurbulentCombustionModeling, pitsch2006LargeEddySimulationTurbulent}. Assuming our the shortest length scale at the flame is the chemical length scale $l_C$, then these filtered reaction terms must also be modelled at the flame. This poses an issue, since the vast majority of energy released from the combustion reaction happens on the smallest, chemical, length scales instead. In premixed combustion LES, this results in the introduction of several flame models for the turbulent flame velocity $S_T$ depending on the relative intensity of turbulence. Note that the combustion LES model used ought to account for the coupled effect of SGS eddies and combustion: reaction rates are modulated in premixed combustion by local thermal and molecular diffusion, which is aided by the turbulent mixing of the surrounding reactants. Most relevant engineering applications involve a level of turbulence corresponding to $\Ka > 1$, or the thin flame regime, although at Karlovitz numbers below one the weaker turbulence results in corrugated flames instead. At stronger turbulence intensities of roughly $\Ka > 100$, the reaction zones break into the broken reaction zones regime \cite{pitsch2006LargeEddySimulationTurbulent}. Depending on the relative size of filter $Δ$ used, the chaotic nature of the turbulence can result in qualitatively different behaviour -- exacerbated at high turbulence intensities.
 
 
 
@@ -302,30 +294,105 @@ Regardless of the paradigm used -- DNS, LES or even \emph{Reynolds Averaged Navi
 
 
 
-\subsection{Navier-Stokes Characteristic Boundary Conditions}
+\subsection{Characteristic Boundary Conditions for Reacting Flows}
 
-\cite{thompson1987TimeDependentBoundary, thompson1990TimeDependentBoundaryConditions, poinsot1992BoundaryConditionsDirect, poinsot2005TheoreticalNumericalCombustion, sutherland2003ImprovedBoundaryConditions}
-
-% [Thompson 1987, 1990, Poinsot and Lele 1992, Sutherland and Kennedy 2003, Poinsot and Veynante 2005]
-
-
-% Many types of boundary conditions may be chosen for combustion schemes:
-%% Periodic are very simple to enforce numerically so require no elaboration
-%% No-slip or slip wall conditions
-%% isothermal or adiabatic walls
-%% acoustically reflecting or non-reflecting walls or inflow / outflow
-%% In the case of inflow / outflow many more cases
-
-% In most of these cases, we can use the formalism called characteristic boundary conditions (characteristic BCs)
-
-
-
+\cite{thompson1987TimeDependentBoundary, thompson1990TimeDependentBoundaryConditions, poinsot1992BoundaryConditionsDirect, poinsot2001TheoreticalNumericalCombustion, sutherland2003ImprovedBoundaryConditions}
 
 % The simplest boundary conditions, i.e. those with constant (Dirichlet) boundary values (p=const), usually reflect acoustic waves back toward the interior of the domain. For most situations we want to simulate, this doesn't represent the physical situation, where we would rather pretend the medium continues outside of the computational domain. This motivates a need for boundary conditions which do not reflect acoustic waves - non-reflecting boundary conditions. The formalisms are based of characteristic waves entering / leaving the domain
+% !!!! The computational domain and physical domain usually do not coincide
+% Many types of boundary conditions may be chosen for combustion schemes:
+% - Periodic are very simple to enforce numerically so require no elaboration
+% - No-slip or slip wall conditions
+% - isothermal or adiabatic walls
+% - acoustically reflecting or non-reflecting walls or inflow / outflow
+% - In the case of inflow / outflow many more cases
 
-% Fixed velocity inlets give full reflections, so cannot be used in a non-reflecting case.
+
+% A condition for a Non-reflecting boundaries is first given in \cite{hedstrom1979NonreflectingBoundaryConditions} for the inviscid gasdynamics equations.
+% It involves performing characteristic analysis by writing the hyperbolic conservation equations in their primitive form $ $ and solving the left-eigenvalue problem on $A$ to find left eigenvectors $\und{l}_m^T$
+% They prove that enforcing the condition $\und{l}_m^T \partial \und{V} / \partial t = 0$ gives precisely no waves entering the boundary in the continuous problem
+% This equation is the basis of all characteristic boundary conditions
+
+
+% Rudy and Strikwerda 1980 and 1981
+% - Introduces the relaxation term and determines a value for its coefficient
+% - Without this term, perfect non-reflection enables the pressure to drift arbitrarily, which is a big problem especially for combustion simulations subject to combustion noise \cite{Morgans combustion noise paper}
+% - The 1981 paper performs multiple tests on various inflow and outflow formulations and find the salient point that not only do outflows require fewer prescribed incoming waves, making them simpler to implement in general, they are also less sensitive to data at the outflow boundary. This can be reasoned as difficulties in their extrapolation methods compounding along with the simple idea that issues at outflows are usually convected out of the domain.
+
+
+% Thompson 1987, 1987, 1990
+% - provides a 'recipe' to create characteristic boundary conditions and provides many such examples for sub- and supersonic inflows and outflows and wall boundaries
+% - is the basis of many modern non-reflecting boundary formulations
+% - EXPLAIN THE RECIPE. A more detailed explanation is given in the following chapter
+
+
+% Nicoud 1999
+% - This note by Nicoud writes existing non-reflecting formulations into a consistent framework and uses the AVBP solver to compare each of them
+% - These sorts of direct comparisons are often lacking
+
+
+%%% REACTING FLOWS
+
+% Poinsot and Lele 1992 and later Poinsot and Veynante 2005 [actually, cite the original?]
+% - introduces a relaxation term for inflows and outflows
+% - what diffusive boundary conditions do they use? NONE??
+% - Previous papers, including [. C. Strikwerda, Commun. Pure Appl. Math. 30, 797 (1977).], show that theoretical well-posedness is ensured when a specific number of total physical boundary conditions are applied. For reacting inflows, $5 + N_S$ physical BCs are required, and for reacting outflows $4 + N_S$ physical BCs are required
+% - To reach these, extra conditions are placed on the diffusive terms in the full diffusive reacting gasdynamics equations.
+% - At inflows, zero normal stress gradients are used. At outflows, zero tangential stress gradients and zero thermal flux gradients are used
+% - All species are assumed to have the same thermodynamic properties, severely restricting application to only idealised reactions
+
+
+% Baum et al. 1994
+% - Extend the LODI relations for reacting flows given by Poinsot and Lele to multiple species of different molecular masses and show improvement via testing
+% - Shows numerical evidence of the boundary scheme being used to let a flame travel through the outflow
+
+
+% Poinsot and Veynante 2001
+% - Also suggests relaxation terms be used at the inflow for temperature and velocity, with coefficients chosen to match the impedance of the inlet
+
+
+% Sutherland and Kennedy 2003
+% - Provides a unified formulation for viscous, reacting flows
+% - They claim this allows a flame to travel through the outflow boundary, although the strong shear waves and tangential gradients imply that large inaccuracies should be present, whether or not the simulation remains stable
+% - Uses the LODI formulation from P&L, but includes source terms so e.g. reaction terms at the boundary are included
+% - Like P&L imposes extra physical conditions on the diffusive terms such that there is a smooth transition between inviscid solutions which use only the LODI conditions and variations thereof and viscous solutions
+% - Suggests that a zero flux condition be rather than zero flux gradients, in accordance with [cite Dutt's paper]. Accordingly, zero normal stress is enforced at inflows and zero tangential stress and zero species diffusion is enforced at outflows.
+
+
+% Yoo and Im 2007
+% - Propose improvements to the above scheme by shifting away from the LODI formulation by including tangential and viscous terms as well as the normal and source terms used in S&K
+% - Impose physical diffusive BCs via zero flux gradients, unlike S&K
+% - Are able to more accurately simulate flames passing through outflow boundaries, but find that the requirement of zero flux gradients is a bottleneck to more accurate simulations of flame-boundary intersection
+
+
+%%% OTHER NON-REACTING FLOW STUFF
+
+% Prosser 2005
+% - performs asymptotic analysis in the low Mach formalism to make improvements to subsonic turbulence interactions with characteristic inflows and outflows
+% - Working with the LODI assumptions does nothing to account for transverse effects like the convection of vortices over the boundary and hence results in spurious pressure oscillations when applied to turbulent flows.
+% - For their non-reflecting turbulent inflows, for example, they calculate the incoming amplitudes of characteristic waves under turbulence relative to a \emph{frozen} turbulent solution rather than a quiescent flow
+
+
+% Polifke 2006
+% - investigates true reflection coefficients for non-reflecting outflows prescribed by Poinsot and Lele [cite] (includes a corrective P control term) over a range of acoustic frequencies and finds that arbitrarily low frequencies have R arbitrarily close to one
+% - This fully reflective behaviour for low frequencies is restored by introducing a new term into the P controller 'relaxation' term which specifically masks plane waves at those low frequencies
+
+
+% Prosser 2011
+% - Can be seen as a counterpoint to YI2007 which extends his earlier work to boundary conditions for subsonic reacting flows
+
+
+% Guezennec and Poinsot 2009
+% - They find that the usual method of assigning L values at the boundary under the NSCBC formalism cannot be used to inject turbulent vortices at the same time as eliminating acoustic reflections
+% - They propose a corrected method which again references a frozen turbulent flow VFCBC and results, practically, in halved L_5 values at inflows
+
+
+
 
 % Immersed boundary methods are also an option and open up possibilities for boundaries not restricted specific node placement, especially for moving boundaries. But as detailed in King 2022, these a largely restricted to lower order accuracy at these boundaries (cite, and for what reason?).
+
+
+
 
 
 

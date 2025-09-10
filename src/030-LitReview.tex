@@ -214,39 +214,89 @@ For LES of turbulent combustion, we have a much more complicated system. Assumin
 
 
 
-\subsection{High-Order Discretisation} \label{sec:high-order}
+\subsection{Spatial Discretisation} \label{sec:high-order}
 
 Regardless of the paradigm used -- DNS, LES or even \emph{Reynolds Averaged Navier Stokes} (RANS), which is not discussed here -- convergent behaviour between different simulations is only observed once a minimum spatial resolution is used.
 
+
+%%% TRADITIONAL METHODS
+
+
 % Discretisations are most easily developed in one dimension. The typical canonical example are that of finite difference method (FDM) approximations. Centred finite difference approximations can easily reach high orders when uniform grid points are used. Compact finite differences solve the same linear problem, with the constraint that as few grid points be used in the stencil as possible.
+% These finite difference operators can be written as a weighted sum of differences $\ddv{φ}{x} |_i \approx L[φ]_i = Σ_{j \in N_i} φ_{ij} w_{i, j}$ [a precursor to LABFM]
 % In two dimensions, finite differences may easily be applied by a simple Cartesian product: e.g. for a the gradient of a field $\vb{\nabla} f$, each partial derivative may be approximated by finite differences separately in each dimension, as long as a uniform rectangular lattice (cuboid lattice in three-dimensions) is used to discretise the computational domain.
 % Some adaptivity can be implemented in order by simply requiring different grid points use different FDM schemes and different 
 % But three-dimensional domains are restricted to parallelopipeds and we must use an Eulerian regime, where the grid points are fixed in space
 % Centred finite differences also suffer from stability issues because they are not upwinded for the hyperbolic waves. Accounting for this with one-sided upwinded schemes results in a compromise between stencil size and order.
 
-% Try to give examples for each???
+% Give examples for each OTHERWISE IT'S POINTLESS
+% Existing solvers:
+
+% - PeleLM \cite{amrex-combustionPeleLMAdaptiveMesh}
+%   - Finite-volume discretisation on cartesian grids of the low-Mach formulation of the equations
+%   - Howarth 2022
+%   - More examples given in Howarth 2023
+
+% - AVBP \cite{cerfacsAVBP}
+%   - Implements a Lax-Wrendoff formulation \cite{lax1960SystemsConservationLaws} as used in \cite{garby2013LargeEddySimulationCombustion} to model various combustor sizes, affecting acoustic properties. This is a form of finite difference scheme for hyperbolic PDEs where second order finite differences are used in both space and time to reduce diffusive errors which erroneously smooth out linear and non-linear wave solutions.
+%   - Also implements finite-volume solver
+
+% - OpenFOAM \cite{opencfdltd2004OpenFOAM}
+%   - Implements a variety of methods, most notably finite volumes
+%   - \cite{jun2023ParametricInstabilityPropagating} uses a fork of openfoam called opensmoke++ to simulate secondary instability structures in hydrogen-enriched flames. In this case second order central differencing was used for diffusive terms and a second order upwinding scheme was used for convective terms
+
 
 % FVM does...
-% Easy to do non-uniform domains, but meshing can be a major problem
+% Enforces conservation by solving for the integral quantities (e.g. mass for density) as they pass between different control volumes in the computational domain by applying flux terms at their boundaries
+% Important for combustion problems where conservation of elemental masses and energy are crucial physical constraints
+% This makes it easy to do non-uniform domains, but meshing can be a major problem
+% High-order FVM schemes are enabled through the use of existing high-order quadrature rules
 
 
 % FEM does...
-% Weak form, DG method. Something about a polynomial basis
-% Same problem with meshing
-% Can do lagrangian
+% Each vertex of the mesh is connected to some other number of vertices
+% Contributions to the overall solution are then decomposed into many small contributions from each vertex
+% This projects the problem onto finitely many small hat shaped elements, with local interactions determined by non-diagonal components of the matrix resulting from the weak form of the problem
+% This decomposition onto a finite set of basis functions is referred to generally as a discrete Galerkin method \cite{zienkiewicz20051StandardDiscrete}
+% Finite elements are used by \cite{camporeale2010FiniteElementMethod} to recover the thermoacoustic instabilities of an annular combustor
 % NOT high-order, so converged simulations may have large amounts of diffusive behaviour, especially problematic at discontinuities like the flame
 
-% SEM does...
-% High order method
+% SEM used in nek5000 \cite{nek1996NEK5000}
+% typically uses quadrilaterally shaped elements which map to a generic square with some choice of Gauss-Lobatto (GL) nodes. The solution is then decomposed onto the corresponding orthogonal GL basis polynomials 
+% The order can be chosen arbitrarily by choosing the order of orthogonal polynomials and the corresponding node locations. This results in higher order simulations at the cost of a much more difficult meshing problem since each element is larger
 
 
-% ENO does ...
-% Essentially non-oscillatory interpolants ... whatever that means
-% for discontinuities, so is often used for combustion problems to to resolve flames and detonation shock waves.
 
+
+%%% LESS TRADITIONAL METHODS
+
+
+% - Matalon's hydrodynamic model solver
+%   - Models the premixed flame problem as two distinct domains of hot and cold incompressible Navier-Stokes problems, separated by an immersed boundary representing the flame subject to boundary conditions over the flame given by matalon as an extension to the usual RH shock conditions
+%   - discretises the domain using an essentially non-oscillatory (ENO) scheme [cite the specific one they use], which attempts to solve the problem of large oscillations at discontinuities like the flame by trying not to interpolate over the discontinuity, which non-upwinded FDM and FVM do implicitly
+%   - WENO [CITE REVIEW] improves on ENO by blending between different interpolation schemes to improve the properties of the overall scheme in smooth regions and regions of discontinuity
+%   - \cite{schuller2002ModelingToolsPrediction}, similarly, uses a WENO scheme coupled to a G-equation model for the flame to predict combustion dynamics of a bunsen burner flame
+%   - By comparison, WENO may also be used in simulations where the flame is not directly modelled, such as in \cite{berger2022IntrinsicInstabilitiesPremixed} where a third-order WENO scheme discretises the full combustion equations and is used to investigate intrinsic instabilities in flames.
+
+% A similar class of method are those which posses the total variation diminishing (TVD) property, which more subtly reduces oscillations by ensuring the sum of variation of the dependent variables never increases between time steps
+% OpenFOAM paper:
+%   - \cite{eigemann2025AmplificationThermoacousticFlame} investigates high-frequency noise using a total variation diminishing (TVD) approach implemented by OpenFOAM
+
+
+
+%%% MESH-FREE METHODS
+
+% Mesh free methods for combustion explored in \cite{kansa2009NumericalSimulationTwodimensional}, where they use RBFs
+% Check Jack's paper for other examples of mesh-free combustion??
 
 % SPH as precursor to LABFM
 % \cite{monaghan1992SmoothedParticleHydrodynamics, vacondio2021GrandChallengesSmoothed}
+% SPH is a mesh-free Lagrangian particle method* not used to simulate combustion and is rarely coupled to turbulence models due to its low order. It is a natural method to use in e.g. dam breaks and coastal applications where free surfaces are of interest. These free surfaces are not easily modelled by many other methods.
+% It was found in [Steve's paper] that an Eulerian formulation of LABFM can be used to achieve high-orders provided you solve a linear system for each of the stationary particles as a preprocessing step [I SHOULD PROBABLY ACTUALLY READ THE PAPER THEN]
+
+
+
+% LABFM is an Eulerian, mesh-free particle method inspired by this Eulerian form of SPH...
 
 
 

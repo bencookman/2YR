@@ -1,6 +1,6 @@
 \section{The Scalable Unstructured Node-SET (SUNSET) Combustion Code}
 
-For the simulations performed in the remainder of this report, we use the \emph{Scalable Unstructured Node-SET} (SUNSET) code \cite{king2024SunsetFlamesDNSCode,king2024MeshFreeFrameworkHighOrdera}, to perform DNS of the governing equations (described in \chap{ch:combust-model}) with high accuracy in domains of arbitrary complex geometries and highly variable node densities. That it is DNS allows us to simulate turbulent combustion without requiring any model for the subgrid-scale vortices present in turbulent flows. For the simulations performed in \chap{ch:results} we actually simulate laminar, not turbulent flows, but the simulation code nevertheless provides high accuracy discretisations such that discretisation error is reliably minimised. The method used to this end is the \emph{Local Anisotropic Basis Function Method} (LABFM), and is explained thoroughly in the proceeding section. Boundary conditions are provided via the \emph{Navier-Stokes Characteristic Boundary Conditions} (NSCBC) formalism, and are detailed in \sect{sec:NSCBC}.
+For the simulations performed in the remainder of this report, we use the \emph{Scalable Unstructured Node-SET} (SUNSET) code \cite{kingSunsetFlamesDNSCode,king2024MeshFreeFrameworkHighOrdera}, to perform DNS of the governing equations (described in \chap{ch:combust-model}) with high accuracy in domains of arbitrary complex geometries and highly variable node densities. That it is DNS allows us to simulate turbulent combustion without requiring any model for the subgrid-scale vortices present in turbulent flows. For the simulations performed in \chap{ch:results} we actually simulate laminar, not turbulent flows, but the simulation code nevertheless provides high accuracy discretisations such that discretisation error is reliably minimised. The method used to this end is the \emph{Local Anisotropic Basis Function Method} (LABFM), and is explained thoroughly in the proceeding section. Boundary conditions are provided via the \emph{Navier-Stokes Characteristic Boundary Conditions} (NSCBC) formalism, and are detailed in \sect{sec:NSCBC}.
 
 Time integration makes use of the explicit Runge-Kutta scheme denoted as RK3(2)4[2R+]C under the classification of \cite{kennedy2000LowStorageExplicitRunge}, which is a third order, low storage (only requiring two or three registers per field per node), four step method in time with embedded second order error estimation. Even under turbulent combustion, error accumulated in time stems primarily from spatial detail (such as thin reacting zones, small Kolmogorov vortices etc.) rather than temporal dynamics (such as the vortex energy cascade, acoustics and diffusion). Thus, a third order error correcting scheme is suitable and our focus remains on the discretisation scheme used.
 
@@ -23,7 +23,7 @@ Parallelism is primarily implemented via domain decomposition, exploiting the lo
 
 \section{The Local Anisotropic Basis Function Method (LABFM)}
 
-LABFM \cite{king2024MeshFreeFrameworkHighOrder, king2020HighOrderDifference, king2024MeshFreeFrameworkHighOrdera, king2022HighOrderSimulationsIsothermal, king2024SunsetFlamesDNSCode, broadley2025HighorderMeshfreeDirect, starepravo2025CanNeuralNetworks} is a high order spatial method used particularly in the computation of fluid flows. It allows for the calculation of arbitrary order approximations to spatial derivatives with arbitrary orders of accuracy, all on unstructured, mesh-free node sets. In keeping with the tradition set forth in prior methods (e.g. finite differences), polynomial interpolation is used as a first step before making derivative approximations. Specifically, we choose to set out the method in the context of making a high order interpolation based off finitely many discrete function values $φ_j$, before extending this to high-order derivatives, where further assumptions can be made to simplify derivation
+LABFM \cite{king2024MeshFreeFrameworkHighOrder, king2020HighOrderDifference, king2024MeshFreeFrameworkHighOrdera, king2022HighOrderSimulationsIsothermal, broadley2025HighorderMeshfreeDirect, starepravo2025CanNeuralNetworks} is a high order spatial method used particularly in the computation of fluid flows. It allows for the calculation of arbitrary order approximations to spatial derivatives with arbitrary orders of accuracy, all on unstructured, mesh-free node sets. In keeping with the tradition set forth in prior methods (e.g. finite differences), polynomial interpolation is used as a first step before making derivative approximations. Specifically, we choose to set out the method in the context of making a high order interpolation based off finitely many discrete function values $φ_j$, before extending this to high-order derivatives, where further assumptions can be made to simplify derivation
 
 
 \subsection{High-Order Interpolations}
@@ -188,17 +188,17 @@ The statement that the system is hyperbolic is now the statement that the $N_\rm
 \begin{equation}
 \und{l}_m^T \undt{A}^x = λ_m \und{l}_m^T.
 \end{equation}
-Multiplying equation \equ{eqn:with_A} by an eigenvector we project our equation into a solution space containing only the $m$\sus{th} characteristic invariant, $J_m$, which satisfies $\dd{J_m} = \und{l}_m^T \dd{\und{V}}$:
+Multiplying equation \equ{eqn:with_A} by an eigenvector we project our equation into a solution space containing only the $m$\sus{th} characteristic invariant, $J_m$, which satisfies $\dd{J_m} = \und{l}_m^T \dd{\und{V}} + \und{l}_m^T \und{c} \dd{t}$ \cite{thompson1987LecturesSeriesComputational,thompson1987TimeDependentBoundary}:
 \begin{boxequ} \label{eqn:single_char_prob}
 \und{l}_m^T \pdv{\und{V}}{t} + λ_m \und{l}_m^T \pdv{\und{V}}{x} + \und{l}_m^T \und{c} = 0,
 \quad \iff \quad
-\pdv{J_m}{t} + λ_m \pdv{J_m}{x} + \und{l}_m^T \und{c} = 0.
+\pdv{J_m}{t} + λ_m \pdv{J_m}{x} = 0.
 \end{boxequ}
 We notice that along any trajectory $\vb{x}_m(t)$ which satisfies $\dd{\vb{x}_m}/\dd{t} = λ_m$ (i.e. the m\sus{th} characteristic has velocity $λ_m$), the invariant obeys:
 \begin{equation}
-\dv{J_m}{t} = - \und{l}_m^T \und{c}.
+\dv{J_m}{t} = 0.
 \end{equation}
-This tells gives us an equation for each characteristic of the system, but numerically $J_m$ is not so useful since it needs to be transformed back into the primitive variables anyway for a simulation. Instead we use the form of the equation in primitive or conservative variables under the transformation $\undt{A}^x = \undt{S} \undt{Λ} \undt{S}^{-1}$ where $\undt{Λ}=\rm{diag}(λ_1, \dots, λ_{N_\rm{V}})$ is the diagonal matrix of eigenvalues and rows of the matrix $\undt{S}^{-1}$ are the corresponding \emph{left eigenvectors} $\und{l}_m^T$:
+This tells us the $J_m$ are constant along the trajectories $\vb{x}_m(t)$, which completes the characteristic analysis traditionally. But, numerically $J_m$ is not so useful since it needs to be transformed back into the primitive variables anyway for a simulation. Instead we use the form of the equation in primitive or conservative variables under the transformation $\undt{A}^x = \undt{S} \undt{Λ} \undt{S}^{-1}$ where $\undt{Λ}=\rm{diag}(λ_1, \dots, λ_{N_\rm{V}})$ is the diagonal matrix of eigenvalues and rows of the matrix $\undt{S}^{-1}$ are the corresponding \emph{left eigenvectors} $\und{l}_m^T$:
 \begin{gather}
 \cl{L}_m \equiv λ_m \pdv{J_m}{x} \equiv λ_m \und{l}_m^T \pdv{\und{V}}{x}, \\
 \implies \quad

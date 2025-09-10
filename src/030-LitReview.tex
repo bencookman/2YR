@@ -199,34 +199,33 @@ For LES of turbulent combustion, we have a much more complicated system \cite{ve
 
 \subsection{Spatial Discretisations} \label{sec:high-order}
 
-Regardless of the paradigm used -- DNS, LES or \emph{Reynolds Averaged Navier Stokes} (RANS), which is not discussed here -- numerically converged behaviour is only observed in a simulation once a minimum spatial resolution is used.
+Regardless of the paradigm used -- DNS, LES or \emph{Reynolds Averaged Navier Stokes} (RANS), which is not discussed here -- numerically converged behaviour is only observed in a fluid simulation once a maximal discretisation length scale, $δx_{\rm{max}}$ is used. This corresponds to a minimum resolution required by the fluid simulation determined by the properties of that fluid, e.g. flame thickness, turbulence intensity, as well as the properties of the method used to perform the discretisation. Discretisations are most easily developed in one dimension. The canonical example of these finite difference method (FDM) approximations. The generic finite difference operator may be written as a weighted sum of differences. In one-dimension:
+\begin{equation}
+\dv{φ}{x} \Big|_i \approx L_x[φ]_i = \sum_{j \in \cl{N}_i} φ_{ij} w_{i, j}
+\end{equation}
+where $φ$ is the the function we have access to at points $(\vb{x}_i)_i$ and its derivative is represented by the finite difference operator $L_x[φ]$ at those points. At these locations, the surrounding points $(\vb{x}_j)_{j \in \cl{N}_i}$ are used to evaluate the differences $φ_{ij} \equiv φ_j - φ_i$ with weights $w_{i, j}$ -- these surrounding nodes are referred to as the \emph{stencil}. Centred finite difference approximations -- FDM schemes where $(\vb{x}_j)_{j \in \cl{N}_i}$ is symmetric about the central node $\vb{x}_i$ -- can easily reach high orders when uniform grid points are used and so reduce the required resolution mentioned above. The obvious caveat is that higher order methods always require more calculations, making each discretisation point in the domain essentially more expensive. But, this effect is usually dominated by the reduction in cost due to increased order of accuracy which improves the value of each discretisation point as the grid becomes more fine. Having said that, centred finite differences also suffer from stability issues because they are not upwinded for the hyperbolic waves. Accounting for this with one-sided upwinded schemes results in a compromise between stencil size and order. Compact finite differences solve the same linear problem, with the constraint that as few grid points be used in the stencil as possible [CITE].
+
+%   - \cite{jun2023ParametricInstabilityPropagating} uses a fork of openfoam called opensmoke++ to simulate secondary instability structures in hydrogen-enriched flames. In this case second order central differencing was used for diffusive terms and a second order upwinding scheme was used for convective terms
+
+% - AVBP \cite{cerfacsAVBP}
+%   - Implements a Lax-Wrendoff formulation \cite{lax1960SystemsConservationLaws} as used in \cite{garby2013LargeEddySimulationCombustion} to model various combustor sizes, affecting acoustic properties. This is a form of finite difference scheme for hyperbolic PDEs where second order finite differences are used in both space and time to reduce diffusive errors which erroneously smooth out linear and non-linear wave solutions.
+%   - Also implements finite-volume solver
 
 
-%%% TRADITIONAL METHODS
-
-
-% Discretisations are most easily developed in one dimension. The typical canonical example are that of finite difference method (FDM) approximations. Centred finite difference approximations can easily reach high orders when uniform grid points are used. Compact finite differences solve the same linear problem, with the constraint that as few grid points be used in the stencil as possible.
-% These finite difference operators can be written as a weighted sum of differences $\ddv{φ}{x} |_i \approx L[φ]_i = Σ_{j \in N_i} φ_{ij} w_{i, j}$ [a precursor to LABFM]
 % In two dimensions, finite differences may easily be applied by a simple Cartesian product: e.g. for a the gradient of a field $\vb{\nabla} f$, each partial derivative may be approximated by finite differences separately in each dimension, as long as a uniform rectangular lattice (cuboid lattice in three-dimensions) is used to discretise the computational domain.
 % Some adaptivity can be implemented in order by simply requiring different grid points use different FDM schemes and different 
 % But three-dimensional domains are restricted to parallelopipeds and we must use an Eulerian regime, where the grid points are fixed in space
-% Centred finite differences also suffer from stability issues because they are not upwinded for the hyperbolic waves. Accounting for this with one-sided upwinded schemes results in a compromise between stencil size and order.
+% 
 
-% Give examples for each OTHERWISE IT'S POINTLESS
-% Existing solvers:
 
 % - PeleLM \cite{amrex-combustionPeleLMAdaptiveMesh}
 %   - Finite-volume discretisation on cartesian grids of the low-Mach formulation of the equations
 %   - Howarth 2022
 %   - More examples given in Howarth 2023
 
-% - AVBP \cite{cerfacsAVBP}
-%   - Implements a Lax-Wrendoff formulation \cite{lax1960SystemsConservationLaws} as used in \cite{garby2013LargeEddySimulationCombustion} to model various combustor sizes, affecting acoustic properties. This is a form of finite difference scheme for hyperbolic PDEs where second order finite differences are used in both space and time to reduce diffusive errors which erroneously smooth out linear and non-linear wave solutions.
-%   - Also implements finite-volume solver
 
 % - OpenFOAM \cite{opencfdltd2004OpenFOAM}
 %   - Implements a variety of methods, most notably finite volumes
-%   - \cite{jun2023ParametricInstabilityPropagating} uses a fork of openfoam called opensmoke++ to simulate secondary instability structures in hydrogen-enriched flames. In this case second order central differencing was used for diffusive terms and a second order upwinding scheme was used for convective terms
 
 
 % FVM does...

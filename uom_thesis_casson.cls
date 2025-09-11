@@ -134,8 +134,8 @@
   {% No hard rule for first and second year reports. Defaults to 2cm, UKRI style
     \newlength{\marginleft}   \setlength{\marginleft  }{1.5cm}%{1.5cm}
     \newlength{\marginright}  \setlength{\marginright }{1.5cm}%{1.5cm}
-    \newlength{\margintop}    \setlength{\margintop   }{3.0cm}%{1.5cm}
-    \newlength{\marginbottom} \setlength{\marginbottom}{3.0cm}%{1.5cm}
+    \newlength{\margintop}    \setlength{\margintop   }{2.0cm}%{1.5cm}
+    \newlength{\marginbottom} \setlength{\marginbottom}{2.0cm}%{1.5cm}
   }%
 
 \geometry{a4paper, top=\margintop, left=\marginleft, right=\marginright, bottom=\marginbottom, nohead, nofoot, nomarginpar}

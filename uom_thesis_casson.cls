@@ -138,7 +138,8 @@
     \newlength{\marginbottom} \setlength{\marginbottom}{2.0cm}%{1.5cm}
   }%
 
-\geometry{a4paper, top=\margintop, left=\marginleft, right=\marginright, bottom=\marginbottom, nohead, nofoot, nomarginpar}
+% \geometry{a4paper, top=\margintop, left=\marginleft, right=\marginright, bottom=\marginbottom, nohead, nofoot, nomarginpar}
+\geometry{a4paper, top=\margintop, left=\marginleft, right=\marginright, bottom=\marginbottom, nomarginpar}
 
 
 %% Formatting options - mainly for font size

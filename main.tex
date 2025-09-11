@@ -26,22 +26,10 @@
 \begin{document}
 
 \maketitle
-
-\pagebreak
-\vspace*{\fill}
-\begin{center}
-Blank page
-\end{center}
-\vspace*{\fill}
+\cleardoublepage
 
 \input{src/001-Abstract}
-
-\pagebreak
-\vspace*{\fill}
-\begin{center}
-Blank page
-\end{center}
-\vspace*{\fill}
+\cleardoublepage
 
 \pagebreak
 \vspace*{\fill}
@@ -49,45 +37,48 @@ Blank page
 \input{src/002-Dedication}
 \end{center}
 \vspace*{\fill}
-
-\pagebreak
-\vspace*{\fill}
-\begin{center}
-Blank page
-\end{center}
-\vspace*{\fill}
-
+\cleardoublepage
 
 \uomtoc
 
 \uomstartmainbody % Don't delete. used to flag to the hyperlinks in the PDF that the main content is starting
+\cleardoublepage
 
 \chapter{Introduction} \label{ch:intro}
 \input{src/010-Intro.tex}
+\cleardoublepage
 
 \chapter{Combustion Modelling} \label{ch:combust-model}
 \input{src/020-CombustionModel.tex}
+\cleardoublepage
 
 \chapter{Literature Review} \label{ch:lit-review}
 \input{src/030-LitReview}
+\cleardoublepage
 
 \chapter{Simulation Methodology} \label{ch:dns-methods}
 \input{src/050-DNSMethods.tex}
+\cleardoublepage
 
 % \chapter{Markstein Model Analysis} \label{ch:markstein}
 % \input{src/060-Markstein}
+% \cleardoublepage
 
 \chapter{Delay Boundary Conditions} \label{ch:delay-bcs}
 \input{src/080-DelayBCs}
+\cleardoublepage
 
 \chapter{Results} \label{ch:results}
 \input{src/081-Results}
+\cleardoublepage
 
 \chapter{Conclusions} \label{ch:conc}
 \input{src/098-Conclusions}
+\cleardoublepage
 
 \chapter{Plan For Upcoming Years} \label{ch:plan}
 \input{src/099-Plan}
+\cleardoublepage
 
 
 \printbibliography[title={References},heading=bibintoc]

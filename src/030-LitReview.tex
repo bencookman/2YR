@@ -199,6 +199,8 @@ For LES of turbulent combustion, we have a much more complicated system \cite{ve
 
 \subsection{Spatial Discretisations} \label{sec:high-order}
 
+\subsubsection{Traditional Methods}
+
 Regardless of the paradigm used -- DNS, LES or Reynolds Averaged Navier Stokes (RANS), which is not discussed here -- numerically converged behaviour is only observed in a fluid simulation once a maximal discretisation length scale, $δx_{\rm{max}}$ is used. This corresponds to a minimum resolution required by the fluid simulation determined by the properties of that fluid, e.g. flame thickness, turbulence intensity, as well as the properties of the method used to perform the discretisation. Discretisations are most easily developed in one dimension. The canonical example of these are \emph{finite difference method} (FDM) approximations. The generic finite difference operator may be written as a weighted sum of differences. In one-dimension:
 \begin{equation}
 \dv{φ}{x} \Big|_i \approx L_x[φ]_i = \sum_{j \in \cl{N}_i} φ_{ij} w_{i, j}
@@ -212,27 +214,17 @@ Another traditional class of discretisations are \emph{finite volume methods} (F
 
 Finite volumes are probably the most widely implemented discretisation method for fluid solvers by and large. One is implemented, for example, in the AVBP solver mentioned above. The PeleLM solver \cite{amrex-combustionPeleLM} also implements a finite volume discretisation of the low Mach formulation of the combustion equations -- that is, the equations in \sect{sec:govern} where acoustics are precluded. Examples of this being use in two- and three-dimensions are the thermodiffusive simulations of \cite{howarth2022EmpiricalCharacteristicScaling} and \cite{howarth2023ThermodiffusivelyUnstableLeanPremixed}. OpenFOAM \cite{opencfdltd2004OpenFOAM} implements a variety of discretisations, most notably a suite of finite volume methods, to a broad range of physical phenomena.
 
-
-% FEM does...
-% Each vertex of the mesh is connected to some other number of vertices
-% Contributions to the overall solution are then decomposed into many small contributions from each vertex
-% This projects the problem onto finitely many small hat shaped elements, with local interactions determined by non-diagonal components of the matrix resulting from the weak form of the problem
-% This decomposition onto a finite set of basis functions is referred to generally as a discrete Galerkin method \cite{zienkiewicz20051StandardDiscrete}
-% Finite elements are used by \cite{camporeale2010FiniteElementMethod} to recover the thermoacoustic instabilities of an annular combustor
-% NOT high-order, so converged simulations may have large amounts of diffusive behaviour, especially problematic at discontinuities like the flame
-
-% SEM used in nek5000 \cite{nek1996NEK5000}
-% typically uses quadrilaterally shaped elements which map to a generic square with some choice of Gauss-Lobatto (GL) nodes. The solution is then decomposed onto the corresponding orthogonal GL basis polynomials 
-% The order can be chosen arbitrarily by choosing the order of orthogonal polynomials and the corresponding node locations. This results in higher order simulations at the cost of a much more difficult meshing problem since each element is larger
+The \emph{finite element method} (FEM) is also commonly used to discretise fluid simulations. In this method, the computational domain is discretised into a mesh, like with FVM, except the discretisation points are located at the vertices of the mesh rather than inside the volumes they contain. Then, contributions to the overall solution are decomposed into many small contributions from each vertex by projecting the weak, integral form of the fluid problem onto finitely many small hat shaped elements. This results in a sparse linear problem describing the interaction of each element according to the equations, with non-diagonal matrix components resulting from local interactions. This decomposition onto a finite set of basis functions is referred to generally as a discrete Galerkin method \cite{zienkiewicz20051StandardDiscrete}. The simple, low-order connectedness in FEM allows for the mesh to change over time, making Lagrangian formulations natural. It is generally not used in a high-order formulation, however, with a typical scheme for fluid flow problems being second-order. Finite elements are used by \cite{camporeale2010FiniteElementMethod} to successfully recover the thermoacoustic instabilities of an annular combustion chamber. Its low order nature, though, means converged solutions are likely to contain large amounts of diffusive behaviour, especially in combustion problems where discontinuities are common.
 
 
 
+\subsubsection{Less Traditional Methods}
 
-%%% LESS TRADITIONAL METHODS
+One high-order variation of FEM which is used to simulate combustion is the \emph{spectral element method} (SEM), which is used in the Nek5000 code \cite{nek1996NEK5000} [cite paper too] to discretise the combustion problem onto an unstructured mesh quadrilateral (two-dimensions) and hexahedral (three-dimensions) elements. Discretisation points are collocated onto nodes of the orthogonal Gauss-Lobatto (GL) polynomials [cite GL] within these elements such that the solution may be decomposed onto the corresponding GL basis \cite{patera1984SpectralElementMethod}. As a result, the order may be chosen arbitrarily by choosing the order of spectral GL polynomials and their corresponding node locations. This results in higher, often 6th to 10th, order discretisations at the cost of a much more challenging meshing problem due to the increased size of each element. The disparate effects of flame stretch and flame curvature on spherical flames are investigated using the Nek5000 code, for example \cite{giannakopoulos2015CurvatureMarksteinLength}.
 
 
 % - Matalon's hydrodynamic model solver
-%   - Models the premixed flame problem as two distinct domains of hot and cold incompressible Navier-Stokes problems, separated by an immersed boundary representing the flame subject to boundary conditions over the flame given by matalon as an extension to the usual RH shock conditions
+%   - Models the premixed flame problem as two distinct domains of hot and cold incompressible Navier-Stokes problems, separated by an immersed boundary representing the flame subject to boundary conditions over the flame given by Matalon as an extension to the usual RH shock conditions
 %   - discretises the domain using an essentially non-oscillatory (ENO) scheme [cite the specific one they use], which attempts to solve the problem of large oscillations at discontinuities like the flame by trying not to interpolate over the discontinuity, which non-upwinded FDM and FVM do implicitly
 %   - WENO [CITE REVIEW] improves on ENO by blending between different interpolation schemes to improve the properties of the overall scheme in smooth regions and regions of discontinuity
 %   - \cite{schuller2002ModelingToolsPrediction}, similarly, uses a WENO scheme coupled to a G-equation model for the flame to predict combustion dynamics of a bunsen burner flame

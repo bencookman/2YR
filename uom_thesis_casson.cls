@@ -145,7 +145,7 @@
 \setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
 \setlength{\parindent}{0pt}
 \linespread{1.5}
-\pagestyle{plain} % simple page numbering
+% \pagestyle{plain} % simple page numbering
 \AtBeginDocument{
   \fontsize{\@@ptsize}{\@@ptsize+1pt}\selectfont
 }

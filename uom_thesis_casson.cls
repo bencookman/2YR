@@ -33,7 +33,7 @@
 %% Class definition - based upon report class
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{uom_thesis_casson}[2023/09/25 - Alex Casson - University of Manchester thesis format]
-\LoadClass[a4paper, twoside]{report}
+\LoadClass[a4paper, twoside, open=right]{report}
 
 
 %% Load packages

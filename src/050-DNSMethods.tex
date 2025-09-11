@@ -1,6 +1,6 @@
-\section{The Scalable Unstructured Node-SET (SUNSET) Combustion Code}
+\section{The SUNSET Combustion Code}
 
-For the simulations performed in the remainder of this report, we use the \emph{Scalable Unstructured Node-SET} (SUNSET) code \cite{kingSunsetFlamesDNSCode,king2024MeshFreeFrameworkHighOrdera}, to perform DNS of the governing equations (described in \chap{ch:combust-model}) with high accuracy in domains of arbitrary complex geometries and highly variable node densities. That it is DNS allows us to simulate turbulent combustion without requiring any model for the subgrid-scale vortices present in turbulent flows. For the simulations performed in \chap{ch:results} we actually simulate laminar, not turbulent flows, but the simulation code nevertheless provides high accuracy discretisations such that discretisation error is reliably minimised. The method used to this end is the \emph{Local Anisotropic Basis Function Method} (LABFM), and is explained thoroughly in the proceeding section. Boundary conditions are provided via the \emph{Navier-Stokes Characteristic Boundary Conditions} (NSCBC) formalism, and are detailed in \sect{sec:NSCBC}.
+For the simulations performed in the remainder of this report, we use the \emph{Scalable Unstructured Node-SET} (SUNSET) code \cite{kingSunsetFlames,king2024MeshFreeFrameworkHighOrdera}, to perform DNS of the governing equations (described in \chap{ch:combust-model}) with high accuracy in domains of arbitrary complex geometries and highly variable node densities. That it is DNS allows us to simulate turbulent combustion without requiring any model for the subgrid-scale vortices present in turbulent flows. For the simulations performed in \chap{ch:results} we actually simulate laminar, not turbulent flows, but the simulation code nevertheless provides high accuracy discretisations such that discretisation error is reliably minimised. The method used to this end is the \emph{Local Anisotropic Basis Function Method} (LABFM), and is explained thoroughly in the proceeding section. Boundary conditions are provided via the \emph{Navier-Stokes Characteristic Boundary Conditions} (NSCBC) formalism, and are detailed in \sect{sec:NSCBC}.
 
 Time integration makes use of the explicit Runge-Kutta scheme denoted as RK3(2)4[2R+]C under the classification of \cite{kennedy2000LowStorageExplicitRunge}, which is a third order, low storage (only requiring two or three registers per field per node), four step method in time with embedded second order error estimation. Even under turbulent combustion, error accumulated in time stems primarily from spatial detail (such as thin reacting zones, small Kolmogorov vortices etc.) rather than temporal dynamics (such as the vortex energy cascade, acoustics and diffusion). Thus, a third order error correcting scheme is suitable and our focus remains on the discretisation scheme used.
 
@@ -21,7 +21,7 @@ Parallelism is primarily implemented via domain decomposition, exploiting the lo
 
 
 
-\section{The Local Anisotropic Basis Function Method (LABFM)}
+\section{LABFM}
 
 LABFM \cite{king2024MeshFreeFrameworkHighOrder, king2020HighOrderDifference, king2024MeshFreeFrameworkHighOrdera, king2022HighOrderSimulationsIsothermal, broadley2025HighorderMeshfreeDirect, starepravo2025CanNeuralNetworks} is a high order spatial method used particularly in the computation of fluid flows. It allows for the calculation of arbitrary order approximations to spatial derivatives with arbitrary orders of accuracy, all on unstructured, mesh-free node sets. In keeping with the tradition set forth in prior methods (e.g. finite differences), polynomial interpolation is used as a first step before making derivative approximations. Specifically, we choose to set out the method in the context of making a high order interpolation based off finitely many discrete function values $φ_j$, before extending this to high-order derivatives, where further assumptions can be made to simplify derivation
 
@@ -151,7 +151,7 @@ Numerical approximations to differential operators such as the above contain err
 
 
 
-\section{Navier-Stokes Characteristic Boundary Conditions (NSCBC)} \label{sec:NSCBC}
+\section{NSCBC} \label{sec:NSCBC}
 
 Alongside spatial discretisation, boundary conditions comprise one of the most important parts of any simulation code. Not least because of the modelling which is enforced, but also because of changes to a simulation code's architecture which are necessitated as a result. The NSCBC \cite{poinsot1992BoundaryConditionsDirect,poinsot2001TheoreticalNumericalCombustion} formulation represents not a specific type of boundary condition, but a sort of instruction set to be applied to whichever boundary it concerns. The method was first outlined in \cite{thompson1987TimeDependentBoundary,thompson1987LecturesSeriesComputational,thompson1990TimeDependentBoundaryConditions} for non-reacting one-dimensional flows, in what is now known as the \emph{Locally One-Dimensional Inviscid} (LODI) approximation. The NSCBC formulation was developed as an extension of this to higher-dimensional, reacting flows of imperfect gases, where diffusive effects are included in extra physical conditions on top of those prescribed in the LODI case.
 

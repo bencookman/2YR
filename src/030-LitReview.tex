@@ -218,7 +218,7 @@ The \emph{finite element method} (FEM) is also commonly used to discretise fluid
 
 
 
-\subsubsection{Less Traditional Methods}
+\subsubsection{Less Traditional Mesh-Based Methods}
 
 One high-order variation of FEM which is used to simulate combustion is the \emph{spectral element method} (SEM), which is used in the Nek5000 code \cite{nek1996NEK5000} [cite paper too] to discretise the combustion problem onto an unstructured mesh quadrilateral (two-dimensions) and hexahedral (three-dimensions) elements. In SEM. discretisation points are collocated onto nodes of the orthogonal Gauss-Lobatto (GL) polynomials within these elements such that the solution may be decomposed onto the corresponding GL basis \cite{patera1984SpectralElementMethod}. As a result, the order may be chosen arbitrarily by choosing the order of spectral GL polynomials and their corresponding node locations. This results in higher, often \nth{6} to \nth{10}, order discretisations at the cost of a much more challenging meshing problem due to the increased size of each element. The disparate effects of flame stretch and flame curvature on spherical flames are investigated using the Nek5000 code, for example \cite{giannakopoulos2015CurvatureMarksteinLength}.
 
@@ -227,7 +227,9 @@ A different approach is taken in \cite{krishnan2025NumericalMethodMultidimension
 A similar class of method are those which posses the \emph{total variation diminishing} (TVD) property. These more subtly reduces oscillations by ensuring the sum of variation of the dependent variables cannot increase between time steps. \cite{eigemann2025AmplificationThermoacousticFlame} investigates high-frequency noise using a TVD approach implemented by OpenFOAM.
 
 
-%%% MESH-FREE METHODS
+
+\subsubsection{Mesh-Free Methods}
+
 
 % Mesh free methods for combustion explored in \cite{kansa2009NumericalSimulationTwodimensional}, where they use RBFs
 % Check Jack's paper for other examples of mesh-free combustion??

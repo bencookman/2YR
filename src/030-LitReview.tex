@@ -257,7 +257,11 @@ A condition for non-reflecting BCs is first given in \cite{hedstrom1979Nonreflec
 \begin{equation}
 \pdv{\und{V}}{t} + \undt{\vb{A}} \cdot \vb{\nabla} \und{V} + \und{b} = 0
 \end{equation}
-($\und{V}$ is the vector of primitive variables, $\undt{\vb{A}}$ represents the convection of these variables and $\und{b}$ are their source terms) and solving the left-eigenvalue problem of $\undt{\vb{A}}$ to find its left eigenvectors $\und{l}_m^T$. They then prove that enforcing the condition of $\und{l}_m^T \partial \und{V} / \partial t = 0$ gives precisely no wave entering the boundary in this continuous problem.
+($\und{V}$ is the vector of primitive variables, $\undt{\vb{A}}$ represents the convection of these variables and $\und{b}$ are their source terms) and solving the left-eigenvalue problem of $\undt{\vb{A}}$ to find its left eigenvectors $\und{l}_m^T$. They then prove that enforcing the condition of:
+\begin{equation} \label{eqn:nonreflect}
+\und{l}_m^T \partial \und{V} / \partial t = 0
+\end{equation}
+gives precisely no waves entering the boundary in this continuous problem. Equation \equ{eqn:nonreflect} is teh basis of all non-reflecting characteristic BCs.
 
 
 This is the basis of the \emph{Navier-Stokes characteristic boundary conditions} formulation, which does this by calculating 
@@ -274,11 +278,6 @@ This is the basis of the \emph{Navier-Stokes characteristic boundary conditions}
 % - acoustically reflecting or non-reflecting walls or inflow / outflow
 % - In the case of inflow / outflow many more cases
 
-
-% A condition for a Non-reflecting boundaries is first given in \cite{hedstrom1979NonreflectingBoundaryConditions} for the inviscid gasdynamics equations.
-% It involves performing characteristic analysis by writing the hyperbolic conservation equations in their primitive form $ $ and solving the left-eigenvalue problem on $A$ to find left eigenvectors $\und{l}_m^T$
-% They prove that enforcing the condition $\und{l}_m^T \partial \und{V} / \partial t = 0$ gives precisely no waves entering the boundary in the continuous problem
-% This equation is the basis of all characteristic boundary conditions
 
 
 % Rudy and Strikwerda 1980 and 1981

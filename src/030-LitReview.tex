@@ -205,29 +205,14 @@ Regardless of the paradigm used -- DNS, LES or Reynolds Averaged Navier Stokes (
 \end{equation}
 where $φ$ is the the function we have access to at points $\{\vb{x}_i\}_i$ and its derivative is represented by the finite difference operator $L_x[φ]$ at those points. At these locations, the surrounding points $\{\vb{x}_j\}_{j \in \cl{N}_i}$ are used to evaluate the differences $φ_{ij} \equiv φ_j - φ_i$ with weights $w_{i, j}$. These surrounding nodes are referred to as the \emph{stencil}. Centred finite difference approximations are FDM schemes where $\{\vb{x}_j\}_{j \in \cl{N}_i}$ is symmetric about the central node $\vb{x}_i$. These can easily reach high orders when uniform grid points are used and so reduce the required resolution mentioned above. The obvious caveat is that higher order methods always require more calculations, making each discretisation point in the domain essentially more expensive. But, this effect is usually dominated by the reduction in cost due to increased order of accuracy which improves the value of each discretisation point as the grid becomes more fine. Having said that, centred finite differences also suffer from stability issues because they are not upwinded for the hyperbolic waves. Accounting for this with one-sided upwinded schemes results in a compromise between stencil size and order. Compact finite differences solve the same linear problem, with the constraint that as few grid points be used in the stencil as possible [CITE]. In higher dimensions, finite differences are applied easily via a simple Cartesian product: to find $\vb{\nabla}φ$ each partial derivative may be approximated by finite differences separately, provided the nodes are uniformly spaced in each dimension, creating a lattice. In three-dimensions, for example, this means we are restricted to modelling fluids within parallelopipeds (or cuboids assuming an orthonormal basis). Order (p-)adaptivity can be implemented simply by requiring different lattice points use different FDM schemes. Adaptivity in grid resolution (h-adaptivity) can be implemented by further subdividing parts of the lattice. This may also be used without adaptivity to better resolve parts of the computational domain, such as those close to the flame (e.g. the finite difference discretisation used in \cite{domingo2022RevisitingRelationPremixed} for a bunsen burner flame). The AVBP solver \cite{cerfacsAVBP} implements a Lax-Wrendoff formulation \cite{lax1960SystemsConservationLaws} -- as used in \cite{garby2013LargeEddySimulationCombustion} to model various combustor sizes, affecting acoustic properties. This is a form of non-method of lines finite difference scheme for hyperbolic PDEs where second order finite differences are used in space and time to reduce diffusive errors which erroneously smooth out linear and non-linear wave solutions.
 
+Another traditional class of discretisations are \emph{finite volume methods} (FVM). These are of relevance to any system determined by conservation laws as they enforce conservation by solving for the integral quantities of the problem (e.g. the integral quantity of density is mass). These integral quantities pass between different control volumes in the computational domain, as determined by the application of flux terms at their boundaries. This is important for combustion problems where the conservation of elemental mass, momentum and energy given in \sect{sec:govern} are the crucial physical constraints. The degrees of freedom are the centres of these volumes and smaller control volumes result in more accurate solutions, analogous to the grid points of FDM. Higher order FVM schemes are enabled using existing high-order quadrature rules to represent the relevant integrals [cite probably], although they are not as simple to implement as in FDM. Unlike FDM, the resulting mesh need not be rigidly uniform in each dimension, resulting in an unstructured mesh which can adapt to the problem -- especially useful for combustion systems. However, the reliance on a mesh to describe connectivity between volumes can be a major problem as low discretisation error is only guaranteed when a high-quality mesh is used. This is a major challenge for Lagrangian formulations of FVM [???]. Finite volumes are the most widely implemented discretisation method for combustion solvers. One is implemented, for example, in the AVBP solver mentioned above. The PeleLM solver \cite{amrex-combustionPeleLMAdaptiveMesh} also implements a finite volume discretisation of the low Mach formulation of the combustion equations -- i.e. the equations from \sect{sec:govern} where acoustics are precluded. Examples of this being use in two- and three-dimensions are the thermodiffusive simulations of \cite{howarth2022EmpiricalCharacteristicScaling} and \cite{howarth2023ThermodiffusivelyUnstableLeanPremixed}.
 
-
-
-% - AVBP \cite{cerfacsAVBP}
-%   - Also implements finite-volume solver
-
-
-% - PeleLM \cite{amrex-combustionPeleLMAdaptiveMesh}
-%   - Finite-volume discretisation on cartesian grids of the low-Mach formulation of the equations
-%   - Howarth 2022
-%   - More examples given in Howarth 2023
 
 
 % - OpenFOAM \cite{opencfdltd2004OpenFOAM}
 %   - Implements a variety of methods, most notably finite volumes
 %   - \cite{jun2023ParametricInstabilityPropagating} uses a fork of openfoam called opensmoke++ to simulate secondary instability structures in hydrogen-enriched flames. In this case second order central differencing was used for diffusive terms and a second order upwinding scheme was used for convective terms
 
-
-% FVM does...
-% Enforces conservation by solving for the integral quantities (e.g. mass for density) as they pass between different control volumes in the computational domain by applying flux terms at their boundaries
-% Important for combustion problems where conservation of elemental masses and energy are crucial physical constraints
-% This makes it easy to do non-uniform domains, but meshing can be a major problem
-% High-order FVM schemes are enabled through the use of existing high-order quadrature rules
 
 
 % FEM does...
@@ -278,6 +263,8 @@ where $φ$ is the the function we have access to at points $\{\vb{x}_i\}_i$ and 
 
 
 
+
+\subsection{Boundary Conditions}
 
 \subsection{Characteristic Boundary Conditions}
 
@@ -370,16 +357,18 @@ where $φ$ is the the function we have access to at points $\{\vb{x}_i\}_i$ and 
 % - They propose a corrected method which again references a frozen turbulent flow VFCBC and results, practically, in halved L_5 values at inflows
 
 
+\subsubsection{Immersed Boundary Methods}
 
 
 % Immersed boundary methods are also an option and open up possibilities for boundaries not restricted specific node placement, especially for moving boundaries. But as detailed in King 2022, these a largely restricted to lower order accuracy at these boundaries (cite, and for what reason?).
 
+% Although they are widely used in non-reacting problems, they are rarely used in combustion problems
+% Matalon uses them in his hydrodynamic combustion solver!
 
 
 
 
-
-\subsection{Delayed-Time Domain Impedance Boundary Conditions}
+\subsubsection{Delayed-Time Domain Impedance Boundary Conditions}
 
 
 % Describe TDIBC briefly before going into time delay model!

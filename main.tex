@@ -29,24 +29,23 @@
 \pagenumbering{gobble}
 \cleardoublepage
 
-\input{src/001-Abstract}
-\cleardoublepage
-
 \pagebreak
 \vspace*{\fill}
 \begin{center}
 \input{src/002-Dedication}
 \end{center}
-\vspace*{\fill}
 \cleardoublepage
-
+\vspace*{\fill}
 
 \pagenumbering{arabic}
-\setcounter{page}{2} % ensure no number on title page, numbers on other pages match those in the PDF
+\setcounter{page}{5}
+\input{src/001-Abstract}
+\cleardoublepage
+
 \uomtoc
+\cleardoublepage
 
 \uomstartmainbody % Don't delete. used to flag to the hyperlinks in the PDF that the main content is starting
-\cleardoublepage
 
 \chapter{Introduction} \label{ch:intro}
 \input{src/010-Intro.tex}

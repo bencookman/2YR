@@ -253,23 +253,25 @@ A similar class of method are those which posses the \emph{total variation dimin
 
 Usually, for reasons of computational cost, the geometry of a physical domain will not coincide with that of the computational domain. This is exacerbated when the physical domain is a theoretically unbounded. In such cases, it is necessary to truncate parts of the physical domain which are less important for the studied phenomena, so that computational expense may be focused. This process of truncation introduces boundaries to the computational domain which must allow for a physically reasonable and accurate interaction of it with the fluid. Often, for domains which are truncated we would like the boundary to offer some sort of non-reflection condition for waves which hit the boundary. For example, a transverse shear wave which reaches the edge of what is modelled of a semi-infinite duct would not physically reflect back at the truncated boundary. The same is especially true for acoustics, which will traverse the full combustor geometry the most frequently of all the waves. The same can also be said at computational boundaries not representing a truncated geometry: acoustic damping material in reactors may be used to diminish thermoacoustic instability and its non-reflectance must be modelled in the boundaries. The simplest boundary conditions (BCs) are those which simply prescribe values to dependent variables at the boundary discretisation points, e.g. $u, p = \rm {const}$, but these Dirichlet conditions fully reflect waves back into the interior domain. The same are true for Von Neumann BCs, where instead the derivatives of waves are full reflected. Instead, we may choose to model these characteristic waves directly through a \emph{characteristic boundary condition} formulation, such that waves which reenter can be directly prescribed.
 
-A condition for non-reflecting BCs is first given in \cite{hedstrom1979NonreflectingBoundaryConditions} for the inviscid gasdynamics equations. It relies on performing a characteristic analysis by writing the nonlinear hyperbolic conservation equations in their primitive form:
+A condition for non-reflecting BCs is first given in \cite{hedstrom1979NonreflectingBoundaryConditions} for the inviscid gasdynamics equations. It relies on performing a characteristic analysis by writing the nonlinear hyperbolic conservation equations in their primitive form, excluding source terms:
 \begin{equation}
-\pdv{\und{V}}{t} + \undt{\vb{A}} \cdot \vb{\nabla} \und{V} + \und{b} = 0
+\pdv{\und{V}}{t} + \undt{\vb{A}} \cdot \vb{\nabla} \und{V} = 0
 \end{equation}
-($\und{V}$ is the vector of primitive variables, $\undt{\vb{A}}$ represents the convection of these variables and $\und{b}$ are their source terms) and solving the left-eigenvalue problem of $\undt{\vb{A}}$ to find its left eigenvectors $\und{l}_m^T$. They then prove that enforcing the condition of:
+($\und{V}$ is the vector of primitive variables and $\undt{\vb{A}}$ represents the `convection' of these variables by each other) and solving the left-eigenvalue problem of $\undt{\vb{A}}$ to find its left eigenvectors $\und{l}_m^T$. They then prove that enforcing the condition of $\und{l}_m^T \partial \und{V} / \partial t = 0$
+gives precisely no waves entering the boundary in this continuous problem. The one-dimensional equation for acoustic non-reflection:
 \begin{equation} \label{eqn:nonreflect}
-\und{l}_m^T \partial \und{V} / \partial t = 0
+\pdv{p}{t} - ρc \pdv{u}{t} = 0,
 \end{equation}
-gives precisely no waves entering the boundary in this continuous problem. Equation \equ{eqn:nonreflect} is teh basis of all non-reflecting characteristic BCs.
+is the basis of all non-reflecting characteristic BCs. Soon after, it was realised in \cite{rudy1980NonreflectingOutflowBoundary} that a perfectly non-reflecting boundary enables the pressure to drift arbitrarily, which means the mean pressure cannot be evaluated, leading to an ill-posed system. Naturally, this is a problem for any simulation subject to noise -- especially due to combustion noise \cite{dowling2015CombustionNoise} -- so they introduce a relaxation term in the form of a \emph{P} (proportional) controller:
+\begin{equation}
+\left( \pdv{p}{t} - ρc \pdv{u}{t} \right) + σ(p - p_{target}) = 0.
+\end{equation}
+Then the pressure relaxes towards $p_{target}$ provided the coefficient $σ$ is tuned correctly based of a linearisation of the fluid equations about a base state. Their following paper \cite{rudy1981BoundaryConditionsSubsonic} performs multiple tests on various inflow and outflow formulations therein. They conclude with the salient point that not only do outflows require fewer prescribed incoming waves (outgoing waves can be simply calculated via upwinding) making them simpler to implement in general, but they are also less sensitive to error in data at those boundaries. They reason this as difficulties using their chosen extrapolation methods compounding (which would later become redundant), but may also with the simple idea that issues at an outflow are, usually, simply convected out of the domain whereas errors at inflow boundaries are spread throughout the domain.
+% σ determined by linearisation
 
-
-This is the basis of the \emph{Navier-Stokes characteristic boundary conditions} formulation, which does this by calculating 
-
+% This is the basis of the \emph{Navier-Stokes characteristic boundary conditions} formulation, which does this by calculating 
 
 % not just for this, we also need to apply BCs at walls
-
-% The simplest boundary conditions, i.e. those with constant (Dirichlet) boundary values (p=const), usually reflect acoustic waves back toward the interior of the domain. For most situations we want to simulate, this doesn't represent the physical situation, where we would rather pretend the medium continues outside of the computational domain. This motivates a need for boundary conditions which do not reflect acoustic waves - non-reflecting boundary conditions. The formalisms are based of characteristic waves entering / leaving the domain
 % !!!! The computational domain and physical domain usually do not coincide
 % Many types of boundary conditions may be chosen for combustion schemes:
 % - Periodic are very simple to enforce numerically so require no elaboration
@@ -277,13 +279,6 @@ This is the basis of the \emph{Navier-Stokes characteristic boundary conditions}
 % - isothermal or adiabatic walls
 % - acoustically reflecting or non-reflecting walls or inflow / outflow
 % - In the case of inflow / outflow many more cases
-
-
-
-% Rudy and Strikwerda 1980 and 1981
-% - Introduces the relaxation term and determines a value for its coefficient
-% - Without this term, perfect non-reflection enables the pressure to drift arbitrarily, which is a big problem especially for combustion simulations subject to combustion noise \cite{Morgans combustion noise paper}
-% - The 1981 paper performs multiple tests on various inflow and outflow formulations and find the salient point that not only do outflows require fewer prescribed incoming waves, making them simpler to implement in general, they are also less sensitive to data at the outflow boundary. This can be reasoned as difficulties in their extrapolation methods compounding along with the simple idea that issues at outflows are usually convected out of the domain.
 
 
 % Thompson 1987, 1987, 1990

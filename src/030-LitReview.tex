@@ -253,22 +253,6 @@ A similar class of method are those which posses the \emph{total variation dimin
 
 Usually, for reasons of computational cost, the geometry of a physical domain will not coincide with that of the computational domain. This is exacerbated when the physical domain is a theoretically unbounded. In such cases, it is necessary to truncate parts of the physical domain which are less important for the studied phenomena, so that computational expense may be focused. This process of truncation introduces boundaries to the computational domain which must allow for a physically reasonable and accurate interaction of it with the fluid. Often, for domains which are truncated we would like the boundary to offer some sort of non-reflection condition for waves which hit the boundary. For example, a transverse shear wave which reaches the edge of what is modelled of a semi-infinite duct would not physically reflect back at the truncated boundary. The same is especially true for acoustics, which will traverse the full combustor geometry the most frequently of all the waves. The same can also be said at computational boundaries not representing a truncated geometry: acoustic damping material in reactors may be used to diminish thermoacoustic instability and its non-reflectance must be modelled in the boundaries. The simplest boundary conditions (BCs) are those which simply prescribe values to dependent variables at the boundary discretisation points, e.g. $u, p = \rm {const}$, but these Dirichlet conditions fully reflect waves back into the interior domain. The same are true for Von Neumann BCs, where instead the derivatives of waves are full reflected. Instead, we may choose to model these characteristic waves directly through a \emph{characteristic boundary condition} formulation, such that waves which reenter can be directly prescribed.
 
-A condition for non-reflecting BCs is first given in \cite{hedstrom1979NonreflectingBoundaryConditions} for the inviscid gasdynamics equations. It relies on performing a characteristic analysis by writing the nonlinear hyperbolic conservation equations in their primitive form, excluding source terms:
-\begin{equation}
-\pdv{\und{V}}{t} + \undt{\vb{A}} \cdot \vb{\nabla} \und{V} = 0
-\end{equation}
-($\und{V}$ is the vector of primitive variables and $\undt{\vb{A}}$ represents the `convection' of these variables by each other) and solving the left-eigenvalue problem of $\undt{\vb{A}}$ to find its left eigenvectors $\und{l}_m^T$. They then prove that enforcing the condition of $\und{l}_m^T \partial \und{V} / \partial t = 0$
-gives precisely no waves entering the boundary in this continuous problem. The one-dimensional equation for acoustic non-reflection:
-\begin{equation} \label{eqn:nonreflect}
-\pdv{p}{t} - ρc \pdv{u}{t} = 0,
-\end{equation}
-is the basis of all non-reflecting characteristic BCs. Soon after, it was realised in \cite{rudy1980NonreflectingOutflowBoundary} that a perfectly non-reflecting boundary enables the pressure to drift arbitrarily, which means the mean pressure cannot be evaluated, leading to an ill-posed system. Naturally, this is a problem for any simulation subject to noise -- especially due to combustion noise \cite{dowling2015CombustionNoise} -- so they introduce a relaxation term in the form of a \emph{P} (proportional) controller:
-\begin{equation}
-\left( \pdv{p}{t} - ρc \pdv{u}{t} \right) + σ(p - p_{target}) = 0.
-\end{equation}
-Then the pressure relaxes towards $p_{target}$ provided the coefficient $σ$ is tuned correctly based of a linearisation of the fluid equations about a base state. Their following paper \cite{rudy1981BoundaryConditionsSubsonic} performs multiple tests on various inflow and outflow formulations therein. They conclude with the salient point that not only do outflows require fewer prescribed incoming waves (outgoing waves can be simply calculated via upwinding) making them simpler to implement in general, but they are also less sensitive to error in data at those boundaries. They reason this as difficulties using their chosen extrapolation methods compounding (which would later become redundant), but may also with the simple idea that issues at an outflow are, usually, simply convected out of the domain whereas errors at inflow boundaries are spread throughout the domain.
-% σ determined by linearisation
-
 % This is the basis of the \emph{Navier-Stokes characteristic boundary conditions} formulation, which does this by calculating 
 
 % not just for this, we also need to apply BCs at walls
@@ -280,6 +264,28 @@ Then the pressure relaxes towards $p_{target}$ provided the coefficient $σ$ is 
 % - acoustically reflecting or non-reflecting walls or inflow / outflow
 % - In the case of inflow / outflow many more cases
 
+A condition for non-reflecting BCs is first given in \cite{hedstrom1979NonreflectingBoundaryConditions} for the inviscid gasdynamics equations. It relies on performing a characteristic analysis by writing the nonlinear hyperbolic conservation equations in their primitive form, excluding source terms:
+\begin{equation}
+\pdv{\und{V}}{t} + \undt{\vb{A}} \cdot \vb{\nabla} \und{V} = 0
+\end{equation}
+($\und{V}$ is the vector of primitive variables and $\undt{\vb{A}}$ represents the `convection' of these variables by each other) and solving the left-eigenvalue problem of $\undt{\vb{A}}$ to find its left eigenvectors $\und{l}_m^T$. They then prove that enforcing the condition of $\und{l}_m^T \partial \und{V} / \partial t = 0$
+gives precisely no waves entering the boundary in this continuous problem. The one-dimensional equation for acoustic non-reflection:
+\begin{equation} \label{eqn:nonreflect}
+\pdv{p}{t} - ρc \pdv{u}{t} = 0,
+\end{equation}
+is the basis of all non-reflecting characteristic BCs. Soon after, it was realised in \cite{rudy1980NonreflectingOutflowBoundary} that a perfectly non-reflecting boundary enables the pressure to drift arbitrarily, which means the mean pressure cannot be evaluated, leading to an ill-posed system. Naturally, this is a problem for any simulation subject to noise -- especially due to combustion noise \cite{dowling2015CombustionNoise} -- so they introduce a relaxation term in the form of a P-controller:
+\begin{equation}
+\left( \pdv{p}{t} - ρc \pdv{u}{t} \right) + σ(p - p_{target}) = 0.
+\end{equation}
+Then, the pressure relaxes towards a pressure $p = p_{target}$ provided the coefficient $σ$ is tuned correctly via linearisation of the fluid equations about a base state. Their following paper \cite{rudy1981BoundaryConditionsSubsonic} performs multiple tests on various inflow and outflow formulations therein. They conclude with the salient point that outflows are usually less sensitive to error in outflow data than inflows are to inflow data. They reason this as difficulties using their chosen extrapolation methods compounding (which would later become redundant), but may also be thought of with the simple idea that issues at an outflow are, usually, simply convected out of the domain whereas errors at inflow boundaries are spread throughout the domain.
+
+Later on, a \emph{recipe} to create characteristic BCs would be given in \cite{thompson1987LecturesSeriesComputational, thompson1987TimeDependentBoundary, thompson1990TimeDependentBoundaryConditions} which is the basis not just for many modern day non-reflecting boundary formulations, but may also be used for wall boundaries and several over sub- and supersonic inflow and outflow boundary conditions. This method is referred to as the locally one-dimensional inviscid (LODI) approximation, since all diffusive and transverse terms are ignored. The approximation is explained in detail in \sect{sec:LODI}, but briefly: the same characteristic analysis is performed as above, except the hyperbolic equations are projected onto each `basis' eigenvector:
+\begin{equation}
+\pdv{\und{V}}{t} + \undt{\vb{A}} \cdot \vb{\nabla} \und{V} + \und{b} = 0
+\quad \iff \quad
+\und{l}_m^T \pdv{\und{V}}{t} + \cl{L}_M + \und{l}_m^T \und{b} = 0
+\end{equation}
+where $\und{b}$ holds source terms (e.g. gravity, chemical production rate) and $\cl{L}_M \equiv λ_m \und{l}_m^T \vb{\nabla} \und{V}$. The eigenvalue $λ_m$ represents the speed of that characteristic. What's left, then, is to evaluate 
 
 % Thompson 1987, 1987, 1990
 % - provides a 'recipe' to create characteristic boundary conditions and provides many such examples for sub- and supersonic inflows and outflows and wall boundaries

@@ -11,8 +11,8 @@
 Defining the inverse thermal Peclet number: $δ = l_\rm{th} / L$ as the asymptotic parameter used by \cite{pelce1982InfluenceHydrodynamicsDiffusion,matalon1982FlamesGasdynamicDiscontinuities} to describe flame thickness alongside the Zeldovich number $\Ze$ which loosely prescribes reaction zone thickness relative to the flame thickness, the work of \cite{pelce1982InfluenceHydrodynamicsDiffusion,matalon1982FlamesGasdynamicDiscontinuities} primarily finds that the incompressible Navier-Stokes (NS) equations are suitable approximations of gas flow on either side of a premixed deflagration which is deficient in one reactant:
 \begin{subequations}
 \begin{boxaliat}{2}
-\label{eqn:hydro-incomp} \vb{\nabla}\cdot\vb{u} &= 0                         &&+ \cl{O}\left( δ^2 \right), \\
-\label{eqn:hydro-u} ρ \mdv{\vb{u}}{t} &= - \vb{\nabla}p + δ\Pr \lap\vb{u} &&+ \cl{O}\left( δ^2 \right).
+\label{eqn:hydro-incomp} \vnab \cdot\vb{u} &= 0                         &&+ \cl{O}\left( δ^2 \right), \\
+\label{eqn:hydro-u} ρ \mdv{\vb{u}}{t} &= - \vnab p + δ\Pr \lap\vb{u} &&+ \cl{O}\left( δ^2 \right).
 \end{boxaliat}
 \end{subequations}
 So these equations are valid on either side of the flame, which we describe mathematically by the level set of a function $F = 0$. The asymptotic papers make the additional assumption that this level set looks like the graph of a function in $y$, $f(y, t)$, such that e.g. in two-dimensions $F \equiv x - f(y, t)$. For numerical purposes, it is usually easiest to define this level set via the progress variable:
@@ -23,9 +23,9 @@ for one of the species $α$, so $F \equiv c - c^*$. The graph assumption is not 
 
 The \emph{product-pointing} normal (i.e. the normal which points towards the hot, light reaction products) is easily defined by:
 \begin{equation}
-\uvec{n} \equiv \frac{\vb{\nabla}c}{\norm{\vb{\nabla}c}} \bigg|_{F^-}.
+\uvec{n} \equiv \frac{\vnab c}{\norm{\vnab c}} \bigg|_{F^-}.
 \end{equation}
-which is the unit normal vector pointing forward along the integral curve of $\vb{\nabla} c$ which goes through the relevant point at the flame surface. The reactant-pointing normal may also be used, which just results in a change in sign. We use the product-pointing normal so we start off without negatives. The absolute speed of the flame at a point on the flame is the component of the flame motion $\ndt{\vb{f}}$ which moves away from the products:
+which is the unit normal vector pointing forward along the integral curve of $\vnab  c$ which goes through the relevant point at the flame surface. The reactant-pointing normal may also be used, which just results in a change in sign. We use the product-pointing normal so we start off without negatives. The absolute speed of the flame at a point on the flame is the component of the flame motion $\ndt{\vb{f}}$ which moves away from the products:
 \begin{subequations}
 \begin{equation}
 S_a \equiv - \ndt{\vb{f}} \cdot \uvec{n},
@@ -34,15 +34,15 @@ and the displacement speed also considers the effect of the fluid moving at the 
 \begin{equation}
 S_d \equiv (\vb{u} - \ndt{\vb{f}}) \cdot \uvec{n} \,\big|_{F^-} = S_a + \vb{u} \cdot \uvec{n} \,\big|_{F^-}.
 \end{equation}
-Hence, considering the advection equation for the flame: $\partial c / \partial t + \ndt{\vb{f}}\cdot \vb{\nabla}c = 0$ we find the following simple expressions for absolute and displacement speed:
+Hence, considering the advection equation for the flame: $\partial c / \partial t + \ndt{\vb{f}}\cdot \vnab c = 0$ we find the following simple expressions for absolute and displacement speed:
 \begin{align}
-S_a &= \frac{1}{\norm{\vb{\nabla}c}} \pdv{c}{t} \,\bigg|_{F^-} \\
-S_d &= \frac{1}{\norm{\vb{\nabla}c}} \mdv{c}{t} \,\bigg|_{F^-}
+S_a &= \frac{1}{\norm{\vnab c}} \pdv{c}{t} \,\bigg|_{F^-} \\
+S_d &= \frac{1}{\norm{\vnab c}} \mdv{c}{t} \,\bigg|_{F^-}
 \end{align}
 In this context, the species conservation equation may be used:
 \begin{align}
-ρ \mdv{c}{t} &= \frac{1}{\bbra{Y_α}_V} \cdot ρ \mdv{Y_α}{t} = \frac{1}{\bbra{Y_α}_V} \left( \ndt{\vr}_α - \vb{\nabla} \cdot (ρ \vb{V}_{\!α} Y_α) \right), \\
-\implies \quad \Aboxed{ S_d &= \frac{1}{ρ \norm{\vb{\nabla}c} \bbra{Y_α}_V} \left[ \ndt{\vr}_α - \vb{\nabla} \cdot (ρ \vb{V}_{\!α} Y_α) \right] \bigg|_{F^-} . }
+ρ \mdv{c}{t} &= \frac{1}{\bbra{Y_α}_V} \cdot ρ \mdv{Y_α}{t} = \frac{1}{\bbra{Y_α}_V} \left( \ndt{\vr}_α - \vnab  \cdot (ρ \vb{V}_{\!α} Y_α) \right), \\
+\implies \quad \Aboxed{ S_d &= \frac{1}{ρ \norm{\vnab c} \bbra{Y_α}_V} \left[ \ndt{\vr}_α - \vnab  \cdot (ρ \vb{V}_{\!α} Y_α) \right] \bigg|_{F^-} . }
 \end{align}
 \end{subequations}
 
@@ -56,18 +56,18 @@ S_{c/d}^* &= 1   &&+        δ \Mk_{c/d}&&( -\bb{K}^* &&)
 with $\bb{K}$ being the flame stretch as elaborated in \cite{matalon1982FlamesGasdynamicDiscontinuities,candel1990FlameStretchBalance,clavin1985DynamicBehaviorPremixed}. This flame stretch obeys the formula:
 \begin{subequations}
 \begin{align}
-(-\bb{K}) &= S_a (\vb{\nabla}\cdot\uvec{n}) + \uvec{n} \cdot \vb{\nabla} \cross (\vb{u}\cross \vb{n}) \Big|_{F^-} \\
-&= S_d (\vb{\nabla}\cdot\uvec{n}) + \left[ (\uvec{n}\otimes\uvec{n}) : \vb{\nabla}\vb{u} - \vb{\nabla} \cdot \vb{u} \right] \Big|_{F^-} \\
-&= S_d (\vb{\nabla}\cdot\uvec{n}) + \left(\uvec{t}_1\otimes\uvec{t}_1 + \uvec{t}_2\otimes\uvec{t}_2\right) : \bb{E} \,\Big|_{F^-} \\
+(-\bb{K}) &= S_a (\vnab \cdot\uvec{n}) + \uvec{n} \cdot \vnab  \cross (\vb{u}\cross \vb{n}) \Big|_{F^-} \\
+&= S_d (\vnab \cdot\uvec{n}) + \left[ (\uvec{n}\otimes\uvec{n}) : \vnab \vb{u} - \vnab  \cdot \vb{u} \right] \Big|_{F^-} \\
+&= S_d (\vnab \cdot\uvec{n}) + \left(\uvec{t}_1\otimes\uvec{t}_1 + \uvec{t}_2\otimes\uvec{t}_2\right) : \bb{E} \,\Big|_{F^-} \\
 &= S_d \kappa + E
 \end{align}
 \end{subequations}
 depending on the flame's displacement speed, curvature $\k$ and strain $E$:
 \begin{subequations}
 \begin{align}
-\kappa &\equiv \vb{\nabla}\cdot\uvec{n}, \\
-E &\equiv \left(\uvec{t}_1\otimes\uvec{t}_1 + \uvec{t}_2\otimes\uvec{t}_2\right) : \bb{E} \,\Big|_{F^-} = \left[ (\uvec{n}\otimes\uvec{n}) : \vb{\nabla}\vb{u} - \vb{\nabla} \cdot \vb{u}\right] \, \Big|_{F^-}, \\
-\bb{E} &= \frac{1}{2}\left(\vb{\nabla}\vb{u} + (\vb{\nabla}\vb{u})^T\right)
+\kappa &\equiv \vnab \cdot\uvec{n}, \\
+E &\equiv \left(\uvec{t}_1\otimes\uvec{t}_1 + \uvec{t}_2\otimes\uvec{t}_2\right) : \bb{E} \,\Big|_{F^-} = \left[ (\uvec{n}\otimes\uvec{n}) : \vnab \vb{u} - \vnab  \cdot \vb{u}\right] \, \Big|_{F^-}, \\
+\bb{E} &= \frac{1}{2}\left(\vnab \vb{u} + (\vnab \vb{u})^T\right)
 \end{align}
 where $\bb{E}$ is the strain rate tensor and the vectors $\uvec{n}$, $\uvec{t}_1$ and $\uvec{t}_2$ form a moving frame on the flame surface (assuming a three-dimensional system):
 \begin{equation}
@@ -113,7 +113,7 @@ These are sets depending on time, $t$, which we ignore below for brevity
 \begin{subequations}
 \begin{alignat}{2}
 \chi_{c^*}       &\equiv \Big\{ \vb{\chi}_{c^*}(\sigma)  \, &&| \  c\big(\vb{\chi}_{c^*}(\sigma)\big) = c^* \Big\} \\
-γ_{c^*, α} &\equiv \Big\{ \vb{γ}_{c^*, \s}(s) \, &&| \  \vb{γ}_{c^*, \s}' =  \vb{\nabla}c / \norm{\vb{\nabla}c} \big|_{\vb{γ}_{c^*, \s}} \ \text{and} \  \vb{γ}_{c^*, \s}(0) = \vb{\chi}_{c^*}(\sigma) \Big\}
+γ_{c^*, α} &\equiv \Big\{ \vb{γ}_{c^*, \s}(s) \, &&| \  \vb{γ}_{c^*, \s}' =  \vnab c / \norm{\vnab c} \big|_{\vb{γ}_{c^*, \s}} \ \text{and} \  \vb{γ}_{c^*, \s}(0) = \vb{\chi}_{c^*}(\sigma) \Big\}
 \end{alignat}
 \end{subequations}
 we find that the set integral curves does not change with time or the contour progress variable $c^*$ and covers domain:

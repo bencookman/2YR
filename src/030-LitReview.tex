@@ -179,9 +179,9 @@ The combustion equations from \chap{ch:combust-model} are only analytically solu
 
 The most brute force way to simulate a fluid system would be one where you try to accurately simulate every detail involved in the fluid. This idea was first studied by Orszag \cite{orszag1970AnalyticalTheoriesTurbulence}, where he defines \emph{direct numerical simulation} (DNS) as a numerical simulation with enough grid points to full resolve the smallest physical phenomena in the system. Originally, Orszag studied this in the context of turbulent flows \cite{orszag1970AnalyticalTheoriesTurbulence,orszag1972NumericalSimulationThreeDimensional}. A turbulent incompressible flow is largely determined by the transit of its vortices, as expressed by the vorticity equation:
 \begin{equation}
-\pdv{\vb{ω}}{t} + (\vb{u} \cdot \vb{\nabla}) \vb{ω} = (\vb{ω} \cdot \vb{\nabla}) \vb{u} + \frac{μ}{ρ} Δ \vb{ω}
+\pdv{\vb{ω}}{t} + (\vb{u} \cdot \vnab ) \vb{ω} = (\vb{ω} \cdot \vnab ) \vb{u} + \frac{μ}{ρ} Δ \vb{ω}
 \end{equation}
-where $\vb{ω} \equiv \vb{\nabla} \times \vb{u}$ and $\vb{\nabla} \cdot \vb{u} = 0$. Hence, turbulence is a fundamentally three-dimensional phenomenon -- the energy cascade from large to small vortices depends largely on the $(\vb{ω} \cdot \vb{\nabla})\vb{u}$ term above, which is not present for two-dimensional flows. In such flows, we have vortices not only on the order of the typical flow length scale $l_T$, called the integral length scale, but also of sizes all the way down to the smallest turbulence scale known as the kolmogorov length scale $l_K$ \cite{kolmogorov1941LocalStructureTurbulence}, where the rate at which viscous dissipation effects dampen vortices far exceeds the inertial forces of the vortex \cite{tennekes1972FirstCourseTurbulence,moin1998DirectNumericalSimulation}. In DNS of turbulent combustion, the smallest scale vortices must be resolved in addition to the smallest chemical length scales. In this context, the relevant time scales are chemical $τ_C = l_{\rm{th}} / S_L$, integral $τ_T = l_T / u'$ and Kolmogorov $τ_K = l_K / u'$ given an RMS velocity scale $u'$. Hence, the number of degrees of freedom required to resolve a three-dimensional box of size $L$ is \cite{domingo2023RecentDevelopmentsDNS}:
+where $\vb{ω} \equiv \vnab  \times \vb{u}$ and $\vnab  \cdot \vb{u} = 0$. Hence, turbulence is a fundamentally three-dimensional phenomenon -- the energy cascade from large to small vortices depends largely on the $(\vb{ω} \cdot \vnab )\vb{u}$ term above, which is not present for two-dimensional flows. In such flows, we have vortices not only on the order of the typical flow length scale $l_T$, called the integral length scale, but also of sizes all the way down to the smallest turbulence scale known as the kolmogorov length scale $l_K$ \cite{kolmogorov1941LocalStructureTurbulence}, where the rate at which viscous dissipation effects dampen vortices far exceeds the inertial forces of the vortex \cite{tennekes1972FirstCourseTurbulence,moin1998DirectNumericalSimulation}. In DNS of turbulent combustion, the smallest scale vortices must be resolved in addition to the smallest chemical length scales. In this context, the relevant time scales are chemical $τ_C = l_{\rm{th}} / S_L$, integral $τ_T = l_T / u'$ and Kolmogorov $τ_K = l_K / u'$ given an RMS velocity scale $u'$. Hence, the number of degrees of freedom required to resolve a three-dimensional box of size $L$ is \cite{domingo2023RecentDevelopmentsDNS}:
 \begin{equation}
 N_{\rm{tot}} = \left( \frac{L}{2 l_T} \right)^3 \Da \: \Ka \: \rm{Re}_T^{7 / 4}
 \end{equation}
@@ -205,7 +205,7 @@ Regardless of the paradigm used -- DNS, LES or Reynolds Averaged Navier Stokes (
 \begin{equation}
 \dv{φ}{x} \Big|_i \approx L_x[φ]_i = \sum_{j \in \cl{N}_i} φ_{ij} w_{i, j}
 \end{equation}
-where $φ$ is the the function we have access to at points $\{\vb{x}_i\}_i$ and its derivative is represented by the finite difference operator $L_x[φ]$ at those points. At these locations, the surrounding points $\{\vb{x}_j\}_{j \in \cl{N}_i}$ are used to evaluate the differences $φ_{ij} \equiv φ_j - φ_i$ with weights $w_{i, j}$. These surrounding nodes are referred to as the \emph{stencil}. Centred finite difference approximations are FDM schemes where $\{\vb{x}_j\}_{j \in \cl{N}_i}$ is symmetric about the central node $\vb{x}_i$. These can easily reach high orders when uniform grid points are used and so reduce the required resolution mentioned above. The obvious caveat is that higher order methods always require more calculations, making each discretisation point in the domain essentially more expensive. But, this effect is usually dominated by the reduction in cost due to increased order of accuracy which improves the value of each discretisation point as the grid becomes more fine. Having said that, centred finite differences also suffer from stability issues because they are not upwinded for the hyperbolic waves. Accounting for this with one-sided upwinded schemes results in a compromise between stencil size and order. Compact finite differences solve the same linear problem, with the constraint that as few grid points be used in the stencil as possible [CITE]. In higher dimensions, finite differences are applied easily via a simple Cartesian product: to find $\vb{\nabla}φ$ each partial derivative may be approximated by finite differences separately, provided the nodes are uniformly spaced in each dimension, creating a lattice. In three-dimensions, for example, this means we are restricted to modelling fluids within parallelopipeds (or cuboids assuming an orthonormal basis). Order (p-)adaptivity can be implemented simply by requiring different lattice points use different FDM schemes. Adaptivity in grid resolution (h-adaptivity) can be implemented by further subdividing parts of the lattice. This may also be used without adaptivity to better resolve parts of the computational domain, such as those close to the flame (e.g. the finite difference discretisation used in \cite{domingo2022RevisitingRelationPremixed} for a bunsen burner flame).
+where $φ$ is the the function we have access to at points $\{\vb{x}_i\}_i$ and its derivative is represented by the finite difference operator $L_x[φ]$ at those points. At these locations, the surrounding points $\{\vb{x}_j\}_{j \in \cl{N}_i}$ are used to evaluate the differences $φ_{ij} \equiv φ_j - φ_i$ with weights $w_{i, j}$. These surrounding nodes are referred to as the \emph{stencil}. Centred finite difference approximations are FDM schemes where $\{\vb{x}_j\}_{j \in \cl{N}_i}$ is symmetric about the central node $\vb{x}_i$. These can easily reach high orders when uniform grid points are used and so reduce the required resolution mentioned above. The obvious caveat is that higher order methods always require more calculations, making each discretisation point in the domain essentially more expensive. But, this effect is usually dominated by the reduction in cost due to increased order of accuracy which improves the value of each discretisation point as the grid becomes more fine. Having said that, centred finite differences also suffer from stability issues because they are not upwinded for the hyperbolic waves. Accounting for this with one-sided upwinded schemes results in a compromise between stencil size and order. Compact finite differences solve the same linear problem, with the constraint that as few grid points be used in the stencil as possible [CITE]. In higher dimensions, finite differences are applied easily via a simple Cartesian product: to find $\vnab φ$ each partial derivative may be approximated by finite differences separately, provided the nodes are uniformly spaced in each dimension, creating a lattice. In three-dimensions, for example, this means we are restricted to modelling fluids within parallelopipeds (or cuboids assuming an orthonormal basis). Order (p-)adaptivity can be implemented simply by requiring different lattice points use different FDM schemes. Adaptivity in grid resolution (h-adaptivity) can be implemented by further subdividing parts of the lattice. This may also be used without adaptivity to better resolve parts of the computational domain, such as those close to the flame (e.g. the finite difference discretisation used in \cite{domingo2022RevisitingRelationPremixed} for a bunsen burner flame).
 
 The AVBP solver \cite{cerfacsAVBP, schonfeld1999SteadyUnsteadyFlow} implements a Lax-Wrendoff formulation \cite{lax1960SystemsConservationLaws} -- as used in \cite{garby2013LargeEddySimulationCombustion} to model various combustor sizes, affecting acoustic properties. This is a form of non-method of lines finite difference scheme for hyperbolic PDEs where second order finite differences are used in space and time to reduce diffusive errors which erroneously smooth out linear and non-linear wave solutions. Secondary thermoacoustic instability structures of hydrogen-enriched flames are solved for in \cite{jun2023ParametricInstabilityPropagating}. In this case, the laminarSMOKE \cite{cuoci2013LaminarSMOKE, cuoci2013NumericalModelingLaminar} laminar flow combustion solver is used, which built on the popular CFD platform of OpenFOAM \cite{opencfdltd2004OpenFOAM, jasak2007OpenFOAMLibraryComplex, jasak2009OpenFOAMOpenSource} with combustion models supported by OpenSMOKE++ \cite{cuoci2015OpenSMOKE, cuoci2015OpenSMOKEObjectorientedFramework}. In this case operator splitting is used, such that second order central differencing is used for diffusive terms and second order upwinding scheme is used for convective terms.
 
@@ -264,12 +264,12 @@ Usually, for reasons of computational cost, the geometry of a physical domain wi
 % - acoustically reflecting or non-reflecting walls or inflow / outflow
 % - In the case of inflow / outflow many more cases
 
-A condition for non-reflecting BCs is first given in \cite{hedstrom1979NonreflectingBoundaryConditions} for the inviscid gasdynamics equations. It relies on performing a characteristic analysis by writing the nonlinear hyperbolic conservation equations in their primitive form, excluding source terms:
+A condition for non-reflecting BCs is first given in \cite{hedstrom1979NonreflectingBoundaryConditions} for the inviscid gasdynamics equations. It relies on performing a characteristic analysis by writing the one-dimensional, nonlinear, hyperbolic conservation equations in their primitive form, excluding source terms:
 \begin{equation}
-\pdv{\und{V}}{t} + \undt{\vb{A}} \cdot \vb{\nabla} \und{V} = 0
+\pdv{\und{V}}{t} + \undt{\vb{A}} \pdv{\und{V}}{x} = 0
 \end{equation}
 ($\und{V}$ is the vector of primitive variables and $\undt{\vb{A}}$ represents the `convection' of these variables by each other) and solving the left-eigenvalue problem of $\undt{\vb{A}}$ to find its left eigenvectors $\und{l}_m^T$. They then prove that enforcing the condition of $\und{l}_m^T \partial \und{V} / \partial t = 0$
-gives precisely no waves entering the boundary in this continuous problem. The one-dimensional equation for acoustic non-reflection:
+gives precisely no waves entering the boundary in this continuous problem. The one-dimensional equation for acoustic non-reflection at a right-side boundary:
 \begin{equation} \label{eqn:nonreflect}
 \pdv{p}{t} - ρc \pdv{u}{t} = 0,
 \end{equation}
@@ -290,8 +290,9 @@ where $\und{b}$ holds source terms (e.g. gravity, chemical production rate) and 
 
 
 
-
 \subsubsection{Reacting Characteristic Boundary Conditions}
+
+Thompson's work would shortly after be extended to viscous flows in \cite{poinsot1992BoundaryConditionsDirect} -- that is, flows including parabolic terms associated with diffusion as well as the hyperbolic terms associated with waves. Previous paper show that theoretical well-posedness is ensured only when a total number of physical boundary conditions are applied, e.g. \cite{strikwerda1976InitialBoundaryValue}. This means that for inflows $5 + N_{\rm{S}}$ a total of physical BCs are required, and for outflows a total of $4 + N_{\rm{S}}$ physical BCs are required. Keeping count with the conditions already applied due to the LODI approximations, this means that one extra BC is needed at the inflow, and $3 + N_{\rm{S}}$ extra BCs are needed at the outflow. These new conditions are associated with the newly incorporated diffusive terms. At inflows, \cite{poinsot1992BoundaryConditionsDirect} apply a zero normal gradient of stress condition ()
 
 
 %%% REACTING FLOWS
@@ -315,8 +316,6 @@ where $\und{b}$ holds source terms (e.g. gravity, chemical production rate) and 
 % - These sorts of direct comparisons are often lacking
 
 
-
-
 % Poinsot and Veynante 2001
 % - Also suggests relaxation terms be used at the inflow for temperature and velocity, with coefficients chosen to match the impedance of the inlet
 
@@ -327,12 +326,14 @@ where $\und{b}$ holds source terms (e.g. gravity, chemical production rate) and 
 % - Uses the LODI formulation from P&L, but includes source terms so e.g. reaction terms at the boundary are included
 % - Like P&L imposes extra physical conditions on the diffusive terms such that there is a smooth transition between inviscid solutions which use only the LODI conditions and variations thereof and viscous solutions
 % - Suggests that a zero flux condition be rather than zero flux gradients, in accordance with [cite Dutt's paper]. Accordingly, zero normal stress is enforced at inflows and zero tangential stress and zero species diffusion is enforced at outflows.
+% - Are able to more accurately simulate flames passing through outflow boundaries, but find that the requirement of zero flux gradients in this case is a bottleneck to more accurate simulations of flame-boundary intersection
 
 
 % Yoo and Im 2007
 % - Propose improvements to the above scheme by shifting away from the LODI formulation by including tangential and viscous terms as well as the normal and source terms used in S&K
 % - Impose physical diffusive BCs via zero flux gradients, unlike S&K
-% - Are able to more accurately simulate flames passing through outflow boundaries, but find that the requirement of zero flux gradients is a bottleneck to more accurate simulations of flame-boundary intersection
+% - results in much improved results for flames passing through boundaries, especially in reproducing a more realistic circular flame shape 
+
 
 
 %%% OTHER NON-REACTING FLOW STUFF

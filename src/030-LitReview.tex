@@ -249,7 +249,7 @@ A similar class of method are those which posses the \emph{total variation dimin
 
 \subsection{Boundary Conditions}
 
-\subsubsection{Characteristic Boundary Conditions}
+\subsubsection{Inviscid Characteristic Boundary Conditions}
 
 Usually, for reasons of computational cost, the geometry of a physical domain will not coincide with that of the computational domain. This is exacerbated when the physical domain is a theoretically unbounded. In such cases, it is necessary to truncate parts of the physical domain which are less important for the studied phenomena, so that computational expense may be focused. This process of truncation introduces boundaries to the computational domain which must allow for a physically reasonable and accurate interaction of it with the fluid. Often, for domains which are truncated we would like the boundary to offer some sort of non-reflection condition for waves which hit the boundary. For example, a transverse shear wave which reaches the edge of what is modelled of a semi-infinite duct would not physically reflect back at the truncated boundary. The same is especially true for acoustics, which will traverse the full combustor geometry the most frequently of all the waves. The same can also be said at computational boundaries not representing a truncated geometry: acoustic damping material in reactors may be used to diminish thermoacoustic instability and its non-reflectance must be modelled in the boundaries. The simplest boundary conditions (BCs) are those which simply prescribe values to dependent variables at the boundary discretisation points, e.g. $u, p = \rm {const}$, but these Dirichlet conditions fully reflect waves back into the interior domain. The same are true for Von Neumann BCs, where instead the derivatives of waves are full reflected. Instead, we may choose to model these characteristic waves directly through a \emph{characteristic boundary condition} formulation, such that waves which reenter can be directly prescribed.
 
@@ -290,25 +290,22 @@ where $\und{b}$ holds source terms (e.g. gravity, chemical production rate) and 
 
 
 
-\subsubsection{Reacting Characteristic Boundary Conditions}
+\subsubsection{Viscous Reacting Characteristic Boundary Conditions}
 
-Thompson's work would shortly after be extended to viscous flows in \cite{poinsot1992BoundaryConditionsDirect} -- that is, flows including parabolic terms associated with diffusion as well as the hyperbolic terms associated with waves. Previous paper show that theoretical well-posedness is ensured only when a total number of physical boundary conditions are applied, e.g. \cite{strikwerda1976InitialBoundaryValue}. This means that for inflows $5 + N_{\rm{S}}$ a total of physical BCs are required, and for outflows a total of $4 + N_{\rm{S}}$ physical BCs are required. Keeping count with the conditions already applied due to the LODI approximations, this means that one extra BC is needed at the inflow, and $3 + N_{\rm{S}}$ extra BCs are needed at the outflow. These new conditions are associated with the newly incorporated diffusive terms. At inflows, \cite{poinsot1992BoundaryConditionsDirect} apply a zero normal gradient of stress condition ($\uvec{n}\cdot ((\uvec{n} \cdot \vnab )\cdot\bb{T})\cdot\uvec{n} = 0$)
-
-
-%%% REACTING FLOWS
-
-% Poinsot and Lele 1992 and later Poinsot and Veynante 2005 [actually, cite the original?]
-% - introduces a relaxation term for inflows and outflows
-% - what diffusive boundary conditions do they use? NONE??
-% - Previous papers, including [. C. Strikwerda, Commun. Pure Appl. Math. 30, 797 (1977).], show that theoretical well-posedness is ensured when a specific number of total physical boundary conditions are applied. For reacting inflows, $5 + N_S$ physical BCs are required, and for reacting outflows $4 + N_S$ physical BCs are required
-% - To reach these, extra conditions are placed on the diffusive terms in the full diffusive reacting gasdynamics equations.
-% - At inflows, zero normal stress gradients are used. At outflows, zero tangential stress gradients and zero thermal flux gradients are used
-% - All species are assumed to have the same thermodynamic properties, severely restricting application to only idealised reactions
-
-
-% Baum et al. 1994
-% - Extend the LODI relations for reacting flows given by Poinsot and Lele to multiple species of different molecular masses and show improvement via testing
-% - Shows numerical evidence of the boundary scheme being used to let a flame travel through the outflow
+Thompson's work would shortly after be extended to viscous flows in \cite{poinsot1992BoundaryConditionsDirect} -- that is, flows including parabolic terms associated with diffusion as well as the hyperbolic terms associated with waves. Previous paper show that theoretical well-posedness is ensured only when a total number of physical boundary conditions are applied, e.g. \cite{strikwerda1976InitialBoundaryValue}. This means that for inflows $5 + N_{\rm{S}}$ a total of physical BCs are required, and for outflows a total of $4 + N_{\rm{S}}$ physical BCs are required. Keeping count with the conditions already applied due to the LODI approximations, this means that one extra BC is needed at the inflow, and $3 + N_{\rm{S}}$ extra BCs are needed at the outflow. These new conditions are associated with the newly incorporated diffusive terms. At inflows normal gradients of normal stress are zero and at outflows normal gradients of tangential stress, normal heat flux and mass diffusion are zero. Mathematically, these are:
+\begin{subequations}
+\begin{alignat}{3}
+\text{At inflows:} \qquad &&
+(\uvec{n} \otimes\uvec{n}) : (\uvec{n} \cdot \vnab ) & \bb{T} &&= 0. \\
+\text{At outflows:} \qquad &&
+(\uvec{n} \otimes \uvec{t}_{1 / 2}) : (\uvec{n} \cdot \vnab )& \bb{T} &&= 0, \\
+&& \uvec{n} \cdot (\uvec{n} \cdot \vnab ) & \vb{\cl{E}} &&= 0
+\quad \text{and} \\
+&& \uvec{n} \cdot (\uvec{n} \cdot \vnab ) & (ρ \vb{V}_{\!α} Y_α) &&= 0
+\quad \text{for } α = 1, \dots, N_{\rm{S}}.
+\end{alignat}
+\end{subequations}
+It is shown in \cite{poinsot1992BoundaryConditionsDirect} that these diffusive conditions enable the stable and accurate simulation of time-dependent acoustics and shear phenomena travelling through these boundaries. Examples of vortices entering the domain for turbulence simulations would be left to later studies. In all cases of reacting flows, however, species have constant thermodynamic properties, severely restricting application of the method to idealised reactions. Later on, \cite{baum1994AccurateBoundaryConditions} would extend the LODI relations for reacting flows to multiple species of different molecular masses and gives numerical evidence of the boundary scheme being used to let a flame travel through the outflow boundary.
 
 
 % Nicoud 1999

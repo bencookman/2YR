@@ -307,14 +307,11 @@ Thompson's work would shortly after be extended to viscous flows in \cite{poinso
 \end{subequations}
 It is shown in \cite{poinsot1992BoundaryConditionsDirect} that these diffusive conditions enable the stable and accurate simulation of time-dependent acoustics and shear phenomena travelling through these boundaries. Examples of vortices entering the domain for turbulence simulations would be left to later studies. In all cases of reacting flows, however, species have constant thermodynamic properties, severely restricting application of the method to idealised reactions. Later on, \cite{baum1994AccurateBoundaryConditions} would extend the LODI relations for reacting flows to multiple species of different molecular masses and gives numerical evidence of the boundary scheme being used to let a flame travel through the outflow boundary.
 
+A note by \cite{nicoud1999DefiningWaveAmplitude} would then write the existing non-reflecting formulations of \cite{thompson1990TimeDependentBoundaryConditions,poinsot1992BoundaryConditionsDirect} as well as \cite{hirsch1990NumericalComputationInternal} and \cite{giles1990NonreflectingBoundaryConditions} which perform similar characteristic analysis to \cite{thompson1990TimeDependentBoundaryConditions,poinsot1992BoundaryConditionsDirect} which are equivalent to the non-reflection condition \equ{eqn:nonreflect} in one-dimension, but which do not coordinate in two-dimensions or higher due to transverse terms. This sort of comparative analysis is extremely valuable given the relative lack of work comparing a variety of methods. The AVBP solver \cite{cerfacsAVBP} is then used to perform quantitative numerical comparisons.
 
-% Nicoud 1999
-% - This note by Nicoud writes existing non-reflecting formulations into a consistent framework and uses the AVBP solver to compare each of them
-% - These sorts of direct comparisons are often lacking
+Following on from the pressire relaxation terms introduced by \cite{rudy1980NonreflectingOutflowBoundary}, it is pointed out in \cite{poinsot2001TheoreticalNumericalCombustion} that further P-controller terms may also be placed on velocity and temperature, at inflows rather than outflows, through the other characteristic waves. In so doing, the perfect reflection at these inlets is compromised to remove pressure drifting in the velocity and temperature values. This is especially useful in counterflow flames, where a drift in inlet velocity can lead to the flame leaving the domain. As with pressure relaxation, coefficients $σ'$ must be chosen via a linearisation procedure.
 
 
-% Poinsot and Veynante 2001
-% - Also suggests relaxation terms be used at the inflow for temperature and velocity, with coefficients chosen to match the impedance of the inlet
 
 
 % Sutherland and Kennedy 2003

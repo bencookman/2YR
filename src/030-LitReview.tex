@@ -274,7 +274,7 @@ gives precisely no waves entering the boundary in this continuous problem. The o
 \pdv{p}{t} - ρc \pdv{u}{t} = 0,
 \end{equation}
 is the basis of all non-reflecting characteristic BCs. Soon after, it was realised in \cite{rudy1980NonreflectingOutflowBoundary} that a perfectly non-reflecting boundary enables the pressure to drift arbitrarily, which means the mean pressure cannot be evaluated, leading to an ill-posed system. Naturally, this is a problem for any simulation subject to noise -- especially due to combustion noise \cite{dowling2015CombustionNoise} -- so they introduce a relaxation term in the form of a P-controller:
-\begin{equation}
+\begin{equation} \label{eqn:p-relax}
 \left( \pdv{p}{t} - ρc \pdv{u}{t} \right) + σ(p - p_{target}) = 0.
 \end{equation}
 Then, the pressure relaxes towards a pressure $p = p_{target}$ provided the coefficient $σ$ is tuned correctly via linearisation of the fluid equations about a base state. Their following paper \cite{rudy1981BoundaryConditionsSubsonic} performs multiple tests on various inflow and outflow formulations therein. They conclude with the salient point that outflows are usually less sensitive to error in outflow data than inflows are to inflow data. They reason this as difficulties using their chosen extrapolation methods compounding (which would later become redundant), but may also be thought of with the simple idea that issues at an outflow are, usually, simply convected out of the domain whereas errors at inflow boundaries are spread throughout the domain.
@@ -309,7 +309,7 @@ It is shown in \cite{poinsot1992BoundaryConditionsDirect} that these diffusive c
 
 A note by \cite{nicoud1999DefiningWaveAmplitude} would then write the existing non-reflecting formulations of \cite{thompson1990TimeDependentBoundaryConditions,poinsot1992BoundaryConditionsDirect} as well as \cite{hirsch1990NumericalComputationInternal} and \cite{giles1990NonreflectingBoundaryConditions} which perform similar characteristic analysis to \cite{thompson1990TimeDependentBoundaryConditions,poinsot1992BoundaryConditionsDirect} which are equivalent to the non-reflection condition \equ{eqn:nonreflect} in one-dimension, but which do not coordinate in two-dimensions or higher due to transverse terms. This sort of comparative analysis is extremely valuable given the relative lack of work comparing a variety of methods. The AVBP solver \cite{cerfacsAVBP} is then used to perform quantitative numerical comparisons.
 
-Following on from the pressire relaxation terms introduced by \cite{rudy1980NonreflectingOutflowBoundary}, it is pointed out in \cite{poinsot2001TheoreticalNumericalCombustion} that further P-controller terms may also be placed on velocity and temperature, at inflows rather than outflows, through the other characteristic waves. In so doing, the perfect reflection at these inlets is compromised to remove pressure drifting in the velocity and temperature values. This is especially useful in counterflow flames, where a drift in inlet velocity can lead to the flame leaving the domain. As with pressure relaxation, coefficients $σ'$ must be chosen via a linearisation procedure.
+Following on from the pressire relaxation terms introduced by \cite{rudy1980NonreflectingOutflowBoundary}, it is pointed out in \cite{poinsot2001TheoreticalNumericalCombustion} that further P-controller terms may also be placed on velocity and temperature, at inflows rather than outflows, through the other characteristic waves. In so doing, the perfect reflection at these inlets is compromised to remove pressure drifting in the velocity and temperature values. This is especially useful in counterflow flames, where a drift in inlet velocity can lead to the flame leaving the domain. As with pressure relaxation, coefficients $σ'$ must be chosen via a linearisation procedure. These BCs would later be rigorously investigated by \cite{polifke2006PartiallyReflectingNonreflecting} where true reflection coefficients are found for those non-reflecting inflows and outflows prescribed by \cite{poinsot2001TheoreticalNumericalCombustion} over a range of acoustic frequencies. They find that the inclusion of these relaxation terms results in reflection coefficients arbitrarily close to one at low frequencies -- that is to say, the relaxation terms become worse as the relative frequency of acoustic meeting the boundary gets lower. This result is unsurprising given qualitative behaviour observed by \cite{poinsot1992BoundaryConditionsDirect} and others. The solution proposed by \cite{polifke2006PartiallyReflectingNonreflecting} is to restore the non-reflective behaviour for low frequencies by introducing a new term into \equ{eqn:p-relax} which masks these low frequencies specifically. Although, for higher frequencies which are not masked, it is found to be at least as reflective.
 
 A unified formulation for non-reflecting boundaries is given in \cite{sutherland2003ImprovedBoundaryConditions} for viscous, reacting flows. This uses the LODI formulation from \cite{poinsot1992BoundaryConditionsDirect}, but includes source terms in \equ{eqn:simple-hyp} so strong local chemical effects are incorporated at these boundaries. Like \cite{poinsot1992BoundaryConditionsDirect}, they impose extra physical conditions on the diffusive terms, allowing for a smooth transition between inviscid solutions under the LODI approximations toward viscous solutions under the diffusive equations. Instead of the conditions \equ{eqn:znfg}, they use the conditions of \cite{dutt1988StableBoundaryConditions} which impose zero normal stresses etc. at the boundary rather than enforcing vanishing gradients:
 \begin{subequations} \label{eqn:znf}
@@ -334,11 +334,6 @@ In their test cases for flames through boundary, they are forced to use the cond
 % - performs asymptotic analysis in the low Mach formalism to make improvements to subsonic turbulence interactions with characteristic inflows and outflows
 % - Working with the LODI assumptions does nothing to account for transverse effects like the convection of vortices over the boundary and hence results in spurious pressure oscillations when applied to turbulent flows.
 % - For their non-reflecting turbulent inflows, for example, they calculate the incoming amplitudes of characteristic waves under turbulence relative to a \emph{frozen} turbulent solution rather than a quiescent flow
-
-
-% Polifke 2006
-% - investigates true reflection coefficients for non-reflecting outflows prescribed by Poinsot and Lele [cite] (includes a corrective P control term) over a range of acoustic frequencies and finds that arbitrarily low frequencies have R arbitrarily close to one
-% - This fully reflective behaviour for low frequencies is restored by introducing a new term into the P controller 'relaxation' term which specifically masks plane waves at those low frequencies
 
 
 % Prosser 2011
@@ -370,7 +365,7 @@ In their test cases for flames through boundary, they are forced to use the cond
 \begin{figure}[t]
 \centering
 \includegraphics[scale=0.35]{assets/graphs/complex_R_Moire.pdf}
-\caption{The Moiré pattern exhibited at the computational boundary by acoustic waves travelling at $c=343$ m s$^{-1}$ through a 2 m long truncated domain.}
+\caption{The Moiré pattern of reflection coefficient exhibited at the D-TDIBC boundary by acoustic waves travelling at $c=343$ m s$^{-1}$ through a 2 m long truncated domain.}
 \label{fig:moire}
 \end{figure}
 

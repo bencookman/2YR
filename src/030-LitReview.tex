@@ -327,22 +327,11 @@ A unified formulation for non-reflecting boundaries is given in \cite{sutherland
 In their test cases for flames through boundary, they are forced to use the conditions \equ{eqn:znfg} for reasons of stability and find this as one bottleneck towards accurate simulations of flame-boundary interaction. However, the strong shear gradients present also imply that large inaccuracies must be present since these have not been incorporated due to the LODI conditions. Regardless, \cite{yoo2007CharacteristicBoundaryConditions} would later propose improvements to the above scheem by extending the LODI relations further to a non-1D approach where tangential and viscous terms are also included. The zero flux gradient conditions of \equ{eqn:znfg} are required for flame-boundary intersection simulations, as in \cite{sutherland2003ImprovedBoundaryConditions}. This results in much improved reconstructions of flame shape as circular two-dimensional flames intersect outflow boundaries although some obvious, much more minor, inaccuracies are still present.
 
 
+\subsubsection{Turbulent Characteristic Boundary Conditions}
 
-%%% OTHER NON-REACTING FLOW STUFF
+Under the same NSCBC/LODI formalism as before, \cite{guezennec2009AcousticallyNonreflectingReflecting} find that the usual method of assigning $\cl{L}_m$ values at the boundary cannoto be used as a means to inject turbulence at the same time as eliminating acoustic reflections. They propose a corrected method, referencing a \emph{frozen} turbulent solution, rather than referencing a quiescent flow. Results for these \emph{vortical flow characteristic boundary conditions} (VFCBCs) are given where acoustic reflections are effectively eliminated by effectively halving the intuitive $\cl{L}_5$ values.
 
-% Prosser 2005
-% - performs asymptotic analysis in the low Mach formalism to make improvements to subsonic turbulence interactions with characteristic inflows and outflows
-% - Working with the LODI assumptions does nothing to account for transverse effects like the convection of vortices over the boundary and hence results in spurious pressure oscillations when applied to turbulent flows.
-% - For their non-reflecting turbulent inflows, for example, they calculate the incoming amplitudes of characteristic waves under turbulence relative to a \emph{frozen} turbulent solution rather than a quiescent flow
-
-
-% Prosser 2011
-% - Can be seen as a counterpoint to YI2007 which extends his earlier work to boundary conditions for subsonic reacting flows
-
-
-% Guezennec and Poinsot 2009
-% - They find that the usual method of assigning L values at the boundary under the NSCBC formalism cannot be used to inject turbulent vortices at the same time as eliminating acoustic reflections
-% - They propose a corrected method which again references a frozen turbulent flow VFCBC and results, practically, in halved L_5 values at inflows
+It can be gathered from the cited works above besides \cite{yoo2007CharacteristicBoundaryConditions}, that the lack of inclusion of transverse terms results in an inability for these formulations to accurately model incoming and outgoing turbulence. This is made evident as spurious pressure oscillations often occur from vortices travelling through boundaries in this turbulent flow. This is tackled in \cite{prosser2005ImprovedBoundaryConditions} by performing an asymptotic analysis in the low Mach formalism of the compressible inviscid flows to make improvements to the subsonic turbulence interactions with characteristic inflows and outflows. For the resulting non-reflecting turbulent inflows, for example, they calculate the incoming amplitudes of characteristic waves under turbulence relative to a frozen turbulent solution. This is extended in \cite{prosser2011ImprovedBoundaryConditions} to subsonic flames by revising the above NSCBC conditions in the same low Mach number formalism.
 
 
 \subsubsection{Immersed Boundary Methods}

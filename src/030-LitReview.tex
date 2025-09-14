@@ -315,31 +315,16 @@ A unified formulation for non-reflecting boundaries is given in \cite{sutherland
 \begin{subequations} \label{eqn:znf}
 \begin{alignat}{3}
 \text{At inflows:} \qquad &&
-(\uvec{n} \otimes\uvec{n}) : & \bb{T} &&= 0. \\
+(\uvec{n} \otimes\uvec{n}) & : \bb{T} &&= 0. \\
 \text{At outflows:} \qquad &&
-(\uvec{n} \otimes \uvec{t}_{1 / 2}) : & \bb{T} &&= 0, \\
-&& \uvec{n} \cdot & \vb{\cl{E}} &&= 0
+(\uvec{n} \otimes \uvec{t}_{1 / 2}) & : \bb{T} &&= 0, \\
+&& \uvec{n} & \cdot \vb{\cl{E}} &&= 0
 \quad \text{and} \\
-&& \uvec{n} \cdot & (ρ \vb{V}_{\!α} Y_α) &&= 0
+&& \uvec{n} & \cdot (ρ \vb{V}_{\!α} Y_α) &&= 0
 \quad \text{for } α = 1, \dots, N_{\rm{S}}.
 \end{alignat}
 \end{subequations}
-
-
-
-% Sutherland and Kennedy 2003
-% - Provides a unified formulation for viscous, reacting flows
-% - Uses the LODI formulation from P&L, but includes source terms so e.g. reaction terms at the boundary are included
-% - Like P&L imposes extra physical conditions on the diffusive terms such that there is a smooth transition between inviscid solutions which use only the LODI conditions and variations thereof and viscous solutions
-% - Suggests that a zero flux condition be rather than zero flux gradients, in accordance with [cite Dutt's paper]. Accordingly, zero normal stress is enforced at inflows and zero tangential stress and zero species diffusion is enforced at outflows.
-% - They claim this allows a flame to travel through the outflow boundary, although the strong shear waves and tangential gradients imply that large inaccuracies should be present, whether or not the simulation remains stable
-% - Are able to more accurately simulate flames passing through outflow boundaries, but find that the requirement of zero flux gradients in this case is a bottleneck to more accurate simulations of flame-boundary intersection
-
-
-% Yoo and Im 2007
-% - Propose improvements to the above scheme by shifting away from the LODI formulation by including tangential and viscous terms as well as the normal and source terms used in S&K
-% - Impose physical diffusive BCs via zero flux gradients, unlike S&K
-% - results in much improved results for flames passing through boundaries, especially in reproducing a more realistic circular flame shape 
+In their test cases for flames through boundary, they are forced to use the conditions \equ{eqn:znfg} for reasons of stability and find this as one bottleneck towards accurate simulations of flame-boundary interaction. However, the strong shear gradients present also imply that large inaccuracies must be present since these have not been incorporated due to the LODI conditions. Regardless, \cite{yoo2007CharacteristicBoundaryConditions} would later propose improvements to the above scheem by extending the LODI relations further to a non-1D approach where tangential and viscous terms are also included. The zero flux gradient conditions of \equ{eqn:znfg} are required for flame-boundary intersection simulations, as in \cite{sutherland2003ImprovedBoundaryConditions}. This results in much improved reconstructions of flame shape as circular two-dimensional flames intersect outflow boundaries although some obvious, much more minor, inaccuracies are still present.
 
 
 

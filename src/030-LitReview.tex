@@ -253,17 +253,6 @@ A similar class of method are those which posses the \emph{total variation dimin
 
 Usually, for reasons of computational cost, the geometry of a physical domain will not coincide with that of the computational domain. This is exacerbated when the physical domain is a theoretically unbounded. In such cases, it is necessary to truncate parts of the physical domain which are less important for the studied phenomena, so that computational expense may be focused. This process of truncation introduces boundaries to the computational domain which must allow for a physically reasonable and accurate interaction of it with the fluid. Often, for domains which are truncated we would like the boundary to offer some sort of non-reflection condition for waves which hit the boundary. For example, a transverse shear wave which reaches the edge of what is modelled of a semi-infinite duct would not physically reflect back at the truncated boundary. The same is especially true for acoustics, which will traverse the full combustor geometry the most frequently of all the waves. The same can also be said at computational boundaries not representing a truncated geometry: acoustic damping material in reactors may be used to diminish thermoacoustic instability and its non-reflectance must be modelled in the boundaries. The simplest boundary conditions (BCs) are those which simply prescribe values to dependent variables at the boundary discretisation points, e.g. $u, p = \rm {const}$, but these Dirichlet conditions fully reflect waves back into the interior domain. The same are true for Von Neumann BCs, where instead the derivatives of waves are full reflected. Instead, we may choose to model these characteristic waves directly through a \emph{characteristic boundary condition} formulation, such that waves which reenter can be directly prescribed.
 
-% This is the basis of the \emph{Navier-Stokes characteristic boundary conditions} formulation, which does this by calculating 
-
-% not just for this, we also need to apply BCs at walls
-% !!!! The computational domain and physical domain usually do not coincide
-% Many types of boundary conditions may be chosen for combustion schemes:
-% - Periodic are very simple to enforce numerically so require no elaboration
-% - No-slip or slip wall conditions
-% - isothermal or adiabatic walls
-% - acoustically reflecting or non-reflecting walls or inflow / outflow
-% - In the case of inflow / outflow many more cases
-
 A condition for non-reflecting BCs is first given in \cite{hedstrom1979NonreflectingBoundaryConditions} for the inviscid gasdynamics equations. It relies on performing a characteristic analysis by writing the one-dimensional, nonlinear, hyperbolic conservation equations in their primitive form, excluding source terms:
 \begin{equation} \label{eqn:simple-hyp}
 \pdv{\und{V}}{t} + \undt{\vb{A}} \pdv{\und{V}}{x} = 0
@@ -278,7 +267,6 @@ is the basis of all non-reflecting characteristic BCs. Soon after, it was realis
 \left( \pdv{p}{t} - ρc \pdv{u}{t} \right) + σ(p - p_{target}) = 0.
 \end{equation}
 Then, the pressure relaxes towards a pressure $p = p_{target}$ provided the coefficient $σ$ is tuned correctly via linearisation of the fluid equations about a base state. Their following paper \cite{rudy1981BoundaryConditionsSubsonic} performs multiple tests on various inflow and outflow formulations therein. They conclude with the salient point that outflows are usually less sensitive to error in outflow data than inflows are to inflow data. They reason this as difficulties using their chosen extrapolation methods compounding (which would later become redundant), but may also be thought of with the simple idea that issues at an outflow are, usually, simply convected out of the domain whereas errors at inflow boundaries are spread throughout the domain.
-% PLUS OR MINUS ρc IN THE ABOVE????? use only x direction!!!
 
 Later on, a method to create characteristic BCs would be given in \cite{thompson1987LecturesSeriesComputational, thompson1987TimeDependentBoundary, thompson1990TimeDependentBoundaryConditions} which is the basis for many modern day non-reflecting boundary formulations. This method is referred to as the locally one-dimensional inviscid (LODI) approximation, since all diffusive and transverse terms are ignored. The approximation is explained in detail in \sect{sec:LODI}, but briefly: the same characteristic analysis is performed as above, except the hyperbolic equations are projected onto each eigenvector subspace $\und{l}_m^T$:
 \begin{equation}

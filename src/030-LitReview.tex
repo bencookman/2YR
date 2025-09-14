@@ -345,12 +345,17 @@ Under the same NSCBC/LODI formalism as before, \cite{guezennec2009AcousticallyNo
 
 
 
-\subsubsection{Delayed-Time Domain Impedance Boundary Conditions}
+\subsubsection{Impedance Boundary Conditions}
 
-
-\red{(TD)IBC}
-% Describe TDIBC briefly before going into time delay model!
-
+\emph{Acoustic impedance} represents the resistance of acoustics to travel through a given medium, measured in the frequency domain. At a boundary in our domain with outward facing normal $\uvec{n}$, this is represented by the ratio between acoustic pressure, $p_a$, and velocity $\vb{u}_a$ in the Fourier domain:
+\begin{equation}
+\hat{Z}(ω) = \frac{\hat{p}_a(ω)}{ρc\hat{\vb{u}}_a(ω) \cdot \uvec{n}},
+\end{equation}
+where $\hat{Z}$ is the acoustic impedance and hats $\hat{\cdot}$ represent Fourier transforms. Hence, impedance can be seen as the amount of acoustic motion resulting from a pressure disturbance of a fixed size for a given medium. This gives rise to the reflection coefficient $R$ \cite{douasbin2018DelayedtimeDomainImpedance}:
+\begin{equation}
+\hat{R}(ω) = \frac{\hat{Z}(ω) - 1}{\hat{Z}(ω) + 1}
+\end{equation}
+representing the signed size of acoustic wave after it reflects off of the boundary. A boundary which fully reflects an acoustic wave with size the same or flipped has reflection coefficients $R = \pm 1$ respectively and a boundary which fully absorbs acoustic waves has $R = 0$. Real life materials used in combustors are often naturally prone to thermoacoustic instabilities due to their high reflectance, $1 - \abs{R} \ll 1$. Damping materials intended to reduce thermoacoustic instability often have values $\abs{R}$ closer to zero, but as alluded to above, these reflection coefficients are dependent on frequency of incident wave $ω$ striking the boundary. The impedance is used to model these different responses at different domains and so to model realistic materials which are neither fully reflective nor non-reflective, an impedance boundary condition is manifestly useful. Having said that, with our simulations being held in the temporal domain, calculating frequencies of acoustics as they meet the boundary is likely off-limits (or at least expensive to calculate), meaning it is much more beneficial if we can transform a BC with pre-computed impedance values to be utilised in the time domain. This results in the \emph{time domain impedance boundary conditions} (TDIBCs). The instability-diminishing effect that acoustic liners can have is modelled in \cite{roncen2023DevelopmentsTimedomainImpedance} using an \emph{impulse response TDIBC} (IR-TDIBC) \cite{roncen2023GenericBroadbandNonlinear} for its high applicability to the nonlinear and broadband behaviours present in combustion instabilities. A methane-air burner was simulated using IR-TDIBC at the liner boundary and non-reflecting NSCBC for the inflows and outflows. When the dampening liner is turned on, it is seen that the acoustic waves entering the domain are rapidly diminished and the flame is subject to non of the thermoacoustic instability modes present when the acoustic liner is turned off.
 
 \begin{figure}[t]
 \centering

@@ -265,7 +265,7 @@ Usually, for reasons of computational cost, the geometry of a physical domain wi
 % - In the case of inflow / outflow many more cases
 
 A condition for non-reflecting BCs is first given in \cite{hedstrom1979NonreflectingBoundaryConditions} for the inviscid gasdynamics equations. It relies on performing a characteristic analysis by writing the one-dimensional, nonlinear, hyperbolic conservation equations in their primitive form, excluding source terms:
-\begin{equation}
+\begin{equation} \label{eqn:simple-hyp}
 \pdv{\und{V}}{t} + \undt{\vb{A}} \pdv{\und{V}}{x} = 0
 \end{equation}
 ($\und{V}$ is the vector of primitive variables and $\undt{\vb{A}}$ represents the `convection' of these variables by each other) and solving the left-eigenvalue problem of $\undt{\vb{A}}$ to find its left eigenvectors $\und{l}_m^T$. They then prove that enforcing the condition of $\und{l}_m^T \partial \und{V} / \partial t = 0$
@@ -293,7 +293,7 @@ where $\und{b}$ holds source terms (e.g. gravity, chemical production rate) and 
 \subsubsection{Viscous Reacting Characteristic Boundary Conditions}
 
 Thompson's work would shortly after be extended to viscous flows in \cite{poinsot1992BoundaryConditionsDirect} -- that is, flows including parabolic terms associated with diffusion as well as the hyperbolic terms associated with waves. Previous paper show that theoretical well-posedness is ensured only when a total number of physical boundary conditions are applied, e.g. \cite{strikwerda1976InitialBoundaryValue}. This means that for inflows $5 + N_{\rm{S}}$ a total of physical BCs are required, and for outflows a total of $4 + N_{\rm{S}}$ physical BCs are required. Keeping count with the conditions already applied due to the LODI approximations, this means that one extra BC is needed at the inflow, and $3 + N_{\rm{S}}$ extra BCs are needed at the outflow. These new conditions are associated with the newly incorporated diffusive terms. At inflows normal gradients of normal stress are zero and at outflows normal gradients of tangential stress, normal heat flux and mass diffusion are zero. Mathematically, these are:
-\begin{subequations}
+\begin{subequations} \label{eqn:znfg}
 \begin{alignat}{3}
 \text{At inflows:} \qquad &&
 (\uvec{n} \otimes\uvec{n}) : (\uvec{n} \cdot \vnab ) & \bb{T} &&= 0. \\
@@ -311,15 +311,28 @@ A note by \cite{nicoud1999DefiningWaveAmplitude} would then write the existing n
 
 Following on from the pressire relaxation terms introduced by \cite{rudy1980NonreflectingOutflowBoundary}, it is pointed out in \cite{poinsot2001TheoreticalNumericalCombustion} that further P-controller terms may also be placed on velocity and temperature, at inflows rather than outflows, through the other characteristic waves. In so doing, the perfect reflection at these inlets is compromised to remove pressure drifting in the velocity and temperature values. This is especially useful in counterflow flames, where a drift in inlet velocity can lead to the flame leaving the domain. As with pressure relaxation, coefficients $σ'$ must be chosen via a linearisation procedure.
 
+A unified formulation for non-reflecting boundaries is given in \cite{sutherland2003ImprovedBoundaryConditions} for viscous, reacting flows. This uses the LODI formulation from \cite{poinsot1992BoundaryConditionsDirect}, but includes source terms in \equ{eqn:simple-hyp} so strong local chemical effects are incorporated at these boundaries. Like \cite{poinsot1992BoundaryConditionsDirect}, they impose extra physical conditions on the diffusive terms, allowing for a smooth transition between inviscid solutions under the LODI approximations toward viscous solutions under the diffusive equations. Instead of the conditions \equ{eqn:znfg}, they use the conditions of \cite{dutt1988StableBoundaryConditions} which impose zero normal stresses etc. at the boundary rather than enforcing vanishing gradients:
+\begin{subequations} \label{eqn:znf}
+\begin{alignat}{3}
+\text{At inflows:} \qquad &&
+(\uvec{n} \otimes\uvec{n}) : & \bb{T} &&= 0. \\
+\text{At outflows:} \qquad &&
+(\uvec{n} \otimes \uvec{t}_{1 / 2}) : & \bb{T} &&= 0, \\
+&& \uvec{n} \cdot & \vb{\cl{E}} &&= 0
+\quad \text{and} \\
+&& \uvec{n} \cdot & (ρ \vb{V}_{\!α} Y_α) &&= 0
+\quad \text{for } α = 1, \dots, N_{\rm{S}}.
+\end{alignat}
+\end{subequations}
 
 
 
 % Sutherland and Kennedy 2003
 % - Provides a unified formulation for viscous, reacting flows
-% - They claim this allows a flame to travel through the outflow boundary, although the strong shear waves and tangential gradients imply that large inaccuracies should be present, whether or not the simulation remains stable
 % - Uses the LODI formulation from P&L, but includes source terms so e.g. reaction terms at the boundary are included
 % - Like P&L imposes extra physical conditions on the diffusive terms such that there is a smooth transition between inviscid solutions which use only the LODI conditions and variations thereof and viscous solutions
 % - Suggests that a zero flux condition be rather than zero flux gradients, in accordance with [cite Dutt's paper]. Accordingly, zero normal stress is enforced at inflows and zero tangential stress and zero species diffusion is enforced at outflows.
+% - They claim this allows a flame to travel through the outflow boundary, although the strong shear waves and tangential gradients imply that large inaccuracies should be present, whether or not the simulation remains stable
 % - Are able to more accurately simulate flames passing through outflow boundaries, but find that the requirement of zero flux gradients in this case is a bottleneck to more accurate simulations of flame-boundary intersection
 
 

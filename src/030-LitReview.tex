@@ -187,7 +187,7 @@ N_{\rm{tot}} = \left( \frac{L}{2 l_T} \right)^3 \Da \: \Ka \: \rm{Re}_T^{7 / 4}
 \end{equation}
 where we define the turbulent Reynolds number by $\rm{Re}_T \equiv ( l_T / l_K )^{4 / 3}$, Damköhler number by $\Da \equiv τ_T / τ_C$ and Karlovitz number by $\Ka \equiv τ_C / τ_K$. For typical turbulence intensities and combustion reactions, this results a discretisation length scale $δx$ on the order of 10-100 {\textmu}m. For example, in a simulation using $δx = 50$ {\textmu}m with a $10 \times 10 \times 10$ cm$^3$ computational domain, we require roughly 8 billion discretisation points. This workload is not only completely untenable for computation on personal computers, but remains prohibitive even for tier 2 High Performance Computing systems \cite{vlaamssupercomputercentrum2025TieringSystem,archer2020HPCEurope}, requiring resources usually available only at the national level. An example of this scale can be seen in the DNS of a real-size internal combustion engine in \cite{danciu2025DirectNumericalSimulation} -- large scale simulations of turbulent combustion are discussed further in \cite{chen2011PetascaleDirectNumerical}. Larger systems are needed not for their increased serial processing speed, but for the number of available processing units. Even excluding the potential for heterogeneous processing using GPUs, it is still only the largest supercomputers which provide the multiprocessing capability necessary to decompose such a large problem. Furthermore, regardless of the wall clock time taken to compute, it should be noted that any computation requires energy, so even after heavily parallelising the DNS roughly the same amount of overall energy is required (technically more due to the inefficiency in parallelising) to perform the full computation. Therefore, we should be careful of the cost in performing computational research in combustion to aid a clean energy transfer, when the cost requires the burning of fossil fuels.
 
-Needless to say, the cost of simulation must be decreased before useful research may done. A simple way to do this is by modelling simpler physics in DNS than you know is present in the physical system. This is most effectively done by decreasing the number of species which are simulated, usually by removing minor intermediate species which are not a limiting part of the reaction mechanism. In so doing, the number of simulated differential equations goes down for each species removed -- if all species are removed besides product and reactant species, then only one mass fraction equation needs to be simulated. Further simplifications can also be made to the transport processes. But, one should note that benefits to accuracy in DNS are greatly undone when models are used which change the simplify the physical system. In any case, More efficient simulations may be used, which can be achieved by increasing the order of accuracy in derivative approximations. This is discussed in \sect{sec:high-order}.
+Needless to say, the cost of simulation must be decreased before useful research may done. A simple way to do this is by modelling simpler physics in DNS than you know is present in the physical system. This is most effectively done by decreasing the number of species which are simulated, usually by removing minor intermediate species which are not a limiting part of the reaction mechanism. In so doing, the number of simulated differential equations goes down for each species removed -- if all species are removed besides product and reactant species, then only one mass fraction equation needs to be simulated. Further simplifications can also be made to the transport processes. But, one should note that benefits to accuracy in DNS are greatly undone when models are used which change the simplify the physical system. In any case, More efficient simulations may be used, which can be achieved by increasing the order of accuracy in derivative approximations. This is discussed in \sect{sec:mesh-disc}.
 
 To this end, another paradigm is often used for simulations, called \emph{Large Eddy Simulation} (LES) \cite{yang2015LargeEddySimulationPresent} where the same complex physics may be modelled with a coarser resolution. This relies on the use of a filtering technique called Favre averaging to remove \emph{subgrid scale} (SGS) turbulence smaller than a filter size $Δ$. This allows the discretisation length scale to be increased, so many fewer computations are required, especially in three-dimensions. The remaining kinetic energy is a vast majority of the kinetic energy in the system. The filtered motions must now be modelled. This is where the turbulence models are incorporated, usually consisting of a model for the SGS vortex viscosity values $μ_t$. In DNS of inert turbulence, the smallest length scale involved is the turbulent length scale, so the ratio of discretisation scales between LES and DNS, $Δ / δx$, is proportional to $(\rm{Re}_Δ / \rm{Re})^{3/4} = (u'_Δ Δ / S_L l_{\rm{th}})^{3/4}$, such that we have $N_{\rm{tot}, \rm{LES}} / N_{\rm{tot}, \rm{DNS}} = (\rm{Re}_Δ / \rm{Re})^{9/4}$ in three-dimensions, representing a massive reduction in computational cost \cite{pitsch2006LargeEddySimulationTurbulent}. The reduction in cost is obviously less so in two-dimensions, but this fine because two-dimensional flows are rarely as prohibitively expensive.
 
@@ -197,7 +197,7 @@ For LES of turbulent combustion, we have a much more complicated system \cite{ve
 
 
 
-\subsection{Spatial Discretisations} \label{sec:high-order}
+\subsection{Mesh-Based Discretisations} \label{sec:mesh-disc}
 
 \subsubsection{Traditional Methods}
 
@@ -228,10 +228,32 @@ A similar class of method are those which posses the \emph{total variation dimin
 
 
 
-\subsubsection{Mesh-Free Methods}
+\subsection{Mesh-Free Discretisations}
+
+% As mentioned above, the process of meshing a domain is often expensive. This is exacerbated when high-order methods are used since mesh elements are forced to be larger.
+% Mesh-free methods circumvent this issue by proposing discretisations without connectivity, relying only on either local data or all data.
+% Despite this, they are far less developed / well used than mesh based methods, although many mesh based methods are commonly used for fluid and combustion problems
+% \cite{li2002MeshfreeParticleMethods}, \cite{garg2018MeshfreeMethodsComprehensive}
+
+% RBFs are a well-explored method and are based off the idea that a field known at discretely many points in a domain may be interpolated at arbitrary locations, provided we accurately decompose the field onto a space of a radial basis function centred at the different discretisation nodes.
+% This decomposition requires we solve a system of linear equations at each point we interpolate to as a preprocessing step for each location
+% This is extended to PDEs by simply differentiating our interpolated field and in so doing differentiating the RBF at each ...
+% This is the Kansa method propsed in....
+
+% Although they are rarely employed for combustion problems, \cite{kansa2009NumericalSimulationTwodimensional} investigates their use to model the flame via a simple G-equation.
+% Applicability to combustion is constrained because of the global approach in this formalism, which greatly increases computational expense, a significant bottleneck for combustion simulation.
+
+% Compact RBFs offer a solution to this -- these instead require only a local stencil containing only the nodes within a circle of size $h$ surrounding the point. By minimising this stencil size so only a minimum number of nodes are contained within such that order conditions can be satisfied, the rate at which the linear system can be solved and the resulting weights applied is minimised \cite{buhmann2003RadialBasisFunctions}.
+
+% 
+
+% Despite this, it is the knowledge of the author yet to be applied to combustion simulation
+
+% Another compact method are that of GFDM \cite{jensen1972FiniteDifferenceTechniques}, which similarly solves a linear system for the gradient operator at each node as a preprocessing step (assuming a Lagrangian formulation is not used), but instead solves for order conditions directly by solving for each term of the taylor series approximation of the gradient operators up to a desired order using the minimal number of nodes.
 
 
-% Mesh free methods for combustion explored in \cite{kansa2009NumericalSimulationTwodimensional}, where they use RBFs
+
+
 % Check Jack's paper for other examples of mesh-free combustion??
 
 % SPH as precursor to LABFM
@@ -244,10 +266,14 @@ A similar class of method are those which posses the \emph{total variation dimin
 % LABFM is an Eulerian, mesh-free particle method inspired by this Eulerian form of SPH...
 
 
+% LABFM is to GFDM what RBF-FD is to compact RBFs: by increasing the support radius, computational cost increases, but stability and accuracy properties increase greatly
+% And provide improved applicability to multiple kernels [How to cite Henry's unpublished work]
 
 
 
-\subsection{Boundary Conditions}
+
+
+\subsection{Characteristic Boundary Conditions}
 
 \subsubsection{Inviscid Characteristic Boundary Conditions}
 
@@ -333,13 +359,13 @@ Under the same NSCBC/LODI formalism as before, \cite{guezennec2009AcousticallyNo
 
 
 
-\subsubsection{Impedance Boundary Conditions}
+\subsection{Impedance Boundary Conditions}
 
 \emph{Acoustic impedance} represents the resistance of acoustics to travel through a given medium, measured in the frequency domain. At a boundary in our domain with outward facing normal $\uvec{n}$, this is represented by the ratio between acoustic pressure, $p_a$, and velocity $\vb{u}_a$ in the Fourier domain:
 \begin{equation}
 \hat{Z}(ω) = \frac{\hat{p}_a(ω)}{ρc\hat{\vb{u}}_a(ω) \cdot \uvec{n}},
 \end{equation}
-where $\hat{Z}$ is the acoustic impedance and hats $\hat{\cdot}$ represent Fourier transforms. Hence, impedance can be seen as the amount of acoustic motion resulting from a pressure disturbance of a fixed size for a given medium. This gives rise to the reflection coefficient $R$ \cite{douasbin2018DelayedtimeDomainImpedance}:
+where $\hat{Z}$ is the acoustic impedance and hats $\hat{\cdot}$ represent Fourier transforms. Hence, impedance can be seen as the amount of acoustic motion resulting from a pressure disturbance of a fixed size for a given medium. This gives rise to the reflection coefficient $R$:
 \begin{equation}
 \hat{R}(ω) = \frac{\hat{Z}(ω) - 1}{\hat{Z}(ω) + 1}
 \end{equation}

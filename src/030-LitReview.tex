@@ -230,31 +230,11 @@ A similar class of method are those which posses the \emph{total variation dimin
 
 \subsection{Mesh-Free Discretisations}
 
-% As mentioned above, the process of meshing a domain is often expensive. This is exacerbated when high-order methods are used since mesh elements are forced to be larger.
-% Mesh-free methods circumvent this issue by proposing discretisations without connectivity, relying only on either local data or all data.
-% Despite this, they are far less developed / well used than mesh based methods, although many mesh based methods are commonly used for fluid and combustion problems
-% \cite{li2002MeshfreeParticleMethods}, \cite{garg2018MeshfreeMethodsComprehensive}
+As mentioned above, the process of meshing a domain is often expensive. This is exacerbated when high-order methods are used since mesh elements are forced to be larger. \emph{Mesh-free} (or \emph{meshless}) methods circumvent this issue by proposing discretisations without connectivity. Hence, only a point cloud is required to discretise a computational domain which can be much more simply body-fitted. An obvious way to create a point cloud to be used by a meshless method, would be to create a mesh and then strip away the connectivity between vertices, but this undermines the meshless method. Point clouds can be much more simply created using perturbed lattice nodes, iterative methods optimize nodes, the use of advancing front techniques or thinning or filling an over- or undersampled point cloud \cite{suchde2023PointCloudGeneration}. Despite their simplistic domain requirements, they remain far less developed than more traditional mesh based methods. See \cite{li2002MeshfreeParticleMethods} and \cite{garg2018MeshfreeMethodsComprehensive} for general reviews of the subject.
 
-% RBFs are a well-explored method and are based off the idea that a field known at discretely many points in a domain may be interpolated at arbitrary locations, provided we accurately decompose the field onto a space of a radial basis function centred at the different discretisation nodes.
-% This decomposition requires we solve a system of linear equations at each point we interpolate to as a preprocessing step for each location
-% This is extended to PDEs by simply differentiating our interpolated field and in so doing differentiating the RBF at each ...
-% This is the Kansa method propsed in....
+\emph{Radial Basis Functions} (RBFs) are a well-explored interpolation method where a field may be accurately decomposed onto a space given by evaluating an axisymmetric function with the distances between every node and the interpolation point. This decomposition is akin to imposing partitions of unity in the computational domain and results in a system of linear equations for interpolated location. This is extended to PDEs by simply differentiating our interpolated field and thus each RBF and using this as our derivative operators. Interpolation points are also collocated to discretisation points. This results in a system of linear equations for each node which is solved to find the corresponding weights of each supported RBF as a preprocessing step (assuming an Eulerian formulation is used). This is the Kansa method, proposed in \cite{kansa1990MultiquadricsScatteredData, kansa1990MultiquadricsScatteredDataa}. Although they are rarely employed for combustion problems, \cite{kansa2009NumericalSimulationTwodimensional} investigates their use to model flame dynamics via a G-equation model. Applicability to combustion and other fluid problems is greatly constrained because of the global approach in this formalism, since computational cost drastically increases with domain size -- evaluation of one operator scales like $\cl{O}(N_{\rm{tot}, x}^2)$ for a two-dimensional domain with roughly $N_{\rm{tot}, x}$ nodes in each dimension (note that this does not imply a Cartesian grid is used in $x$ or $y$). Compact RBFs offer a solution to this. These instead require only a local stencil containing only the nodes within a support radius $h$ surrounding the point \cite{buhmann2003RadialBasisFunctions}. By minimising this stencil size so only a minimum number of nodes are supported such that order conditions may be satisfied, the rate at which a linear system can be solved and gradient operators calculated is minimised. Despite this, to the knowledge of the author these are yet to be applied to combustion simulation. \emph{RBF generalised finite differences} (RBF-FD) developed in \cite{shu2003LocalRadialBasis, cecil2004NumericalMethodsHigh, wright2003RadialBasisFunction} relax the condition that the support be minimised and allow for the best set of weights to be calculated at each node. Hence, stencil size can be optimized as a compromise between stability and accuracy properties and computational cost. In addition, a free parameter representing the local flatness of each RBF must be optimised for at each node alongside the rest of the preprocessing. RBF-FD has been used for combustion problems, for example in \cite{bayona2013PropagationPremixedLaminar} where unstable flame structures in a three-dimensional thin, cylindrical duct are simulated under the constant density approximation.
 
-% Although they are rarely employed for combustion problems, \cite{kansa2009NumericalSimulationTwodimensional} investigates their use to model the flame via a simple G-equation.
-% Applicability to combustion is constrained because of the global approach in this formalism, which greatly increases computational expense, a significant bottleneck for combustion simulation.
-
-% Compact RBFs offer a solution to this -- these instead require only a local stencil containing only the nodes within a circle of size $h$ surrounding the point. By minimising this stencil size so only a minimum number of nodes are contained within such that order conditions can be satisfied, the rate at which the linear system can be solved and the resulting weights applied is minimised \cite{buhmann2003RadialBasisFunctions}.
-
-% 
-
-% Despite this, it is the knowledge of the author yet to be applied to combustion simulation
-
-% Another compact method are that of GFDM \cite{jensen1972FiniteDifferenceTechniques}, which similarly solves a linear system for the gradient operator at each node as a preprocessing step (assuming a Lagrangian formulation is not used), but instead solves for order conditions directly by solving for each term of the taylor series approximation of the gradient operators up to a desired order using the minimal number of nodes.
-
-
-
-
-% Check Jack's paper for other examples of mesh-free combustion??
+A further compact method is the generalised finite difference method (GFDM) \cite{jensen1972FiniteDifferenceTechniques} which similarly to compact RBFs solves a linear system using the minimal number of nodes for the gradient operator at each node as a preprocessing step. Instead, they solve for order conditions directly by solving for each term in the Taylor series of the operator up to a desired order. Despite this arbitrary order, most often only second order weights are utilised in practice.
 
 % SPH as precursor to LABFM
 % \cite{monaghan1992SmoothedParticleHydrodynamics, vacondio2021GrandChallengesSmoothed}
@@ -266,7 +246,7 @@ A similar class of method are those which posses the \emph{total variation dimin
 % LABFM is an Eulerian, mesh-free particle method inspired by this Eulerian form of SPH...
 
 
-% LABFM is to GFDM what RBF-FD is to compact RBFs: by increasing the support radius, computational cost increases, but stability and accuracy properties increase greatly
+% LABFM is to GFDM what RBF-FD is to compact RBFs: by increasing the support radius, 
 % And provide improved applicability to multiple kernels [How to cite Henry's unpublished work]
 
 
@@ -278,6 +258,8 @@ A similar class of method are those which posses the \emph{total variation dimin
 \subsubsection{Inviscid Characteristic Boundary Conditions}
 
 Usually, for reasons of computational cost, the geometry of a physical domain will not coincide with that of the computational domain. This is exacerbated when the physical domain is a theoretically unbounded. In such cases, it is necessary to truncate parts of the physical domain which are less important for the studied phenomena, so that computational expense may be focused. This process of truncation introduces boundaries to the computational domain which must allow for a physically reasonable and accurate interaction of it with the fluid. Often, for domains which are truncated we would like the boundary to offer some sort of non-reflection condition for waves which hit the boundary. For example, a transverse shear wave which reaches the edge of what is modelled of a semi-infinite duct would not physically reflect back at the truncated boundary. The same is especially true for acoustics, which will traverse the full combustor geometry the most frequently of all the waves. The same can also be said at computational boundaries not representing a truncated geometry: acoustic damping material in reactors may be used to diminish thermoacoustic instability and its non-reflectance must be modelled in the boundaries. The simplest boundary conditions (BCs) are those which simply prescribe values to dependent variables at the boundary discretisation points, e.g. $u, p = \rm {const}$, but these Dirichlet conditions fully reflect waves back into the interior domain. The same are true for Von Neumann BCs, where instead the derivatives of waves are full reflected. Instead, we may choose to model these characteristic waves directly through a \emph{characteristic boundary condition} formulation, such that waves which reenter can be directly prescribed.
+
+% WHAT ARE OUR PRIMITIVE VARIABLES
 
 A condition for non-reflecting BCs is first given in \cite{hedstrom1979NonreflectingBoundaryConditions} for the inviscid gasdynamics equations. It relies on performing a characteristic analysis by writing the one-dimensional, nonlinear, hyperbolic conservation equations in their primitive form, excluding source terms:
 \begin{equation} \label{eqn:simple-hyp}

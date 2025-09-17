@@ -327,16 +327,22 @@ For subsonic outflows, regardless which side of the domain they reside, the only
 
 
 
-\subsection{Extra Boundary Considerations}
+\section{Extra Boundary Considerations}
 
-% What specifically is used in the code
-% - Diffusive conditions (zero normal flux...) [Sutherland and Kennedy]
-% - Yoo and Im tangential convection term
-% - P controlled inflow/outflow
-% - Wall boundaries
-
-\red{WHAT GOES HERE DEPENDS ON WHAT'S IN THE LIT REVIEW}
-
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.25]{assets/imgs/LABFM-boundary-stencils.pdf}
+\caption{LABFM BOUNDARY STENCIL.}
+\label{fig:labfm-boundary}
+\end{figure}
 
 
+% Whilst the majority of the domain is discretised with a nonuniform point cloud, the boundaries (excluding periodic and mirror boundaries) are discretised using uniformly spaced boundary nodes and four more boundary nodes evenly spaced into the computational domain at normals to the boundary. The normal nodes allow normal gradients to be calculated via one-sided and centred finite differences, whilst tangential gradients are calculated a transformed, one-dimensional LABFM in the tangential row of normal nodes. For nodes which are farther away, LABFM derivatives are evaluated as usual
+% DRAWING OF THIS FOR INFLOW AND WALL!!
+
+
+% We use the zero normal flux BCs, eqn ... as proposed by sutherland and kennedy
+% The code also implements relaxation terms for the non-reflective BCs, although as we will find out these are not going to be used in the acoustic delay BCs
+% Source and transverse terms as suggested by S&K and Y&I will also not be included for similar reasons
+% Walls boundaries are not used in this report, but they are implemented in the SUNSET code using the same NSCBC formalism for adiabatic walls by reflecting entropy waves and for isothermal walls by not reflecting entropy waves
 

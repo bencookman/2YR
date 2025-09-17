@@ -331,18 +331,13 @@ For subsonic outflows, regardless which side of the domain they reside, the only
 
 \begin{figure}[t]
 \centering
-\includegraphics[scale=0.6]{assets/imgs/LABFM-boundary-stencils.pdf}
-\caption{LABFM BOUNDARY STENCIL.}
+\includegraphics[scale=0.65]{assets/imgs/LABFM-boundary-stencils.pdf}
+\vspace*{0.5em}
+\caption{Diagram showing a LABFM discretisation of an inflow and curved wall. Boundary nodes are square, nodes used in finite differences are empty and the point cloud of interior nodes are filled in. LABFM and FDM stencils are shown in gold for each central node shown in red. Nodes within each stencil are shown in blue.}
 \label{fig:labfm-boundary}
 \end{figure}
 
+Under LABFM, the majority of the computational domain is discretised with a nonuniform point cloud. This leaves the boundaries (excluding periodic and symmetry boundaries) which are instead discretised using uniformly spaced boundary nodes alongside four more nodes which are evenly spaced normal to the boundary \cite{king2022HighOrderSimulationsIsothermal}. The normal nodes allow normal gradients to be calculated using one-sided (boundary and first row) and centred (third row) finite differences -- these nodes are hence referred to as finite difference nodes. Tangential gradients are calculated via a transformed one-dimensional LABFM on the row of finite difference nodes tangential to the boundary. For the third and fourth row of finite difference nodes, derivatives are simply calculated using lower, usually fourth-order, LABFM. \fig{fig:labfm-boundary} shows these discretisations in a model domain containing a curved wall near an inflow. Importantly, these finite difference nodes can be very efficiently placed into the domain provided the curved boundaries are smooth enough. The rest of the interior point cloud or unstructured nodes are placed after based on an energy minimisation approach \cite{king2020HighOrderDifference}.
 
-% Whilst the majority of the domain is discretised with a nonuniform point cloud, the boundaries (excluding periodic and mirror boundaries) are discretised using uniformly spaced boundary nodes and four more boundary nodes evenly spaced into the computational domain at normals to the boundary. The normal nodes allow normal gradients to be calculated via one-sided and centred finite differences, whilst tangential gradients are calculated a transformed, one-dimensional LABFM in the tangential row of normal nodes. For nodes which are farther away, LABFM derivatives are evaluated as usual
-% DRAWING OF THIS FOR INFLOW AND WALL!!
-
-
-% We use the zero normal flux BCs, eqn ... as proposed by sutherland and kennedy
-% The code also implements relaxation terms for the non-reflective BCs, although as we will find out these are not going to be used in the acoustic delay BCs
-% Source and transverse terms as suggested by S&K and Y&I will also not be included for similar reasons
-% Walls boundaries are not used in this report, but they are implemented in the SUNSET code using the same NSCBC formalism for adiabatic walls by reflecting entropy waves and for isothermal walls by not reflecting entropy waves
+For wall boundaries, the SUNSET code uses the NSCBC formulation described above to implement adiabatic walls by reflecting entropy waves and isothermal walls by \emph{not} reflecting entropy waves. On inflows and outflows, according to \cite{sutherland2003ImprovedBoundaryConditions} the SUNSET code uses the diffusive BCs given by \equ{eqn:znf}, the zero normal flux conditions. As suggested by \cite{sutherland2003ImprovedBoundaryConditions} and \cite{yoo2007CharacteristicBoundaryConditions}, source and transverse terms are included into the characteristic boundaries so shear phenomena can effectively pass through these boundaries. Although, for the BCs outlined in the next section, they will not be used. The same can be said about relaxation terms for inflows and outflows, which are typically used to ensure well-posedness and remove variable drift, as they are not needed in the upcoming BCs.
 

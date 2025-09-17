@@ -147,6 +147,18 @@ Provided these conditions are met, this means we can approximate any derivative 
 Numerical approximations to differential operators such as the above contain error of two different behaviours: diffusive and dispersive. The former promotes the spurious damping of the signal, and the latter results in an incorrect phase velocity $c(\tilde{k})$ for a given wavenumber mode $\tilde{k}$ in the solution. These can be seen as the real and imaginary parts of eigenvalues to the linear stability problem concerning the operator. Unsurprisingly, the amplitude of these error terms gets smaller, faster, when the order of method increases. The same is true in the case of LABFM, with the unfortunate caveat that the higher order formulations result in eigenvalues which have positive real parts for the highest wavenumbers. This corresponds to an inverted diffusion effect for the shortest wavelength inaccuracies, such that any small floating-point errors destroy the simulation after only a few time steps. The natural solution to this, is to preprocess weights $w^{\rm{HV}}_{i, j}$ for a \emph{hyperviscosity} operator $-Δ^2$, $Δ^3$ or $-Δ^4$ and apply this hyperviscosity at the end of each time step. This results in a filter where the wavenumber modes close to and above the \emph{Nyquist} wavenumber \cite{nyquist1928CertainTopicsTelegraph} are severely damped, without affecting the broader solution comprised of lower wavenumbers. Compared to other filtering methods, such as the direct removal of high wavenumber modes via spectral Fourier analysis, this has the obvious benefit of being easily calculated under the same LABFM formulation as the other derivatives (usually first- and second-order derivatives in the case of Navier-Stokes).
 
 
+\subsection{Boundary Discretisation}
+
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.65]{assets/imgs/LABFM-boundary-stencils.pdf}
+\vspace*{0.5em}
+\caption{Diagram showing a LABFM discretisation of an inflow and curved wall. Boundary nodes are square, nodes used in finite differences are empty and the point cloud of interior nodes are filled in. LABFM and FDM stencils are shown in gold for each central node shown in red. Nodes within each stencil are shown in blue.}
+\label{fig:labfm-boundary}
+\end{figure}
+
+Under LABFM, the majority of the computational domain is discretised with an unstructured point cloud. This leaves the boundaries (excluding periodic and symmetry boundaries) which are instead discretised using uniformly spaced boundary nodes alongside four more nodes which are evenly spaced normal to the boundary \cite{king2022HighOrderSimulationsIsothermal}. The normal nodes allow normal gradients to be calculated using one-sided (boundary and first row) and centred (third row) finite differences -- these nodes are hence referred to as finite difference nodes. Tangential gradients are calculated via a transformed one-dimensional LABFM on the row of finite difference nodes tangential to the boundary. For the third and fourth row of finite difference nodes, derivatives are simply calculated using lower, usually fourth-order, LABFM. \fig{fig:labfm-boundary} shows these discretisations in a model domain containing a curved wall near an inflow. Importantly, these finite difference nodes can be very efficiently placed into the domain provided the curved boundaries are smooth enough. The rest of the interior point cloud or unstructured nodes are placed after based on an energy minimisation approach \cite{king2020HighOrderDifference}.
+
 
 
 
@@ -325,19 +337,7 @@ So we must enforce $\cl{L}_5 = ρ c g^x$. Similarly, a subsonic outflow at the r
 For subsonic outflows, regardless which side of the domain they reside, the only characteristic wave which enters the domain are either $\cl{L}_5$ for left-side boundaries and $\cl{L}_1$ for right-side boundaries, as shown in \fig{fig:NSCBC}. All the other $\cl{L}_m$ values required in \equ{eqn:char-bcs-end} may be found via the one-sided derivatives mentioned above. For inflows the situation flips on its head. We instead have access to \emph{only} $\cl{L}_1$ for left-side boundaries and $\cl{L}_5$ for right-side boundaries and all others represent waves which must be modelled as we have no information on in the interior and boundary of the domain. Presuming our inflow is on the left end of the computational domain, then $\cl{L}_1$ may be found from the interior, as above, $\cl{L}_5$ may be found using the acoustic non-reflection condition for the outflows, also as above, and the rest must model some sensible physics on waves entering the domain. For example, the entrance of shear waves into the domain are given by $\cl{L}_{3}$ and $\cl{L}_{4}$, but may be removed simply by assigning $\cl{L}_{3} = g^y$ and $\cl{L}_{4} = g^z$. The entropy and species density waves $\cl{L}_{2}$ and $\cl{L}_{5 + α}$ are assigned zero as the corresponding source terms in $\und{b}$ vanish.
 
 
-
-
-\section{Extra Boundary Considerations}
-
-\begin{figure}[t]
-\centering
-\includegraphics[scale=0.65]{assets/imgs/LABFM-boundary-stencils.pdf}
-\vspace*{0.5em}
-\caption{Diagram showing a LABFM discretisation of an inflow and curved wall. Boundary nodes are square, nodes used in finite differences are empty and the point cloud of interior nodes are filled in. LABFM and FDM stencils are shown in gold for each central node shown in red. Nodes within each stencil are shown in blue.}
-\label{fig:labfm-boundary}
-\end{figure}
-
-Under LABFM, the majority of the computational domain is discretised with a nonuniform point cloud. This leaves the boundaries (excluding periodic and symmetry boundaries) which are instead discretised using uniformly spaced boundary nodes alongside four more nodes which are evenly spaced normal to the boundary \cite{king2022HighOrderSimulationsIsothermal}. The normal nodes allow normal gradients to be calculated using one-sided (boundary and first row) and centred (third row) finite differences -- these nodes are hence referred to as finite difference nodes. Tangential gradients are calculated via a transformed one-dimensional LABFM on the row of finite difference nodes tangential to the boundary. For the third and fourth row of finite difference nodes, derivatives are simply calculated using lower, usually fourth-order, LABFM. \fig{fig:labfm-boundary} shows these discretisations in a model domain containing a curved wall near an inflow. Importantly, these finite difference nodes can be very efficiently placed into the domain provided the curved boundaries are smooth enough. The rest of the interior point cloud or unstructured nodes are placed after based on an energy minimisation approach \cite{king2020HighOrderDifference}.
+\subsection{Extra Boundary Considerations}
 
 For wall boundaries, the SUNSET code uses the NSCBC formulation described above to implement adiabatic walls by reflecting entropy waves and isothermal walls by \emph{not} reflecting entropy waves. On inflows and outflows, according to \cite{sutherland2003ImprovedBoundaryConditions} the SUNSET code uses the diffusive BCs given by \equ{eqn:znf}, the zero normal flux conditions. As suggested by \cite{sutherland2003ImprovedBoundaryConditions} and \cite{yoo2007CharacteristicBoundaryConditions}, source and transverse terms are included into the characteristic boundaries so shear phenomena can effectively pass through these boundaries. Although, for the BCs outlined in the next section, they will not be used. The same can be said about relaxation terms for inflows and outflows, which are typically used to ensure well-posedness and remove variable drift, as they are not needed in the upcoming BCs.
 

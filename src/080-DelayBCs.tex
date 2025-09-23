@@ -1,4 +1,13 @@
-\section{Methodology}
+\section{Model and Methodology}
+
+
+% Outline the idea
+% - Model a tube using a central DNS region and with up and downstream regions to the left and right
+% - Assuming inflow fields behave simply like $p = p' + p_mean$ etc. then u_mean, then we are modelling convected waves through the tube. Because we will be making a linear assumption on the acoustics to model the delay, the acoustic speedup from the tailwind and slow down from the headwind will cancel each other out, resulting in a delay time which is just: τ = ...
+% - Hence, we just need to model this the acoustics by their delayed reentry into the DNS region to solve the linear acoustic problem in the non-DNS domain
+% - We refer to this non-DNS domain by the acoustic or fictitious domain or region
+% - To fit this into the existing characteristic boundary formulation given by NSCBC, we assume that we can store the outgoing acoustic characteristics as $\cl{L}_{out acoustic}(t, \vb{y})$ where $\cl{L}_{out acoustic}$ is the continuous outgoing continuous field and the vector $\vb{y}$ parameterises the given connected boundary (which is a scalar value for 2 dimensional problems). For a rectangular two-dimensional domain, this becomes $\cl{L}_{1/5}(t, y)$ where the outgoing acoustic is $\cl{L}_{1}$ for vertical left-side boundaries (inflows in this report) and $\cl{L}_{5}$ for vertical right-side boundaries (outflows in this report).
+% - Continuing with the two-dimensional example, we would impose the delayed acoustic reentry by imposing at vertical left-side boundaries that $\cl{L}_{5}(t, y) = \cl{L}_{5, non-reflect}(t, y) + \cl{L}_{1}(t - τ, y)$ where the first term $\cl{L}_{5, non-reflect}$ is the required condition described in the previous chapter to stop the outgoing acoustic from being immediately reflected.
 
 \begin{figure}[t]
 \centering
@@ -7,19 +16,41 @@
 \caption{MODEL OF DELAY BC. DELAY IS ONLY MODELLED VIA TIME SERIES OF L VALUES AS THEY LEAVE THE DNS DOMAIN.}
 \end{figure}
 
+% - Technically this method could also be extended to arbitrary numbers of delay boundaries with any boundary normal, but this is not explored in this work (or likely future work)
+% - Under this approximation, we are also implicitly assuming that each location at the boundary has its own 1D approximation being made. For the rest of the report we instead use a simpler formulation which averages the acoustics as they leave the boundary:
+% $\cl{L}_{5}(t, y) = \cl{L}_{5, non-reflect}(t, y) + < \cl{L}_{1}(t - τ, y') >_{y'}$
+% where < >_{y'} represents averaging over boundary values. This corresponds to a single one-dimensional approximation instead being made over the whole boundary, which is of course only valid for thin-enough computational domains
 
-% Outline the idea
-% How does this connect to the NSCBC formalism
-% Remove P controllers/relaxation terms
-% Leave in diffusion boundaries to get a well-posed problem
-% Memory footprint
+% - Because these are reacting equations, we also impose that all other L's vanish so that no entropy, shear or mass waves enter the domain
+% - Later on, this definition of $\cl{L}_{5}(t, y)$ can be extended to include a forcing term if that is desirable e.g. to simulate secondary thermoacoustic instability response
+% - Note that no relaxation terms are used on any boundary -- this marks the main difference between ADCBC and NSCBC. Relaxation terms are traditionally used under the NSCBC formulation to ensure the dependent variables (outflow pressure especially, but also inflow velocities, temperature -- equiv. density -- and mass fractions) do not drift as characteristic waves leave the domain, not to return. Given that we ARE forcing the one-dimensional acoustic waves to return, we do not need these relaxation terms for inflow normal velocity and outflow pressure as they closed by the full reflection of these acoustic waves (NOT SURE WHAT TO DO IF THESE WAVES DO NOT FULLY REFLECT?). For the other variables, relaxation terms may be kept, but we have chosen to remove them under the assumption that the simulation is strongly one-dimensional at the boundary and that the flame is not near it. That is, no significant shear, entropy or mass waves should be leaving the boundary, so the related dependent variables, v w T Y will not drift. Note if relaxation terms were imposed on top of the delayed reflection, we would be over-constraining what is already a well-posed problem.
+% - All this is left ot do is to the diffusive physical conditions. Nothing has changed with the sutherland and kennedy formulation here, so we are using the zero normal flux condition they impose..
+% - inflows may switch to outflows. To account for this, we simply check if the boundary is has u.n > 0 for inflow and otherwise is outflow and apply the corresponding conditions for L and diffusive conditions
+
 
 
 
 \section{Implementation}
 
+% - Brief summary: To outline the method again, we will be introducing a delay into the acoustics to model an extended acoustic domain which is not part of the DNS region by using non-reflecting characteristic boundaries and storing the acoustics which leave the domain. These acoustics are then simply reintroduced after the relevant time delay.
+
+% Now discretise the above formulation
+% - The sunset code uses, like all other numerical techniques, a discretised temporal domain to integrate forward in time.
+% - Hence, we already only have the outgoing characteristic L values at discrete times and cannot recover $\cl{L}_{1}(t - τ, y')$ when $t - τ$ does not lie on a time step. Furthermore, the step size taken by a typical combustion simulation is likely to oversample the acoustic field at the boundary, resulting in a much higher memory footprint than is required. This, along with the variable time steps the SUNSET uses means that it is reasonable to use a sample rate for $\cl{L}_{1}(t_sample, y)$ values which is higher than the maximum time step size used. Call this time step size $δt_{\rm{sample}}$ which is the sample period we aim for with ADCBC.
+% - In reality the time steps will be of varying sizes due to the variable time steps, refer to the sample time as $\{t_s\}_{s=0}^{N_{\rm{samp}}}$ and the sampled characteristics as $\{\cl{L}_{1, s}\}_{s=0}^{N_{\rm{samp}}}$ where $s\in\bb{Z}$ enumerates these sample times and $t_{N_{\rm{samp}}}$ is the most recent sample time.
+% - define $\{\cl{L}_{1, s}\}_{s=0}^{N_{\rm{samp}}}$ values from < >_ ..
+% - In order to evaluate $\cl{L}_{1}(t - τ)$ then, we simply interpolate between these $\cl{L}_{1}$ values at $t' = t - τ$.
+
+
 
 \subsection{Code Schematic}
+
+% We now outline the ADCBC method as it is implemented into the sunset code.
+% - Because the time delay is only a finite length, clearly the oldest sample value we should need is $\cl{L}_{1}(t', y')$ where $t' \approx t - τ - δt_{\rm{sample}}$. Hence we only need to store the finite number of samples $\cl{T} = \{t_s\}_{s=0}^{N_{\rm{samp}}} \cup [t - τ - δt_{\rm{sample}}, t]$ at any given time. For as long as τ remains bounded, the size of $\cl{T}$ remains bounded.
+% - this means as long as we know the maximum delay time $τ$ occurring in a given simulation (usually τ values will be constant ... not explained moving boundaries yet????) we can always store t_s, L_s in a contiguous portion of memory which the delay boundaries are allocated at the beginning of the simulation.
+% - We do this using a one-sided queue data structure, which is coded as a wrapper around a contiguous array using a FIFO system. t and L values sampled at the present time can be added to the end of their respective queues, and values which are required for interpolation are found at the beginning of the queue. Once they are no longer needed for an accurate interpolation of L_1, they are 'popped' (AKA removed) from the queue
+% - If a special data structure is not used for these samples, then the data would continuously slink through memory in a way where \emph{contiguity} cannot be enforced
+% - Note that a linked list could also be used here although these are much more complex to implement, and far slower to traverse for interpolation values. Also, the main benefit of a linked list is the O(1) deletion of random samples, which we do not require here.
 
 \begin{figure}[t]
 \centering
@@ -27,6 +58,9 @@
 \label{fig:delay-queue}
 \caption{HOW THE BOUNDARY SAMPLING AND DELAY WORK. WHAT DO SHAPES REPRESENT?? GREY CROSS IS CURRENT SIMULATION TIME, GOLD CROSS IS THAT TIME MINUS THE TIME DELAY. CHANGING TIME DELAY IS NOT SHOWN HERE.}
 \end{figure}
+
+% - The queue system used is illustrated in \fig{fig:delay-queue} in a continuous time integration for simplicity so sample times are consistent. The first two steps show values being appended to the queue at the beginning of the simulation until the time delay is reached in the third step. Different shapes are used to represent the different L_1 values. The fourth step shows which values are used for interpolation in an example second order interpolant. The fifth and final step shows old values being removed from the start of the queue 
+
 
 % CHANGE ITALIC L TO CALLIGRAPHIC L
 \begin{figure}[t]
@@ -40,6 +74,9 @@
 \begin{itemize}
 \item Queues are filled with $L$ values as well as 
 \end{itemize}
+
+
+% Memory footprint
 
 
 
@@ -61,7 +98,7 @@
 
 
 
-\subsection{Visualisation In The Acoustic Region}
+\subsection{Visualisation of the Acoustic Region}
 % Maybe put into results if it makes more sense
 
 

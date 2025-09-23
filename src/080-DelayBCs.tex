@@ -59,14 +59,18 @@
 \caption{HOW THE BOUNDARY SAMPLING AND DELAY WORK. WHAT DO SHAPES REPRESENT?? GREY CROSS IS CURRENT SIMULATION TIME, GOLD CROSS IS THAT TIME MINUS THE TIME DELAY. CHANGING TIME DELAY IS NOT SHOWN HERE.}
 \end{figure}
 
-% - The queue system used is illustrated in \fig{fig:delay-queue} in a continuous time integration for simplicity so sample times are consistent. The first two steps show values being appended to the queue at the beginning of the simulation until the time delay is reached in the third step. Different shapes are used to represent the different L_1 values. The fourth step shows which values are used for interpolation in an example second order interpolant. The fifth and final step shows old values being removed from the start of the queue 
+% - The queue system used is illustrated in \fig{fig:delay-queue} in a continuous time integration for simplicity so sample times are consistent. Different shapes are used to represent the different L_1 values. The values relevant to the current step is circled in blue. The first two steps show values being appended to the queue at the beginning of the simulation until the time delay is reached in the third step. The fourth step shows which values are used for interpolation in an example second order interpolant. The fifth and final step shows old values being removed from the start of the queue 
+
+% - on top of this, the time delay can change provided it doesn't exceed the sound speed (so multiple L values are not entering the domain at any one sample time). Time delays can be updated at each sample time assuming it doesn't change fast (actually it should change every substep???)
+% - \fig{fig:schematic} illustrates the full schematic for a time integrator with two substeps per time step and uniform time step size. Sampling is performed in the (A) routine which is called every sample time preceded by a change to delay time, if required. These are circled and labelled (1) and (2) corresponding to the steps in \fig{fig:delay-queue}. Only after the full time delay $τ$ do the 
+% - Appending and removal from the queue happen before the queue values are used for interpolation to ensure the correct values are available in the queue for interpolation.
 
 
-% CHANGE ITALIC L TO CALLIGRAPHIC L
 \begin{figure}[t]
 \centering
 \includegraphics[scale=0.65]{assets/imgs/delay_bc_code_schematic.pdf}
 \label{fig:schematic}
+% A sample period $δt_{\rm{sample}} = 2δt$ is used in this example. The evaluation of routines (or procedures) are shown in order from top to bottom (starting with (D) and ending with (U), key given in the figure), left to right (beginning at $t = 0$ and showing up to $t = 8 δt$). Routines which are performed are signified by the presence of a shape representing again a different sample time. The time delay is shown in gold. 
 \caption{Schematic for delay BCs implemented into a multistage time integrator. ASSUMES CONSTANT TIME STEPS. TOP TO BOTTOM, LEFT TO RIGHT. BLUE SHOWS SAMPLE TIMES, GOLD SHOWS TIME DELAY}
 \end{figure}
 

@@ -35,7 +35,7 @@ Later on, these definitions for $\cl{L}_{1/5}$ can be extended to include an imp
 
 
 
-\section{Implementation}
+\section{Implementation of ADCBC}
 
 The SUNSET code, like other CFD codes, uses a discretised temporal domain to integrate forward in time. Hence, we already only have access to the outgoing characteristics at discrete time steps and cannot recover the exact value of $\cl{L}_{1}(t - τ, y)$ when $t - τ$ does not lie on a previous time step, assuming a left-side boundary. On top of this, the step size taken by a typical combustion simulation is likely to oversample the acoustic field at the boundary, resulting in a much higher memory footprint that is required by the method. This, along with the variable time steps used in the SUNSET code means we aim for a sample rate $δt_{\rm{sample}} > δt > 0$ for these $\cl{L}_{1}$ values. We refer to the sample times and acoustics as $\{(t_s, \overline{\cl{L}}_{1, s})\}_{s=1}^{N_{\rm{samp}}}$ where $s\in\bb{Z}$ enumerates these sample times so $t_{N_{\rm{samp}}}$ is the most recent sample time and $\overline{\cl{L}}_{1/5, s} \equiv \langle \, \cl{L}_{1}(t_s, \cdot\,) \, \rangle_{\rm{IN}}$. To evaluate the $\langle \cl{L}_{1}(t - τ_{\rm{U}}, \cdot\,) \rangle_{\rm{IN}}$ term on the right-hand side of \equ{eqn:L-delay-form}, we simply interpolate between values of $(t_s, \overline{\cl{L}}_{1, s})$ at the interpolated time $t' \equiv t - τ_{\rm{U}}$. Note that no requirement is made here that this interpolation conserve the acoustic energy which left the domain. If significant acoustic losses or gains are made as a result of this, an acoustically conservative method should later be investigated.
 
@@ -79,7 +79,7 @@ In a separate formulation where acoustics across the boundary are not averaged a
 
 
 
-\section{Discussion and Comparison with D-TDIBC}
+\section{Comparison with D-TDIBC}
 % Maybe this should be in discussion chapter??
 
 

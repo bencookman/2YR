@@ -1,5 +1,7 @@
 \section{Acoustic Bump}
 
+\subsection{Test Case Description}
+
 % Describe test case
 % - open-closed tube, with a central DNS region and upstream and downstream acoustic regions modelled by ADCBC, like figure ..
 % - Fluid defined by: T_0 = 298 K, p_0 = 1 bar, W = 28 kg / kmol, Pr = 0.7, c_p = 1100 J / kg / K, u_in = 0.2 m / s
@@ -9,10 +11,30 @@
 % - For thin regions like this the averaging along the boundary makes sense, but as the DNS domain widens, it seems reasonable that this averaging would result in more and more inaccuracy (and difficulty due to instability...), so the similar method where queues are used for each boundary node should instead be used in wider domains. For all the cases in this report, the averaging procedure is used and we find good results regardless.
 
 
+\subsection{Results}
+
+\subsubsection{DNS Domain}
+
 % Acoustic bump results
 % - Show result of a Gaussian bump leaving the domain and reentering after 1 bounce, 2 bounce (each boundary) and 100 bounces for different sample periods and interpolation orders?
 % Technically we should be modelling the acoustics using the convected wave equation, not the wave equation for quiescent fluids, however the Mach number is so low in this case O(10^-3) that the resulting effects are asymptotically unimportant.
 
+
+
+\subsubsection{Acoustic Region}
+
+
+
+% Acoustic region postprocessing
+% - theoretically how could this work in the ADCBC framework?
+% - log stored queue values at specific non-dimensional times which are interpreted as time series of characteristic waves leaving the inflow or outflow DNS boundary
+% - According to the same linear approximation made on acoustic waves under the ADCBC formulation, we can reinterpret these time series as spatial information: the longer ago the acoustic exited the domain, the farther into the acoustic domain (or back towards the DNS domain) they will be
+% - This only requires the queue information, sound speed and u to calculate upstream and downstream L_1 and L_5 values, then to calculate upstream and downstream u and p values we integrate L_1 and L_5 starting from the DNS inflow or outflow u and p alongside rho (for u?)
+% - Show some equations?
+
+
+
+\subsubsection{Different Interpolation Orders}
 
 % Different interpolation orders:
 % - Constant interpolation maintains the quality of acoustic bump surprisingly well, whilst the non-constant interpolation seems to introduce some small error on every reentry of the acoustic bump
@@ -25,9 +47,16 @@
 
 \section{Acoustic Standing Wave}
 
+\subsection{Test Case Description}
+
 % Describe test case
 % - An acoustic standing wave. DNS region calculated by initialising the pressure field to a sinusoid, and the upstream/downstream regions are initialised by specifying values of L within the queue initially. Usually these queues would have been initialised as empty -- instead they are given corresponding L_1/5 values
 % - other than this the code is ran in the same way
+
+\subsection{Results}
+
+
+\subsubsection{Overcoming Inflow Instability}
 
 % Instability issue!
 % - We observed that under certain boundary discretisations, a wringing instability of u develops at the inflow after many acoustic periods. This grows exponentially, suggesting the instability behaves linearly, until the vorticity produced within the DNS region destroys the solution
@@ -45,6 +74,7 @@
 \end{figure}
 
 
+\subsubsection{Sampling Error}
 
 % Sampling error
 % - We can also see the sampling instability in the standing wave results as a q-wave \cite{poinsot2001TheoreticalNumericalCombustion} which is largest at maximum values of L???
@@ -88,6 +118,8 @@
 
 
 
+\subsubsection{Moving DNS Domain}
+
 % Moving domain results
 % - shows validation that the delay time can indeed change
 % - time scale for delay change is much longer due to the low Mach number
@@ -97,6 +129,8 @@
 
 
 \section{Thermoacoustically Unstable Flame}
+
+\subsection{Test Case Description}
 
 % UPDATE IMAGE TO:
 % - use constant resolution
@@ -137,6 +171,8 @@
 
 
 
+\subsection{Eigenmode Prediction}
+
 % Prediction from Eigenmodes
 % - First we predict what results we get in a one-dimensional closed-open tube of the same length under the linear acoustic approximation, modelling the flame as a discontinuity which does not interact with the acoustics.
 % First take the non-dimensionalised equations for compressible, inviscid fully non-linear flow:
@@ -162,7 +198,7 @@
 
 
 
-
+\subsection{Results}
 
 % Show some fields at an example time for both simulations
 

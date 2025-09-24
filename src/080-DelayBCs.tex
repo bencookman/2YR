@@ -79,19 +79,3 @@ In a separate formulation where acoustics across the boundary are not averaged a
 
 
 
-\section{Comparison with D-TDIBC}
-% Maybe this should be in discussion chapter??
-
-
-% From lit review:
-%% "Since the model constants are calculated as a preprocessing step, the envelope of the acoustic response in the frequency domain may essentially be changed arbitrarily, presenting a benefit in case different pass bands are desired. Besides the inevitable drawbacks stemming from: the low-order model's inaccuracy and the requirement of a strongly one-dimensional flow at the boundary to match this model, other drawbacks remain prevalent. For one, no method to visualise acoustics residing in the fictitious, truncated domain is provided, potentially leading to a \emph{black-box} where acoustics are not immediately known. For another, the preprocessing steps are required for each value of $τ$ used. So, if the time delay were to change dynamically during the simulation (e.g. due to an expanding computational domain to ensure the flame remains within), this preprocessing may happen each step, becoming computationally costly."
-
-% - We provide a way to visualise truncated acoustics, which they do not
-% - We can add on other boundary treatments simply by including further terms into the specification of L, they instead include different boundary treatments by change the impedance envelope for different frequencies. An acoustic envelope which decays for high frequencies is actually a requirement for D-TDIBC. This has the added benefit that the ADCBC formalism can be added into existing codes already using the NSCBC formalism, under some extra requirements. The ADCBC method propose currently offers no way of modelling upstream or downstream boundary impedance effects. This also means the effectiveness of the method is dependent on the quality of the baseline nonreflecting condition
-% - Both methods have very cheap boundary cost, but a pre-processing cost must be paid for D-TDIBC for a given time-delay and envelope. The time delay could change theoretically, although this is not explored in their paper.
-% - They have a much lower memory footprint, since no memory of previous steps is required. We have at least two queues for each ADCBC. This could be simply extended to using a queue for each boundary node. As mentioned above, the overall memory footprint of the method should be dominated by interior nodes, especially for three-dimensional simulations
-% - In both cases a strongly one-dimensional flow is required at the boundary and only the delay effects under low-amplitude acoustics are modelled
-
-
-
-

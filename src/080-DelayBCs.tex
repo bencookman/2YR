@@ -1,5 +1,12 @@
 \section{Model and Methodology}
 
+Investigating the physics of of a thermoacoustic interaction requires the resolving of the full non-linear acoustics in the combustion system -- this might typically be a plenum, inlet, combustor and exhaust -- as well as the highly local reaction and diffusion phenomena located at the flame. In the case of a deflagration in a tube, the acoustics span the whole tube and a premixed flame and surrounding hydrodynamics will be located in one relatively small region of this tube. It would be natural, then, to fully resolve the flame and hydrodynamics by a fully simulated region and leave the which are the dominant effect upstream and downstream of the flame to be modelled separately. Assume at the simulation inflow that we can decompose the pressure and velocity fields as $u = \overline{u} + u'$ and $p = \overline{p} + p'$, where $\overline{\cdot}$ represents the average field at the inflow and $\cdot'$ represents fluctuations with zero mean. Then the value of $\overline{u} \pm c$ determines the speed of acoustic waves through the tube. Under a linear assumption for these acoustics -- i.e. the assumption that $ρ = \overline{ρ}$ such that $ρ' = 0$ or equivalently that acoustics do not interact with each other -- then the convection of an acoustic wave in a headwind and tailwind will cancel out. This results in a representative time delay $τ$ for the acoustic wave to leave the simulation domain, travel a distance $l$ both ways up- or downstream, and reenter:
+\begin{equation}
+τ = \frac{l}{c + u} + \frac{l}{c - u} = 2\frac{l}{c} \frac{1}{1 - \Ma} \approx 2\frac{l}{c}
+\end{equation}
+under the deflagration approximation that $\Ma \ll 1$. This is the time delay we will associate with the simulation inflow and outflow to represent their length scale via their acoustic delay $τ_{\rm{U}}$ and $τ_{\rm{D}}$ respectively.
+
+% this is the time delay...
 
 % Outline the idea
 % - Model a tube using a central DNS region and with up and downstream regions to the left and right
@@ -9,6 +16,7 @@
 % - To fit this into the existing characteristic boundary formulation given by NSCBC, we assume that we can store the outgoing acoustic characteristics as $\cl{L}_{out acoustic}(t, \vb{y})$ where $\cl{L}_{out acoustic}$ is the continuous outgoing continuous field and the vector $\vb{y}$ parameterises the given connected boundary (which is a scalar value for 2 dimensional problems). For a rectangular two-dimensional domain, this becomes $\cl{L}_{1/5}(t, y)$ where the outgoing acoustic is $\cl{L}_{1}$ for vertical left-side boundaries (inflows in this report) and $\cl{L}_{5}$ for vertical right-side boundaries (outflows in this report).
 % - Continuing with the two-dimensional example, we would impose the delayed acoustic reentry by imposing at vertical left-side boundaries that $\cl{L}_{5}(t, y) = \cl{L}_{5, non-reflect}(t, y) + \cl{L}_{1}(t - τ, y)$ where the first term $\cl{L}_{5, non-reflect}$ is the required condition described in the previous chapter to stop the outgoing acoustic from being immediately reflected.
 
+% Add arrow for DNS velocity
 \begin{figure}[t]
 \centering
 \includegraphics[scale=0.65]{assets/imgs/delay_bc_model.pdf}

@@ -44,12 +44,11 @@ The SUNSET code, like other CFD codes, uses a discretised temporal domain to int
 
 Since the time delay is only a finite length, clearly the oldest sample values we expect to need are $\cl{L}_{1}(t', \cdot\,)$ where $t' \approx t - τ - δt_{\rm{sample}}$. Hence, we only need to store the finite number of samples $\bb{T} \cross \bb{L} = \{(t_s, \overline{\cl{L}}_{1, s}) \, : \, t_s \in [t - τ - δt_{\rm{sample}}, t]\}_{s=1}^{N_{\rm{samp}}}$ at any given simulation time $t$. For as long as $τ$ remains bounded, the size of $\bb{T} \cross \bb{L}$ -- and hence our memory footprint -- also remains bounded. Thus far, we have assumed that the up- and downstream tube lengths $l_{\rm{U/D}}$ remain constant, but they may actually change arbitrarily alongside their associated time delays $τ_{\rm{U/D}}$ provided it does not exceed the sound speed, so multiple acoustics do not reenter the domain at one sample time. Having said that, as long as we know the maximum delay time $τ$ occurring in a given simulation, we can store $\bb{T} \cross \bb{L}$ in a contiguous portion of memory which the delay boundaries are allocated at the beginning of the simulation. This is done using a one-sided queue data structure, which is implemented as a \emph{first-in, first-out} (FIFO) wrapper around a contiguous array. In this way, samples from the current simulation time may be added to the end of the queues and values which are needed for interpolation are found at the beginning of the queue. Once they are no longer needed for an accurate interpolation of $\cl{L}_{1}(t', \cdot\,)$, they are \emph{popped} (removed) from the beginning of the queue. If some other data structure was used instead for these samples, then the data would slink through memory in a way where \emph{contiguity} cannot be enforced for arbitrary simulation times. Note that a linked list would be subject to this issue, be slower to traverse for interpolation values and provide $\cl{O}(1)$ deletion of random samples, which we do not require here.
 
-% use τ
 \begin{figure}[t]
 \centering
 \includegraphics[scale=0.65]{assets/imgs/delay_bc_queue.pdf}
-\label{fig:delay-queue}
 \caption{An illustration of how this queue system is used for boundary sampling. Different shapes are used to represent the different values in $\bb{T} \cross \bb{L}$. The values relevant to the current step is circled in blue.}
+\label{fig:delay-queue}
 \end{figure}
 
 This queue system is illustrated in \fig{fig:delay-queue} in a continuous temporal domain for simplicity so sample times remain uniformly spaced. The first two steps, (1) and (2) show values being appended to the queue at the beginning of the simulation until the time delay is reached in the third step, (3). The fourth step, (4) shows which values are used for interpolation in an example second order interpolant. The fifth and final step, (5) shows old values being removed from the start of the queue. 
@@ -61,9 +60,9 @@ This queue system is illustrated in \fig{fig:delay-queue} in a continuous tempor
 \begin{figure}[t]
 \centering
 \includegraphics[scale=0.65]{assets/imgs/delay_bc_code_schematic.pdf}
-\label{fig:schematic}
 % A sample period $δt_{\rm{sample}} = 2δt$ is used in this example. The evaluation of routines (or procedures) are shown in order from top to bottom (starting with (D) and ending with (U), key given in the figure), left to right (beginning at $t = 0$ and showing up to $t = 8 δt$). Routines which are performed are signified by the presence of a shape representing again a different sample time. The time delay is shown in gold. 
 \caption{Schematic for delay BCs implemented into a multistage time integrator. ASSUMES CONSTANT TIME STEPS. TOP TO BOTTOM, LEFT TO RIGHT. BLUE SHOWS SAMPLE TIMES, GOLD SHOWS TIME DELAY}
+\label{fig:schematic}
 \end{figure}
 
 

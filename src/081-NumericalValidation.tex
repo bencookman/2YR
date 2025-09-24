@@ -34,6 +34,25 @@
 
 
 
+\subsubsection{Sampling Error}
+
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.65]{assets/imgs/wave-sampling-comparison.pdf}
+\caption{SAMPLING}
+\label{fig:wave-sampling}
+\end{figure}
+
+% Note that the pressure drift would be fixed by a conservative method, but the destruction of the wave shape would not be
+
+% Now is a good time to bring up the sampling error
+% - \fig{fig:wave-sampling} shows a representative analytic L_{1/5} field for two acoustic bumps (which is roughly the derivative of the Gaussian). Despite the same linear interpolation and sample period being used, the sampled $L$ values on the left are much worse than on the right. The same could be true for any number of samples at a constant interpolation order and sample period, where the change in phase of the sampling with the wave will always cause some inaccuracy in the integrated acoustic field. This inaccuracy results in a change to the shape of the Gaussian, e.g. a skew to one side, which feeds back into this issue such that the waves eventually fully break down
+% - For the acoustic bump in this small domain this seems to happen relatively quickly because the associated acoustic frequencies of this system are higher. But, if the bump remains the same size and the tube is made longer, less bounces happen and the sampling error grows slower
+% - Furthermore, there is the added effect that natural wavenumbers of these longer tubes will be lower, meaning that individual waves can be sampled better. This leads to an asymptotic behaviour of O(l^2) for values of error productions which are small (DO SOME MATHS?).
+
+
+
+
 \subsubsection{Different Interpolation Orders}
 
 % Different interpolation orders:

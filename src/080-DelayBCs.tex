@@ -62,8 +62,9 @@
 % - The queue system used is illustrated in \fig{fig:delay-queue} in a continuous time integration for simplicity so sample times are consistent. Different shapes are used to represent the different L_1 values. The values relevant to the current step is circled in blue. The first two steps show values being appended to the queue at the beginning of the simulation until the time delay is reached in the third step. The fourth step shows which values are used for interpolation in an example second order interpolant. The fifth and final step shows old values being removed from the start of the queue 
 
 % - on top of this, the time delay can change provided it doesn't exceed the sound speed (so multiple L values are not entering the domain at any one sample time). Time delays can be updated at each sample time assuming it doesn't change fast (actually it should change every substep???)
-% - \fig{fig:schematic} illustrates the full schematic for a time integrator with two substeps per time step and uniform time step size. Sampling is performed in the (A) routine which is called every sample time preceded by a change to delay time, if required. These are circled and labelled (1) and (2) corresponding to the steps in \fig{fig:delay-queue}. Only after the full time delay $τ$ do the 
+% - \fig{fig:schematic} illustrates the full schematic for a time integrator with two substeps per time step and uniform time step size. Sampling is performed in the (A) routine which is called every sample time preceded by a change to delay time, if required. These are circled and labelled (1) and (2) corresponding to the steps in \fig{fig:delay-queue}. Only after the full time delay $τ$ do the values from the beginning of the queue start to get used. This is shown in the labels (3) and (4) corresponding to those steps in \fig{fig:delay-queue}. Finally, step (5) removes the oldest value from the queue only once they are not needed.
 % - Appending and removal from the queue happen before the queue values are used for interpolation to ensure the correct values are available in the queue for interpolation.
+% - Note that the routine (U) happens every substep using as many values from the beginning of the queue as are required. The shape shown for this routine in steps (3) and (4) are just the earliest sample taken which would be used.
 
 
 \begin{figure}[t]
@@ -73,15 +74,6 @@
 % A sample period $δt_{\rm{sample}} = 2δt$ is used in this example. The evaluation of routines (or procedures) are shown in order from top to bottom (starting with (D) and ending with (U), key given in the figure), left to right (beginning at $t = 0$ and showing up to $t = 8 δt$). Routines which are performed are signified by the presence of a shape representing again a different sample time. The time delay is shown in gold. 
 \caption{Schematic for delay BCs implemented into a multistage time integrator. ASSUMES CONSTANT TIME STEPS. TOP TO BOTTOM, LEFT TO RIGHT. BLUE SHOWS SAMPLE TIMES, GOLD SHOWS TIME DELAY}
 \end{figure}
-
-
-\begin{itemize}
-\item Queues are filled with $L$ values as well as 
-\end{itemize}
-
-
-% Memory footprint
-
 
 
 
@@ -99,6 +91,18 @@
 % - \fig{fig:wave-sampling} shows a representative analytic L_{1/5} field for two acoustic bumps (which is roughly the derivative of the Gaussian). Despite the same linear interpolation and sample period being used, the sampled $L$ values on the left are much worse than on the right. The same could be true for any number of samples at a constant interpolation order and sample period, where the change in phase of the sampling with the wave will always cause some inaccuracy in the integrated acoustic field. This inaccuracy results in a change to the shape of the Gaussian, e.g. a skew to one side, which feeds back into this issue such that the waves eventually fully break down
 % - For the acoustic bump in this small domain this seems to happen relatively quickly because the associated acoustic frequencies of this system are higher. But, if the bump remains the same size and the tube is made longer, less bounces happen and the sampling error grows slower
 % - Furthermore, there is the added effect that natural wavenumbers of these longer tubes will be lower, meaning that individual waves can be sampled better. This leads to an asymptotic behaviour of O(l^2) for values of error productions which are small (DO SOME MATHS?).
+
+
+
+\subsection{Memory Footprint}
+
+% - One potential disadvantage of the method is the size of queues required for the ADCBCs to hold the acoustic data since this should be available only to the processors relevant to the boundary nodes so the memory burden should be held only by those processors
+% - If the memory requirement is too large (e.g. over ~4 GB), the simulations will likely crash and high-memory compute nodes will be required, which should be avoided
+% - Let us now perform a simple calculation to estimate the memory required by a given acoustic delay characteristic boundary
+% - Look at a single boundary under the strongly one-dimensional flow approximation. For a 1d .. (in notebook)
+
+% - IMPORTANT POINT: regardless of how you do the calculation, the memory footprint must be significantly lower for the ADCBC formulation than it would be if the full non-linear acoustics were being solved given that only a 1D approximation is being made, the 'effective acoustic discretisation length' is much larger for ADCBC than for any simulation since the waves travel linearly and especially because we are making the strongly one-dimensional flow approximation in this report (which will be relaxed in further work).
+
 
 
 
@@ -126,7 +130,7 @@
 % - We provide a way to visualise truncated acoustics, which they do not
 % - We can add on other boundary treatments simply by including further terms into the specification of L, they instead include different boundary treatments by change the impedance envelope for different frequencies. An acoustic envelope which decays for high frequencies is actually a requirement for D-TDIBC. This has the added benefit that the ADCBC formalism can be added into existing codes already using the NSCBC formalism, under some extra requirements. The ADCBC method propose currently offers no way of modelling upstream or downstream boundary impedance effects. This also means the effectiveness of the method is dependent on the quality of the baseline nonreflecting condition
 % - Both methods have very cheap boundary cost, but a pre-processing cost must be paid for D-TDIBC for a given time-delay and envelope. The time delay could change theoretically, although this is not explored in their paper.
-% - They have a much lower memory footprint, since no memory of previous steps is required. We have at least two queues for each boundary. This could be simply extended to using a queue for each boundary node. As mentioned above, the overall memory footprint of the method should be dominated by interior nodes, especially for three-dimensional simulations
+% - They have a much lower memory footprint, since no memory of previous steps is required. We have at least two queues for each ADCBC. This could be simply extended to using a queue for each boundary node. As mentioned above, the overall memory footprint of the method should be dominated by interior nodes, especially for three-dimensional simulations
 % - In both cases a strongly one-dimensional flow is required at the boundary and only the delay effects under low-amplitude acoustics are modelled
 
 

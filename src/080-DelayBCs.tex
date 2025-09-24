@@ -51,17 +51,14 @@ Since the time delay is only a finite length, clearly the oldest sample values w
 \label{fig:delay-queue}
 \end{figure}
 
-This queue system is illustrated in \fig{fig:delay-queue} in a continuous temporal domain for simplicity so sample times remain uniformly spaced. The first two steps, (1) and (2) show values being appended to the queue at the beginning of the simulation until the time delay is reached in the third step, (3). The fourth step, (4) shows which values are used for interpolation in an example second order interpolant. The fifth and final step, (5) shows old values being removed from the start of the queue. 
+This queue system is illustrated in \fig{fig:delay-queue} in a continuous temporal domain for simplicity so sample times remain uniformly spaced. The first two steps, (1) and (2) show values being appended to the queue at the beginning of the simulation until the time delay is reached in the third step, (3). The fourth step, (4) shows which values are used for interpolation in an example second order interpolant. The fifth and final step, (5) shows old values being removed from the start of the queue.
 
-% - Appending and removal from the queue happen before the queue values are used for interpolation to ensure the correct values are available in the queue for interpolation.
-% - Note that the routine (U) happens every substep using as many values from the beginning of the queue as are required. The shape shown for this routine in steps (3) and (4) are just the earliest sample taken which would be used.
-
+\fig{fig:schematic} illustrates the full schematic for a time integrator with two substeps per time step and uniform time step size. Sampling is performed in the routine (A) which is called every sample time preceded by a change to $τ$, if required. These are circled and labelled (1) and (2) corresponding to the steps in \fig{fig:delay-queue}. Only after the full time delay $τ$ do the values from the beginning of the queue start to get used in the routine (U). This is shown in the labels (3) and (4) corresponding to those steps in \fig{fig:delay-queue}. Finally, step (5) removes the oldest value from the queue only once they are not needed in the routine (R). Appending and removal from the queue happen before the queue values are used for interpolation to ensure the correct values are available in the queue for interpolation. Note that the routine (U) happens every substep using as many values from the beginning of the queue as are required. The shape shown for this routine in steps (3) and (4) are just the earliest sample taken which would be used.
 
 \begin{figure}[t]
 \centering
 \includegraphics[scale=0.65]{assets/imgs/delay_bc_code_schematic.pdf}
-% A sample period $δt_{\rm{sample}} = 2δt$ is used in this example. The evaluation of routines (or procedures) are shown in order from top to bottom (starting with (D) and ending with (U), key given in the figure), left to right (beginning at $t = 0$ and showing up to $t = 8 δt$). Routines which are performed are signified by the presence of a shape representing again a different sample time. The time delay is shown in gold. 
-\caption{Schematic for delay BCs implemented into a multistage time integrator. ASSUMES CONSTANT TIME STEPS. TOP TO BOTTOM, LEFT TO RIGHT. BLUE SHOWS SAMPLE TIMES, GOLD SHOWS TIME DELAY}
+\caption{Routine schematic for ADCBC implemented into a time integrator with two substeps. A sample period $δt_{\rm{sample}} = 2δt$ is used in this example. The evaluation of routines (or procedures) are shown in order from top to bottom (starting with (D) and ending with (U), key given in the figure), left to right (beginning at $t = 0$ and showing up to $t = 8 δt$). A routine being used is signified by a shape representing given sample in $\bb{T} \cross \bb{L}$. The time delay is shown in gold.}
 \label{fig:schematic}
 \end{figure}
 

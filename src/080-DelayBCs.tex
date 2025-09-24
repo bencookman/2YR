@@ -2,19 +2,9 @@
 
 Investigating the physics of of a thermoacoustic interaction requires the resolving of the full non-linear acoustics in the combustion system -- this might typically be a plenum, inlet, combustor and exhaust -- as well as the highly local reaction and diffusion phenomena located at the flame. In the case of a deflagration in a tube, the acoustics span the whole tube and a premixed flame and surrounding hydrodynamics will be located in one relatively small region of this tube. It would be natural, then, to fully resolve the flame and hydrodynamics by a fully simulated region and leave the which are the dominant effect upstream and downstream of the flame to be modelled separately. Assume at the simulation inflow that we can decompose the pressure and velocity fields as $u = \overline{u} + u'$ and $p = \overline{p} + p'$, where $\overline{\cdot}$ represents the average field at the inflow and $\cdot'$ represents fluctuations with zero mean. Then the value of $\overline{u} \pm c$ determines the speed of acoustic waves through the tube. Under a linear assumption for these acoustics -- i.e. the assumption that $ρ = \overline{ρ}$ such that $ρ' = 0$ or equivalently that acoustics do not interact with each other -- then the convection of an acoustic wave in a headwind and tailwind will cancel out. This results in a representative time delay $τ$ for the acoustic wave to leave the simulation domain, travel a distance $l$ both ways up- or downstream, and reenter:
 \begin{equation}
-τ = \frac{l}{c + u} + \frac{l}{c - u} = 2\frac{l}{c} \frac{1}{1 - \Ma} \approx 2\frac{l}{c}
+τ = \frac{l}{c + u} + \frac{l}{c - u} = \frac{2l}{c} \, \frac{1}{1 - \Ma} \approx \frac{2l}{c}
 \end{equation}
-under the deflagration approximation that $\Ma \ll 1$. This is the time delay we will associate with the simulation inflow and outflow to represent their length scale via their acoustic delay $τ_{\rm{U}}$ and $τ_{\rm{D}}$ respectively.
-
-% this is the time delay...
-
-% Outline the idea
-% - Model a tube using a central DNS region and with up and downstream regions to the left and right
-% - Assuming inflow fields behave simply like $p = p' + p_mean$ etc. then u_mean, then we are modelling convected waves through the tube. Because we will be making a linear assumption on the acoustics to model the delay, the acoustic speedup from the tailwind and slow down from the headwind will cancel each other out, resulting in a delay time which is just: τ = ...
-% - Hence, we just need to model this the acoustics by their delayed reentry into the DNS region to solve the linear acoustic problem in the non-DNS domain
-% - We refer to this non-DNS domain by the acoustic or fictitious domain or region
-% - To fit this into the existing characteristic boundary formulation given by NSCBC, we assume that we can store the outgoing acoustic characteristics as $\cl{L}_{out acoustic}(t, \vb{y})$ where $\cl{L}_{out acoustic}$ is the continuous outgoing continuous field and the vector $\vb{y}$ parameterises the given connected boundary (which is a scalar value for 2 dimensional problems). For a rectangular two-dimensional domain, this becomes $\cl{L}_{1/5}(t, y)$ where the outgoing acoustic is $\cl{L}_{1}$ for vertical left-side boundaries (inflows in this report) and $\cl{L}_{5}$ for vertical right-side boundaries (outflows in this report).
-% - Continuing with the two-dimensional example, we would impose the delayed acoustic reentry by imposing at vertical left-side boundaries that $\cl{L}_{5}(t, y) = \cl{L}_{5, non-reflect}(t, y) + \cl{L}_{1}(t - τ, y)$ where the first term $\cl{L}_{5, non-reflect}$ is the required condition described in the previous chapter to stop the outgoing acoustic from being immediately reflected.
+under the deflagration approximation that $\Ma \ll 1$. This is the time delay we will associate with the simulation inflow and outflow to represent their length scale via the delayed reentry of these acoustic into the inflow and outflow after a delay $τ_{\rm{U}}$ and $τ_{\rm{D}}$ respectively. This solves the linear acoustic problem in the tube upstream and downstream of the flame to leading order in Mach number. We refer to this non-DNS domain by the acoustic or fictitious domain or region.
 
 % Add arrow for DNS velocity
 \begin{figure}[t]
@@ -24,10 +14,16 @@ under the deflagration approximation that $\Ma \ll 1$. This is the time delay we
 \caption{MODEL OF DELAY BC. DELAY IS ONLY MODELLED VIA TIME SERIES OF L VALUES AS THEY LEAVE THE DNS DOMAIN.}
 \end{figure}
 
-% - Technically this method could also be extended to arbitrary numbers of delay boundaries with any boundary normal, but this is not explored in this work (or likely future work)
+To fit this model into the existing characteristic boundary formulation provided by NSCBC and LODI, we assume that we can store all of the outgoing acoustics as $\cl{L}_{\rm{outgoing acoustic}}(t, \vb{y})$ where $\cl{L}_{\rm{outgoing acoustic}}$ is the continuous outgoing field and the vector $\vb{y}$ parameterises the given connected inflow or outflow (this is a scalar value $y$ for 2 dimensional problems with vertical inflow or outflow). For a rectangular two-dimensional horizontal tube, this becomes $\cl{L}_{1/5}(t, y)$ where the outgoing acoustic is $\cl{L}_{1}$ for left-side boundaries and $\cl{L}_{5}$ for right-side boundaries (inflows and outflows respectively in this report). Continuing with this two-dimensional example, we would impose the delayed acoustic reentry by imposing at the left-side inflow that $\cl{L}_{5}(t, y) = \cl{L}_{5, \rm{non-reflect}}(t, y) + \cl{L}_{1}(t - τ, y)$ where the first term $\cl{L}_{5, \rm{non-reflect}}$ is the required condition described in the previous chapter to stop the outgoing acoustic from being immediately reflected. Under this model, we are implicitly assuming each location at the boundary has its own one-dimensional acoustic approximation being made. For the rest of the report we instead use a simpler formulation which averages the acoustics across the boundary as they leave:
+\begin{equation}
+\cl{L}_{5}(t, y) = \cl{L}_{5, non-reflect}(t, y) + \langle \cl{L}_{1}(t - τ, y') \rangle_{\rm{IN}}
+\end{equation}
+where $\langle\cdot\rangle_{\rm{IN}}$ represents averaging over inflow boundary values. The equivalent statement is used for outflows where $1 \leftrightarrow 5$ and $\langle\cdot\rangle_{\rm{IN}} \leftrightarrow \langle\cdot\rangle_{\rm{OUT}}$
+
 % - Under this approximation, we are also implicitly assuming that each location at the boundary has its own 1D approximation being made. For the rest of the report we instead use a simpler formulation which averages the acoustics as they leave the boundary:
 % $\cl{L}_{5}(t, y) = \cl{L}_{5, non-reflect}(t, y) + < \cl{L}_{1}(t - τ, y') >_{y'}$
 % where < >_{y'} represents averaging over boundary values. This corresponds to a single one-dimensional approximation instead being made over the whole boundary, which is of course only valid for thin-enough computational domains
+% - Technically this method could also be extended to arbitrary numbers of delay boundaries with any boundary normal, but this is not explored in this work (or likely future work)
 
 % - Because these are reacting equations, we also impose that all other L's vanish so that no entropy, shear or mass waves enter the domain
 % - Later on, this definition of $\cl{L}_{5}(t, y)$ can be extended to include a forcing term if that is desirable e.g. to simulate secondary thermoacoustic instability response

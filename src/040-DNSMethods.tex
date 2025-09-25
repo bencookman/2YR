@@ -29,7 +29,7 @@ LABFM \cite{king2024MeshFreeFrameworkHighOrder, king2020HighOrderDifference, kin
 
 \subsection{High-Order Interpolations}
 
-Consider a location $\vb{x}$ surrounded locally by finitely many nodes $\vb{x}_j \in \cl{S}(\vb{x})$ which are enumerated by $j \in \cl{N}(\vb{x})$, where $\abs{\vb{x} - \vb{x}_j} < h(\vb{x})$ for all $j$. Assume the field $φ(\vb{x})$, which is only known at the points $φ_j = φ(\vb{x}_j)$, is smooth enough.\footnote{Such that as many derivatives of $φ$ as are used in the derivation below are available to us.} Then, we express the interpolated value $φ(\vb{x})$ as a linear combination of the surrounding values $φ_j$:
+Consider a location $\vb{x}$ surrounded locally by finitely many nodes $\vb{x}_j$ which are enumerated by $j \in \cl{N}(\vb{x})$, where $\abs{\vb{x} - \vb{x}_j} < h(\vb{x})$ for all $j$. Assume the field $φ(\vb{x})$, which is only known at the points $φ_j = φ(\vb{x}_j)$, is smooth enough.\footnote{Such that as many derivatives of $φ$ as are used in the derivation below are available to us.} Then, we express the interpolated value $φ(\vb{x})$ as a linear combination of the surrounding values $φ_j$:
 \begin{equation} \label{eqn:L}
 L^{\rm{int}}[φ](\vb{x}) \equiv \sum_{j \in \cl{N}(\vb{x})} φ_j w^{\rm{int}}(\vb{x}, \vb{x}_j) \approx φ(\vb{x}).
 \end{equation}
@@ -92,7 +92,7 @@ where $M$ is a $n \times n$ matrix and $n$ is the number of components of $\vv{C
 \label{fig:labfm-stencil}
 \end{figure}
 
-If we choose to evaluate a derivative at $\vb{x}$ instead, very little changes besides the following. Firstly, we assume that the point $\vb{x}$ is itself a node in our stencil, $\vb{x} = \vb{x}_i \in \cl{S}(\vb{x}_i)$, such that $\abs{\vb{x}_{ij}} < h_i$ for all $\vb{x}_j$ provided $\vb{x}_{ij} \equiv \vb{x}_j - \vb{x}_i$. An example discretisation and stencil is shown in \fig{fig:labfm-stencil}. Then, taking a page out of centred finite differences, we redefine our operator via the differences $φ_{ij} \equiv φ_j - φ_i$:
+If we choose to evaluate a derivative at $\vb{x}$ instead, very little changes besides the following. Firstly, we assume that the point $\vb{x}$ is itself a node in our stencil, $\vb{x} = \vb{x}_i$, such that $\abs{\vb{x}_{ij}} < h_i$ for all $\vb{x}_j$ provided $\vb{x}_{ij} \equiv \vb{x}_j - \vb{x}_i$. An example discretisation and stencil is shown in \fig{fig:labfm-stencil}. Then, taking a page out of centred finite differences, we redefine our operator via the differences $φ_{ij} \equiv φ_j - φ_i$:
 \begin{equation} \label{eqn:labfm-L}
 L[φ]_i \equiv \sum_{j \in \cl{N}_i} φ_{ij} w_{i, j}.
 \end{equation}
@@ -123,7 +123,7 @@ with the same form of linear system $\vv{C}^k = M_i \, \vv{\Psi}^k_i$ where $M_i
 
 \subsection{Matrix Conditioning and Choice of Anisotropic Basis Functions}
 
-The computational accuracy of the solutions in the linear system shown above is determined by the condition number of the matrix $M_i$. Given we expect any disordered set of nodes $\cl{S}_i$ close to $\vb{x}_i$ for the moment, there are no further assumptions we can make on $\vv{X}^k_{ij}$ yet. The choice of ABFs, however, can greatly improve the conditioning of $M_i$ by ensuring a linear independence of its columns, regardless of the order $k$ used. In particular, orthogonal basis functions do this automatically, such as the orthogonal Hermite and Legendre polynomials, and the Fourier basis modes -- combinations of $\sin(nx)$, $\cos(nx)$, $\sin(ny)$ and $\cos(ny)$ for different values of $n < k$.
+The computational accuracy of the solutions in the linear system shown above is determined by the condition number of the matrix $M_i$. Given we expect any disordered set of nodes $\vb{x}_j$ for $j \in \cl{N}_i$ close to $\vb{x}_i$ for the moment, there are no further assumptions we can make on $\vv{X}^k_{ij}$ yet. The choice of ABFs, however, can greatly improve the conditioning of $M_i$ by ensuring a linear independence of its columns, regardless of the order $k$ used. In particular, orthogonal basis functions do this automatically, such as the orthogonal Hermite and Legendre polynomials, and the Fourier basis modes -- combinations of $\sin(nx)$, $\cos(nx)$, $\sin(ny)$ and $\cos(ny)$ for different values of $n < k$.
 
 It is also prudent to ensure that the weight values $w_{i ,j}$ do not change depending on the specific stencil size $h_i$ which we have taken. This is equivalent to ensuring the analysis may be done in a non-dimensional sense -- so derivative operators may be scaled to whatever dimensions are required in a particular simulation. In general, our ABFs already do not scale with $h_i$, but the vector of monomials $\vv{X}^k_{ij}$ does. We can cancel out this dependence by simply introducing the matrix $H_i = \rm{diag}(h, h, h^2, h^2, h^2, ..., h^k)$ and instead solving the system $H_i^{-1} \vv{C}^k = (H_i^{-1} M_i) \, \vv{\Psi}^k_i$ where instead $H_i^{-1} M_i = \sum_{j \in \cl{N}_i} (H_i^{-1} \vv{X}^k_{ij}) \otimes \vv{W}^k_{ij}$. This system condition number can no longer scale with $h_i$, since:
 \begin{equation}
@@ -190,13 +190,13 @@ P_{ij} \equiv \pdv{U_i}{u_j},
 \quad \text{and} \quad
 \und{b} \equiv \undt{{P}}^{-1}\und{B}.
 \end{equation}
-The matrix $\undt{P}$ is the Jacobian matrix, $\undt{\vb{A}}$ represents the convection of the variables due to the other variables and themselves (e.g. resulting in $(\vb{u} \cdot \vnab )\vb{u}$ in the momentum equation) and $\und{\cl{S}}$ are source terms acting on primitive variables. Using this form, we can isolate the $x$-derivatives to observe the characteristics in that direction:
+The matrix $\undt{P}$ is the Jacobian matrix, $\undt{\vb{A}}$ represents the convection of the variables due to the other variables and themselves (e.g. resulting in $(\vb{u} \cdot \vnab )\vb{u}$ in the momentum equation) and $\und{b}$ are source terms acting on primitive variables. Using this form, we can isolate the $x$-derivatives to observe the characteristics in that direction:
 \begin{equation} \label{eqn:with_A}
 \pdv{\und{V}}{t} + \undt{A}^x \pdv{\und{V}}{x} + \und{c} = 0
 \quad \text{where, in 3D} \quad
 \und{c} \equiv \und{b} + \undt{A}^y \pdv{\und{V}}{y} + \undt{A}^z \pdv{\und{V}}{z}
 \quad \text{and} \quad
-\und{C} \equiv \undt{P} \und{c}.
+\und{C} \equiv \undt{P} \, \und{c}.
 \end{equation}
 The statement that the system is hyperbolic is now the statement that the $N_\rm{V}$ eigenvalues $λ_m = λ_m(\und{V})$ of $\undt{A}^x$ are real and can be ordered like $λ_1 \leq \dots \leq λ_{N_\rm{V}}$. Owing to this, we consider the left-eigenvectors $\und{l}_m = \und{l}_m(\und{V})$ of $\undt{A}^x$:
 \begin{equation}
@@ -212,20 +212,20 @@ We notice that along any trajectory $\vb{x}_m(t)$ which satisfies $\dd{\vb{x}_m}
 \begin{equation}
 \dv{J_m}{t} = 0.
 \end{equation}
-This tells us the $J_m$ are constant along the trajectories $\vb{x}_m(t)$, which completes the characteristic analysis traditionally. But, numerically $J_m$ is not so useful since it needs to be transformed back into the primitive variables anyway for a simulation. Instead we use the form of the equation in primitive or conservative variables under the transformation $\undt{A}^x = \undt{S} \undt{Λ} \undt{S}^{-1}$ where $\undt{Λ}=\rm{diag}(λ_1, \dots, λ_{N_\rm{V}})$ is the diagonal matrix of eigenvalues and rows of the matrix $\undt{S}^{-1}$ are the corresponding \emph{left eigenvectors} $\und{l}_m^T$:
+This tells us the $J_m$ are constant along the trajectories $\vb{x}_m(t)$, which completes the characteristic analysis traditionally. But, numerically $J_m$ is not so useful since it needs to be transformed back into the primitive variables anyway for a simulation. Instead we use the form of the equation in primitive or conservative variables under the transformation $\undt{A}^x = \undt{S} \, \undt{Λ} \, \undt{S}^{-1}$ where $\undt{Λ}=\rm{diag}(λ_1, \dots, λ_{N_\rm{V}})$ is the diagonal matrix of eigenvalues and rows of the matrix $\undt{S}^{-1}$ are the corresponding \emph{left eigenvectors} $\und{l}_m^T$:
 \begin{gather}
 \cl{L}_m \equiv λ_m \pdv{J_m}{x} \equiv λ_m \und{l}_m^T \pdv{\und{V}}{x}, \\
 \implies \quad
 \boxed{
-\pdv{\und{V}}{t} + \undt{S} \und{\cl{L}} + \und{c} = 0
+\pdv{\und{V}}{t} + \undt{S} \, \und{\cl{L}} + \und{c} = 0
 \quad \text{and} \quad
-\pdv{\und{U}}{t} + \undt{P} \undt{S} \und{\cl{L}} + \und{C} = 0,
+\pdv{\und{U}}{t} + \undt{P} \, \undt{S} \, \und{\cl{L}} + \und{C} = 0,
 }
 \label{eqn:char-bcs-end}
 \end{gather}
 where $\und{\cl{L}} = (\cl{L}_1, \dots, \cl{L}_{N_\rm{V}})$. So each value $\cl{L}_m$ then represents the convection of the m\sus{th} characteristic wave at a point in space. The \emph{Locally One-Dimensional Inviscid} (LODI) characteristic boundary formulation\footnote{So-called as we preclude diffusive effects in any hyperbolic system of equations and we only observe characteristic waves moving over a boundary normal to a single dimension, i.e. not at a corner.} focuses on points at the boundary of a computational domain, and posits that outgoing characteristics through this boundary can be calculated as normal using one-sided derivatives -- which are innately upwinded -- but characteristics entering the domain, such as an acoustic reflection, must instead be modelled. The key to LODI then, is that these incoming waves may be controlled by imposing their respective values of $\cl{L}_m$ at that boundary.
 
-Note that, because we have the matrix $\undt{S}^{-1}$ not $\undt{S}$, we find the flux term $\und{d} \equiv \undt{S}\und{\cl{L}}$ by solving the linear system:
+Note that, because we have the matrix $\undt{S}^{-1}$ not $\undt{S}$, we find the flux term $\und{d} \equiv \undt{S} \, \und{\cl{L}}$ by solving the linear system:
 \begin{equation}
 \undt{S}^{-1} \und{d} = \und{\cl{L}}.
 \end{equation}
@@ -246,7 +246,7 @@ The LODI approximation of the governing equations of perfect, reacting gases fir
 \begin{subequations}
 \begin{alignat}{3}
 \pdv{ρ}{t} &+ \vnab  \cdot (ρ \vb{u}) && &&= 0 \\
-\pdv{ρ \vb{u}}{t} &+ \vnab  \cdot (ρ \vb{u}\otimes \vb{u} + p \bb{I}) && - ρ \vb{g} &&= 0 \\
+\pdv{ρ \vb{u}}{t} &+ \vnab  \cdot (ρ \vb{u}\otimes \vb{u} + p I) && - ρ \vb{g} &&= 0 \\
 \pdv{ρ e}{t} &+ \vnab  \cdot [(ρ e + p) \vb{u}] && - ρ \vb{g} \cdot \vb{u} &&= 0 \\
 \pdv{ρ Y_α}{t} &+ \vnab  \cdot [ρ Y_α \vb{u}] && - \dot{ω}_α &&= 0
 \end{alignat}

@@ -14,11 +14,11 @@ Hence, the following governing equations will be used for density $ρ > 0$, velo
 \pdv{ρ}{t} + \vnab \cdot(ρ\vb{u})
 &= 0, \\
 \pdv{ρ \vb{u}}{t} + \vnab  \cdot (ρ \vb{u} \otimes \vb{u})
-&= -\vnab p + \vnab \cdot\bb{T} + ρ \vb{g} \\ 
+&= -\vnab p + \vnab \cdot\cl{T} + ρ \vb{g} \\ 
 \pdv{ρ Y_α}{t} + \vnab  \cdot (ρ Y_α \vb{u})
 &= \dot{ω}_α - \vnab \cdot(ρ \vb{V}_{\!α} Y_α) \qquad (\text{for } α = 1, \dots, N_{\rm{S}}), \\
 \pdv{ρ E}{t} + \vnab  \cdot (ρ E \vb{u})
-&= -\vnab \cdot \vb{\cl{E}} + \vnab \cdot(\bb{S} \vb{u}) + \dot{\cl{E}} + ρ \sum_α Y_α \vb{g} \cdot (\vb{u} + \vb{V}_{\!α}),
+&= -\vnab \cdot \vb{\vb{E}} + \vnab \cdot(\cl{S} \vb{u}) + ρ\dot{\cl{E}} + ρ \sum_α Y_α \vb{g} \cdot (\vb{u} + \vb{V}_{\!α}),
 \end{boxali}
 \end{subequations}
 along with the algebraic equations for closure:
@@ -29,16 +29,16 @@ p &= ρ \frac{R_0}{W} T, \\
   &= ρ \int_{T_0}^T c_{p}(T') \dd{T'} - p + ρ \sum_α Y_α Δ h_{f, α}^\plimsoll + \frac{1}{2} ρ \vb{u}\cdot\vb{u}
 \end{align}
 \end{subequations}
-where $R_0 = 8.314$ J K$^{-1}$ mol$^{-1}$ is the universal gas constant, $ρ E_{\rm{th}}$ is the thermal (or \emph{sensible} \cite{poinsot2001TheoreticalNumericalCombustion}) energy, $T_0$ is some reference temperature, $ρ E_{\rm{ch}}$ is the chemical energy and $ρ E_{\rm{ki}}$ is the kinetic energy. The terms $ρ \vb{g}$ and $\dot{\cl{E}}$ are the body force and energy source terms, both of which may take any form depending on the system we are modelling. In most cases in this report, these terms will be neglected. The tensors $\bb{S}$ and $\bb{T}$ are the stress and viscous stress tensors respectively and are given in their usual form by
+where $R_0 = 8.314$ J K$^{-1}$ mol$^{-1}$ is the universal gas constant, $ρ E_{\rm{th}}$ is the thermal (or \emph{sensible} \cite{poinsot2001TheoreticalNumericalCombustion}) energy, $T_0$ is some reference temperature, $ρ E_{\rm{ch}}$ is the chemical energy and $ρ E_{\rm{ki}}$ is the kinetic energy. The terms $ρ \vb{g}$ and $ρ\dot{\cl{E}}$ are the body force and energy source terms, both of which may take any form depending on the system we are modelling. In most cases in this report, these terms will be neglected. The tensors $\cl{S}$ and $\cl{T}$ are the stress and viscous stress tensors respectively and are given in their usual form by
 \begin{subequations}
 \begin{align}
-\bb{S} &= -p\bb{I} + \bb{T} \\
-\bb{T} &= μ \left( - \frac{2}{3}\vnab \cdot\vb{u} \bb{I} + \vnab \vb{u} + (\vnab \vb{u})^T \right)
+\cl{S} &= -pI + \cl{T} \\
+\cl{T} &= μ \left( - \frac{2}{3}\vnab \cdot\vb{u} I + \vnab \vb{u} + (\vnab \vb{u})^T \right)
 \end{align}
 \end{subequations}
-where $\bb{I}$ is the three-dimensional identity matrix, we define $\vnab \vb{u}$ by its elements $(\vnab \vb{u})_{ij} = \partial u_j / \partial x_i$ and $μ$ is kinematic viscosity. The energy flux \emph{not} due to fluid stresses is given by
+where $I$ is the three-dimensional identity matrix, we define $\vnab \vb{u}$ by its elements $(\vnab \vb{u})_{ij} = \partial u_j / \partial x_i$ and $μ$ is kinematic viscosity. The energy flux \emph{not} due to fluid stresses is given by
 \begin{align}
-\vb{\cl{E}} = -λ \vnab  T + \sum_α \left( \int_{T_0}^T c_{p, α}(T') \dd{T'} + Δ h_{f, α}^\plimsoll \right) (ρ \vb{V}_{\!α} Y_α),
+\vb{\vb{E}} = -λ \vnab  T + \sum_α \left( \int_{T_0}^T c_{p, α}(T') \dd{T'} + Δ h_{f, α}^\plimsoll \right) (ρ \vb{V}_{\!α} Y_α),
 \end{align}
 where $λ$ is heat conductivity.
 
@@ -49,9 +49,9 @@ Generally speaking one of two models are used for the diffusion velocity $\vb{V}
 
 The term remaining is the chemical production rate of species $α$ by mass, $\dot{ω}_α$. Considering a general reaction mechanism of $N_{\rm{R}}$ reversible steps:
 \begin{equation}
-\sum_α \nu_{α, j}^{\rm{L}} \rm{S}_α \leftrightharpoons \sum_α \nu_{α, j}^{\rm{R}} \rm{S}_α
+\sum_α \nu_{α, j}^{\rm{L}} \rm{C}_α \leftrightharpoons \sum_α \nu_{α, j}^{\rm{R}} \rm{C}_α
 \end{equation}
-where $\rm{S}_α$ are the chemical formulae of each species, individual steps progress at a rate $\cl{Q}_j$ according to \cite{poinsot2001TheoreticalNumericalCombustion}:
+where $\rm{C}_α$ are the chemical formulae of each species, the individual steps progress at a rate $\cl{Q}_j$ according to \cite{poinsot2001TheoreticalNumericalCombustion}:
 \begin{equation}
 \cl{Q}_j = K_{f, j}\prod_{α = 1}^{N_{\rm{S}}} \left(ρ \frac{Y_α}{W_α}\right)^{\nu_{α, j}^{\rm{L}}} - K_{b, j}\prod_{α = 1}^{N_{\rm{S}}} \left(ρ \frac{Y_α}{W_α}\right)^{\nu_{α, j}^{\rm{R}}}
 \quad \text{where} \quad

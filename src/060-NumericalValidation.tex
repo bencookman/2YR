@@ -1,40 +1,41 @@
 \section{Acoustic Bump}
 
-\subsection{Test Case}
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.65]{assets/imgs/adcbc_bump_test.pdf}
+\caption{The geometry and initialisation for the acoustic bump test case. Not drawn to scale.}
+\label{fig:ac-bump-test}
+\end{figure}
 
-% Describe test case
-% - open-closed tube, with a central DNS region and upstream and downstream acoustic regions modelled by ADCBC, like figure ..
-% - Fluid defined by: T_0 = 298 K, p_0 = 1 bar, W = 28 kg / kmol, Pr = 0.7, c_p = 1100 J / kg / K, u_in = 0.2 m / s
-% - A J_1 bump in the middle (easy to calculate approximately under linearity assumption) which travels to the left in the DNS region to begin with
-% - Enforce ADCBC inflows and outflows in a thin DNS region to approximate the 1D acoustic problem as with a 2D domain
-% - The full reacting Navier-Stokes equations are solved in the DNS region as a precursor to a flame being in the DNS region. The boundary conditions also work almost identically in this case under the viscous, inert, isothermal equations which are also implemented in the SUNSET code, but are not used here.
-% - For thin regions like this the averaging along the boundary makes sense, but as the DNS domain widens, it seems reasonable that this averaging would result in more and more inaccuracy (and difficulty due to instability...), so the similar method where queues are used for each boundary node should instead be used in wider domains. For all the cases in this report, the averaging procedure is used and we find good results regardless.
+As our first test case, we model a Gaussian acoustic bump in a two-dimensional tube with two closed ends. The test case is initialised as a small bump in $J_1 \approx p' - ρ c u'$ (where the approximation comes from acoustic linearisation):
+\begin{equation}
+p_a = A \exp\left( - x^2 / d^2 \right)
+\quad \text{and} \quad
+u_a = p_a / ρ c
+\end{equation}
+such that the maximum pressure disturbance is $A = 10$ Pa and diameter $d = 2$ mm. This simple linear approximation also results in a small $J_5$ bump which we ignore. Alternate methods approximating this initial disturbance could also be used, although the provide little relevant improvement. Fluid properties are $u_{\rm{IN}} = 0.2$ m s$^{-1}$, $T_{\rm{IN}} = 298$ K and $p_{\rm{IN}} = 0.1$ MPa comprised of a single species with properties $W = 28$ kg kmol$^{-1}$, $Pr = 0.7$ and $c_p = 1100$ J kg$^{-1}$ K$^{-1}$. The resulting sound speed is $c \approx 348$ m s$^{-1}$. A 6 mm long central DNS region is used as well as up- and downstream acoustic regions modelled using ADCBCs on the inflow and outflow respectively, each modelling 2 mm of truncated tube. These essentially model two one-dimensional acoustic regions to the left and right of the flame. A diagram for this test case is shown in \fig{fig:ac-bump-test}. A sample rate of $δt_{\rm{sample}} \approx 0.25$ ms is used for both ADCBCs and we use \nth{0} order interpolation (constant sample values) at the moment, for reasons discussed later. The horizontal top and bottom boundaries used in the DNS region are symmetric mirror boundaries, 1 mm apart. With the linear acoustics equations in the acoustic regions being non-dispersive, we expect the Gaussian to retain its shape after each up- and downstream bounce. The full reacting Navier-Stokes equations are solved in the DNS region as a precursor to the a flame being present in the DNS region. Only in the DNS region should viscous effects alter the wave packet's shape and even in this case, only slightly after many bounces back and forth the 1 cm long domain. The ADCBCs work almost identically when the viscous inert, isothermal equations, which are also implemented into the SUNSET code, are solved. Note that the response to transverse effects are not being tested here because the acoustic is entirely one-dimensional. As mentioned above, we should in fact be modelling the convected wave equation, not the wave equation for quiescent fluids. But, since our Mach number, $\Ma < 10^{-3}$ is so low in this case the convective effects are deemed to be asymptotically unimportant.
 
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.36]{assets/graphs/AC_BUMP_first_bounces_comp.png}
+\caption{Acoustic pressure fields in the first 55 ms in the DNS region. Only have the top half of each DNS region is shown for comparison.}
+\label{fig:ac-bump-dns}
+\end{figure}
 
-\subsection{Results}
+Pressure fields for the first bounces off the up- and downstream acoustic boundary are shown in \fig{fig:ac-bump-dns}. It seems after a single bounce off each end that the ADCBCs are adequately sampling and reintroducing the acoustic bump with negligible changes to its shape. The sample rate means that roughly $d / δt_{\rm{sample}} = 8$ samples are used to sample the first standard deviation of width of the Gaussian. This reconstruction of acoustic shape is impressive given the lack of interpolation (\nth{0} order interpolation means using constant sample values) used. After 750 ms, the acoustic should have been sampled by the ADCBCs and reentered the DNS domain many times. The pressure and velocity fields are shown in the DNS region at this time in \fig{fig:ac-bump-dns-late}.
 
-\subsubsection{DNS Domain}
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.36]{assets/graphs/AC_BUMP_ndt=150e-4_comp.png}
+\caption{$p_a$ and $u$ fields after 750 ms.}
+\label{fig:ac-bump-dns-late}
+\end{figure}
 
 % Acoustic bump results
 % - Show result of a Gaussian bump leaving the domain and reentering after 1 bounce, 2 bounce (each boundary) and 100 bounces for different sample periods and interpolation orders?
-% Technically we should be modelling the acoustics using the convected wave equation, not the wave equation for quiescent fluids, however the Mach number is so low in this case O(10^-3) that the resulting effects are asymptotically unimportant.
+% - For thin regions like this the averaging along the boundary makes sense, but as the DNS domain widens, it seems reasonable that this averaging would result in more and more inaccuracy (and difficulty due to instability...), so the similar method where queues are used for each boundary node should instead be used in wider domains. For all the cases in this report, the averaging procedure is used and we find good results regardless.
 
 
-
-\subsubsection{Acoustic Region}
-
-
-
-% Acoustic region postprocessing
-% - theoretically how could this work in the ADCBC framework?
-% - log stored queue values at specific non-dimensional times which are interpreted as time series of characteristic waves leaving the inflow or outflow DNS boundary
-% - According to the same linear approximation made on acoustic waves under the ADCBC formulation, we can reinterpret these time series as spatial information: the longer ago the acoustic exited the domain, the farther into the acoustic domain (or back towards the DNS domain) they will be
-% - This only requires the queue information, sound speed and u to calculate upstream and downstream L_1 and L_5 values, then to calculate upstream and downstream u and p values we integrate L_1 and L_5 starting from the DNS inflow or outflow u and p alongside rho (for u?)
-% - Show some equations?
-
-
-
-\subsubsection{Sampling Error}
 
 \begin{figure}[t]
 \centering
@@ -52,8 +53,6 @@
 
 
 
-
-\subsubsection{Different Interpolation Orders}
 
 % Different interpolation orders:
 % - Constant interpolation maintains the quality of acoustic bump surprisingly well, whilst the non-constant interpolation seems to introduce some small error on every reentry of the acoustic bump
@@ -151,15 +150,6 @@
 \section{Thermoacoustically Unstable Flame}
 
 \subsection{Test Case}
-
-% UPDATE IMAGE TO:
-% - use constant resolution
-\begin{figure}[t]
-\centering
-\includegraphics[scale=0.65]{assets/imgs/DNS-computational-domain.pdf}
-\caption{DNS COMPUTATIONAL DOMAIN}
-\label{fig:DNS-domain}
-\end{figure}
 
 \begin{figure}[t]
 \centering

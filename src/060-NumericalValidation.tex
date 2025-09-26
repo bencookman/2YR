@@ -1,3 +1,13 @@
+As a preface to the following numerical validation, it should be mentioned that each of the test cases consist of two-dimensional rectangular domains with no objects in these domains. To be blunt this is a worst case for LABFM, which is a meshless method designed for its effectiveness in `interesting' geometries.
+
+\emph{And rectangles are not interesting.}
+
+Having said that, although the computational time may be larger than if, say, a simple centred finite difference method had been used due to the much larger stencil sizes, the use of LABFM here still provides discretisations with the high accuracy we require for the validation of the ADCBCs discussed in the previous chapter. Beyond this, there is something to be said for applying these new boundary conditions under less well-trodden conditions: if it works under LABFM, one would expect it also to work under more traditional methods.
+
+
+
+
+
 \section{Acoustic Bump}
 
 \begin{figure}[t]
@@ -13,53 +23,50 @@ p_a = A \exp\left( - x^2 / d^2 \right)
 \quad \text{and} \quad
 u_a = p_a / ρ c
 \end{equation}
-such that the maximum pressure disturbance is $A = 10$ Pa and diameter $d = 2$ mm. This simple linear approximation also results in a small $J_5$ bump which we ignore. Alternate methods approximating this initial disturbance could also be used, although the provide little relevant improvement. Fluid properties are $u_{\rm{IN}} = 0.2$ m s$^{-1}$, $T_{\rm{IN}} = 298$ K and $p_{\rm{IN}} = 0.1$ MPa comprised of a single species with properties $W = 28$ kg kmol$^{-1}$, $Pr = 0.7$ and $c_p = 1100$ J kg$^{-1}$ K$^{-1}$. The resulting sound speed is $c \approx 348$ m s$^{-1}$. A 6 mm long central DNS region is used as well as up- and downstream acoustic regions modelled using ADCBCs on the inflow and outflow respectively, each modelling 2 mm of truncated tube. These essentially model two one-dimensional acoustic regions to the left and right of the flame. A diagram for this test case is shown in \fig{fig:ac-bump-test}. A sample rate of $δt_{\rm{sample}} \approx 0.25$ ms is used for both ADCBCs and we use \nth{0} order interpolation (constant sample values) at the moment, for reasons discussed later. The horizontal top and bottom boundaries used in the DNS region are symmetric mirror boundaries, 1 mm apart. With the linear acoustics equations in the acoustic regions being non-dispersive, we expect the Gaussian to retain its shape after each up- and downstream bounce. The full reacting Navier-Stokes equations are solved in the DNS region as a precursor to the a flame being present in the DNS region. Only in the DNS region should viscous effects alter the wave packet's shape and even in this case, only slightly after many bounces back and forth the 1 cm long domain. The ADCBCs work almost identically when the viscous inert, isothermal equations, which are also implemented into the SUNSET code, are solved. Note that the response to transverse effects are not being tested here because the acoustic is entirely one-dimensional. As mentioned above, we should in fact be modelling the convected wave equation, not the wave equation for quiescent fluids. But, since our Mach number, $\Ma < 10^{-3}$ is so low in this case the convective effects are deemed to be asymptotically unimportant.
+such that the maximum pressure disturbance is $A = 10$ Pa and diameter $d = 2$ mm. This simple linear approximation also results in a small $J_5$ bump which we ignore. Alternate methods approximating this initial disturbance could also be used, although the provide little relevant improvement. Fluid properties are $u_{\rm{IN}} = 0.2$ m s$^{-1}$, $T_{\rm{IN}} = 298$ K and $p_{\rm{IN}} = 0.1$ MPa comprised of a single species with properties $W = 28$ kg kmol$^{-1}$, $Pr = 0.7$ and $c_p = 1100$ J kg$^{-1}$ K$^{-1}$. The resulting sound speed is $c \approx 348$ m s$^{-1}$. A 6 mm long central DNS region is used as well as up- and downstream acoustic regions modelled using ADCBCs on the inflow and outflow respectively, each modelling 2 mm of truncated tube. These essentially model two one-dimensional acoustic regions to the left and right of the flame. A diagram for this test case is shown in \fig{fig:ac-bump-test}. A sample rate of $δt_{\rm{sample}} \approx 0.25$ {\textmu}s is used for both ADCBCs and we use \nth{0} order interpolation (constant sample values) at the moment, for reasons discussed later. The horizontal top and bottom boundaries used in the DNS region are symmetric mirror boundaries, 1 mm apart. In total, there are 1224 collocation points in this domain processed by a single processor and 11 boundary nodes per boundary. With the linear acoustics equations in the acoustic regions being non-dispersive, we expect the Gaussian to retain its shape after each up- and downstream bounce. The full reacting Navier-Stokes equations are solved in the DNS region as a precursor to the a flame being present in the DNS region. Only in the DNS region should viscous effects alter the wave packet's shape and even in this case, only slightly after many bounces back and forth the 1 cm long domain. The ADCBCs work almost identically when the viscous inert, isothermal equations, which are also implemented into the SUNSET code, are solved. Note that the response to transverse effects are not being tested here because the acoustic is entirely one-dimensional. As mentioned above, we should in fact be modelling the convected wave equation, not the wave equation for quiescent fluids. But, since our Mach number, $\Ma < 10^{-3}$ is so low in this case the convective effects are deemed to be asymptotically unimportant. For thin regions like these, the boundary averaging procedure makes some physical sense as transverse behaviour at the boundaries of longer computational domains would be negligible, as it is here under our artificial test case. As the DNS domain widens, however, it seems reasonable that this averaging would result in more and more inaccuracy and potential instability. Hence, the queues are used for each boundary node should instead be used in this case to model many separate one-dimensional acoustic domains for each node. For all the cases in this report, the boundary averaging procedure is used and we find reassuring results regardless.
 
 \begin{figure}[t]
 \centering
 \includegraphics[scale=0.36]{assets/graphs/AC_BUMP_first_bounces_comp.png}
-\caption{Acoustic pressure fields in the first 55 ms in the DNS region. Only have the top half of each DNS region is shown for comparison.}
+\caption{Acoustic pressure fields in the first 55 {\textmu}s in the DNS region in Pa. Only the top half of each DNS region is shown for comparison.}
 \label{fig:ac-bump-dns}
 \end{figure}
-
-Pressure fields for the first bounces off the up- and downstream acoustic boundary are shown in \fig{fig:ac-bump-dns}. It seems after a single bounce off each end that the ADCBCs are adequately sampling and reintroducing the acoustic bump with negligible changes to its shape. The sample rate means that roughly $d / δt_{\rm{sample}} = 8$ samples are used to sample the first standard deviation of width of the Gaussian. This reconstruction of acoustic shape is impressive given the lack of interpolation (\nth{0} order interpolation means using constant sample values) used. After 750 ms, the acoustic should have been sampled by the ADCBCs and reentered the DNS domain many times. The pressure and velocity fields are shown in the DNS region at this time in \fig{fig:ac-bump-dns-late}.
 
 \begin{figure}[t]
 \centering
 \includegraphics[scale=0.36]{assets/graphs/AC_BUMP_ndt=150e-4_comp.png}
-\caption{$p_a$ and $u$ fields after 750 ms.}
+\caption{$p_a$ and $u$ fields after 750 {\textmu}s in Pa and m s$^{-1}$. Here $u_a < 0$ so the acoustic is travelling left.}
 \label{fig:ac-bump-dns-late}
 \end{figure}
 
-% Acoustic bump results
-% - Show result of a Gaussian bump leaving the domain and reentering after 1 bounce, 2 bounce (each boundary) and 100 bounces for different sample periods and interpolation orders?
-% - For thin regions like this the averaging along the boundary makes sense, but as the DNS domain widens, it seems reasonable that this averaging would result in more and more inaccuracy (and difficulty due to instability...), so the similar method where queues are used for each boundary node should instead be used in wider domains. For all the cases in this report, the averaging procedure is used and we find good results regardless.
-
-
+Pressure fields for the first bounces off the up- and downstream acoustic boundary are shown in \fig{fig:ac-bump-dns}. It seems after a single bounce off each end that the ADCBCs are adequately sampling and reintroducing the acoustic bump with negligible changes to its shape. The sample rate means that roughly $(d / c) / δt_{\rm{sample}} \approx 23$ samples are used to sample the first standard deviation of width of the Gaussian. This reconstruction of acoustic shape is impressive given the lack of interpolation (\nth{0} order interpolation means using constant sample values) used. After 750 {\textmu}s, the acoustic should have been sampled by the ADCBCs and reentered the DNS domain 13 times through each boundary. Note that up to this point in the simulation, the boundary conditions have taken up less than one percent of the overall simulation runtime. This is unsurprising given how few boundary nodes there are and since the bulk of the simulation time is spent calculating gradients at the other $\sim$1000 discretisation points. The pressure and velocity fields are shown in the DNS region at this time in \fig{fig:ac-bump-dns-late}. We can see that the size of highest acoustic pressure region has shrunk somewhat so some acoustic losses have been encountered. We note here that a better test of the ADCBCs would be to compare these results against a fully simulated 1 cm long tube with hard inflows and outflows given by specifying $u=0.2$ m s$^{-1}$ at these boundaries to model the closed boundaries. This analysis is not performed in this report. Regardless, it seems as though changes to the acoustic's shape are minimal despite the short acoustic length scale. Thus, from the previous chapter we know that this error should be minimised even farther when a longer tube is simulated. For example, if a 1 m long tube is simulated instead, we expect the same error to occur at roughly $t_C = (1~\text{m} / 1~\text{cm})^2 \cross 750~\text{{\textmu}m} = 7.5$ s in the longer simulation. This should be ample time to simulate a thermoacoustically unstable flame.
 
 \begin{figure}[t]
 \centering
-\includegraphics[scale=0.65]{assets/imgs/wave-sampling-comparison.pdf}
-\caption{SAMPLING}
-\label{fig:wave-sampling}
+\includegraphics[scale=0.36]{assets/graphs/AC_BUMP_orders.png}
+\caption{Acoustic pressures of the acoustic disturbance after 750 {\textmu}s for zero to third order interpolation (top to bottom) in Pa. Only the top half of each DNS region is shown for comparison.}
+\label{fig:ac-bump-dns-orders}
 \end{figure}
 
-% Note that the pressure drift would be fixed by a conservative method, but the destruction of the wave shape would not be
+The above results are found provided constant interpolation is used to evaluate $\overline{\cl{L}}(t - τ)$ values. Results of the same Gaussian acoustic bump after 750 {\textmu}s for orders zero to three are shown in \fig{fig:ac-bump-dns-orders}. Bizarrely, when higher orders of interpolation are used the results massively deteriorate and large amounts of error are introduced each every bounce. After the thirteen bounces, we are left with an acoustic bump of roughly the same size $\max(p_a) - \min(p_a) \approx 10$ Pa, but with a drift in pressure much larger than this. Clearly this pressure drift is the result of the pressure difference between the front and back of the bump adding up after repeated bounces, which is most likely caused by the sampling error introduced in the previous chapter since the boundary averaging procedure should be having little to no effect in this quasi-one-dimensional test case. Although, it is unclear why this happens only when non-constant interpolation is used. Assuming it isn't the result of a mistake in the ADCBCs implementation into the SUNSET code, there is potentially some term in the error of the reintegrated acoustic upon reentry which is cancelled out when constant sample values are used, but not for interpolated values. Either way, this needs to be investigated further.
 
-% Now is a good time to bring up the sampling error
-% - \fig{fig:wave-sampling} shows a representative analytic L_{1/5} field for two acoustic bumps (which is roughly the derivative of the Gaussian). Despite the same linear interpolation and sample period being used, the sampled $L$ values on the left are much worse than on the right. The same could be true for any number of samples at a constant interpolation order and sample period, where the change in phase of the sampling with the wave will always cause some inaccuracy in the integrated acoustic field. This inaccuracy results in a change to the shape of the Gaussian, e.g. a skew to one side, which feeds back into this issue such that the waves eventually fully break down
-% - For the acoustic bump in this small domain this seems to happen relatively quickly because the associated acoustic frequencies of this system are higher. But, if the bump remains the same size and the tube is made longer, less bounces happen and the sampling error grows slower
-% - Furthermore, there is the added effect that natural wavenumbers of these longer tubes will be lower, meaning that individual waves can be sampled better. This leads to an asymptotic behaviour of O(l^2) for values of error productions which are small (DO SOME MATHS?).
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.35]{assets/graphs/ac_frames_order=0.pdf}
+\caption{Reconstruction of the acoustic fields in the acoustic region for the simulation using zeroth order interpolated samples.}
+\label{fig:ac-reconstruct_order0}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.35]{assets/graphs/ac_frames.pdf}
+\caption{Reconstruction of the acoustic fields in the acoustic region for the simulation using third order interpolated samples.}
+\label{fig:ac-reconstruct_order3}
+\end{figure}
 
 
-
-
-% Different interpolation orders:
-% - Constant interpolation maintains the quality of acoustic bump surprisingly well, whilst the non-constant interpolation seems to introduce some small error on every reentry of the acoustic bump
-% - assuming it isn't the fault of a mistake in the sunset implementation, it seems like it shouldn't be caused by the boundary averaging procedure given that the fields are initialised and remain virtually one-dimensional the whole time. It is likely the rest of the method then regardless of averaging which contains some error which cancel out when constant values are used but doesn't for non-constant values?
-
-
-
+% Notice that because R = 1, we get ... this enforces
+% when R = -1 we instead get ... this enforces
 
 
 

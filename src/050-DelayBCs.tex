@@ -170,3 +170,28 @@ under the assumption that samples are equally space out such that $t_{s} - t_{s 
 
 
 
+\section{Sampling Error}
+
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.65]{assets/imgs/wave-sampling-comparison.pdf}
+\caption{How ADCBCs might sample two Gaussian-shaped acoustic waves.}
+\label{fig:wave-sampling}
+\end{figure}
+
+\fig{fig:wave-sampling} shows a representative analytic field $\cl{L}_{1, \rm{IN}}(t, y)$ for two acoustic bumps (which is roughly the derivative of a Gaussian). Despite a similar linear interpolation and sample period being used, the sampled $\overline{\cl{L}}_{1, s}$ values on the left are much worse than those on the right. The same could be true for any number of samples at a given interpolation order and sample period, where the change in phase and variability of the sampling will always cause some inaccuracy in the resulting integrated acoustic field upon reentry of these $\overline{\cl{L}}_{1, s}$ values. This inaccuracy results in a change to the shape of the disturbance which entered, e.g. a skew to one side, dissipation of acoustic energy or a drift in pressure and velocity behind the bump. These effects feed back into this issue at future bounces such that the waves eventually fully break down. Hence, small inaccuracies in integrated acoustic fields at reentry at the beginning of a simulation can result in large inaccuracies after more bounces. Note that the use of an acoustically conservative method for the ADCBCs would solve the issue of acoustic dissipation and pressure drift, but the destruction of the wave shape would not be. But, if the bump remains the same size and the tube is made longer, proportionally less bounces happen and the sampling error grows slower. Mathematically, if we begin with an error $\rm{err}_0$ which is amplified by $(1 + a)$ each bounce for some $a > 0$, then after $n$ bounces we have:
+\begin{equation}
+\rm{err}_A(n) \equiv (1 + a)^{n} \rm{err}_0.
+\end{equation}
+Thus, if the tube lengthens by a factor $b \equiv l_B / l_A > 1$, we instead expect to get only $n_B \equiv \lfloor n_A / b \rfloor$ bounces. This longer tube amplifies the error in the same way each bounce, so $\rm{err}_B(n) \equiv \rm{err}_A(n)$. Hence, the same number of bounces are required to reach the same error, or a time $t_B \approx b t_A$ to reach the same error. Considering this longer tube, we should acknowledge the longer associated frequencies of acoustic mode will be sampled many more times, meaning each bounce amplifies error instead by a factor $(1 + a / b)$ instead. In this case:
+\begin{equation}
+\rm{err}_C(n) \equiv \left( 1 + \frac{a}{b} \right)^n \rm{err}_0
+\end{equation}
+so $\rm{err}_C(n_C) = \rm{err}_B(n_B)$ if and only if $n_C \log(1 + a / b) = n_B \log(1 + a)$, or equivalently:
+\begin{equation}
+\frac{n_C}{n_B} = \frac{\log\left(1 + a\right)}{\log(1 + \frac{a}{b})} \xrightarrow{a \to 0^+} b
+\end{equation}
+so $b$ times more bounces are required to reach the same error or a time $t_C \approx b t_B$ in the asymptotic regime $a \ll 1$. Combined, these two effects result in a scaling of $t_C \approx b^2 t_A$. This quadratic scaling means that which are well-resolved by the ADCBCs in a short domain are very likely to be accurate in a long domain. Verifying the former, i.e. the usefulness of ADCBCs in short domains, is the premise of the the first two test cases in the coming chapter.
+
+
+

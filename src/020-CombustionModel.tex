@@ -18,7 +18,7 @@ Hence, the following governing equations will be used for density $ρ > 0$, velo
 \pdv{ρ Y_α}{t} + \vnab  \cdot (ρ Y_α \vb{u})
 &= \dot{ω}_α - \vnab \cdot(ρ \vb{V}_{\!α} Y_α) \qquad (\text{for } α = 1, \dots, N_{\rm{S}}), \\
 \pdv{ρ E}{t} + \vnab  \cdot (ρ E \vb{u})
-&= -\vnab \cdot \vb{\vb{E}} + \vnab \cdot(\mathbf{S} \vb{u}) + ρ\dot{\cl{E}} + ρ \sum_α Y_α \vb{g} \cdot (\vb{u} + \vb{V}_{\!α}),
+&= -\vnab \cdot \vb{E} + \vnab \cdot(\mathbf{S} \vb{u}) + ρ\dot{\cl{E}} + ρ \sum_α Y_α \vb{g} \cdot (\vb{u} + \vb{V}_{\!α}),
 \end{boxali}
 \end{subequations}
 along with the algebraic equations for closure:
@@ -38,7 +38,7 @@ where $R_0 = 8.314$ J K$^{-1}$ mol$^{-1}$ is the universal gas constant, $ρ E_{
 \end{subequations}
 where $\mathbf{I}$ is the three-dimensional identity matrix, we define $\vnab \vb{u}$ by its elements $(\vnab \vb{u})_{ij} = \partial u_j / \partial x_i$ and $μ$ is kinematic viscosity. The energy flux \emph{not} due to fluid stresses is given by
 \begin{align}
-\vb{\vb{E}} = -λ \vnab  T + \sum_α \left( \int_{T_0}^T c_{p, α}(T') \dd{T'} + Δ h_{f, α}^\plimsoll \right) (ρ \vb{V}_{\!α} Y_α),
+\vb{E} = -λ \vnab  T + \sum_α \left( \int_{T_0}^T c_{p, α}(T') \dd{T'} + Δ h_{f, α}^\plimsoll \right) (ρ \vb{V}_{\!α} Y_α),
 \end{align}
 where $λ$ is heat conductivity.
 

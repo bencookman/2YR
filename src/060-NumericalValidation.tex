@@ -156,7 +156,7 @@ Before simulating a thermoacoustically unstable flame using the ADCBCs, we first
   & \pdv{p}{t} + \Ma &      u & \pdv{p}{x}   &&= \frac{1}{\Ma} \frac{c^2}{c_{\rm{U}}^2} ρ \pdv{u}{x}
 \end{alignat}
 \end{subequations}
-where all variables in the above equations are non-dimensional. Space is non-dimensionalised by tube length $l_{\rm{tube}}$ such that $x \in [0, 1]$, velocity by flame speed $S_L$, time by characteristic acoustic time $l_{\rm{tube}} / c_{\rm{U}}$, density by upstream density $ρ_{\rm{U}}$, pressure by upstream acoustic pressure $ρ_{\rm{U}} c_{\rm{U}} S_L$ and temperature by upstream temperature $T_{\rm{U}}$. Hence, far upstream temperatures are $T=1$ and far downstream temperatures are $T=r$ where r is the ratio of densities. By the dimensional relation $\hat{ρ} c^2 = γ \hat{p}$ (where hats represent dimensional variables) we have that $c_{\rm{D}}^2 = r c_{\rm{U}}^2$. The Mach number is $\Ma \equiv S_L / c_{\rm{U}}$.
+where all variables in the above equations are non-dimensional. Space is non-dimensionalised by tube length $l_{\rm{tube}}$ such that $x \in [0, 1]$, velocity by flame speed $S_L$, time by characteristic acoustic time $l_{\rm{tube}} / c_{\rm{U}}$, density by upstream density $ρ_{\rm{U}}$, pressure by upstream acoustic pressure $ρ_{\rm{U}} c_{\rm{U}} S_L$ and temperature by upstream temperature $T_{\rm{U}}$. Hence, far upstream temperatures are $T=1$ and far downstream temperatures are $T=r$ where r is the ratio of densities. By the dimensional relation $\hat{ρ} c^2 = γ \, \hat{p}$ (where hats represent dimensional variables) we have that $c_{\rm{D}}^2 = r c_{\rm{U}}^2$. The Mach number is $\Ma \equiv S_L / c_{\rm{U}}$.
 
 Assuming acoustics of low enough amplitude, we find split our variables in steady states and their acoustic perturbations $ρ \equiv \overline{ρ} + ρ_a$, $T \equiv \overline{T} + T_a$, $u \equiv \overline{u} + u_a$, $p \equiv \overline{p} + p_a$ such that the non-linear coupling of the acoustics onto the density may be neglected. That is, $ρ_a \equiv 0$ so the acoustics are not strong enough to effect density in a way which would affect $u_a$ or $p_a$. Likewise with temperature perturbations, so $T_a \equiv 0$ and $T = \oT = c^2 / c_{\rm{U}}^2$. This results in the wave equations:
 \begin{subequations} \label{eqn:wave_eqn}
@@ -167,160 +167,100 @@ Assuming acoustics of low enough amplitude, we find split our variables in stead
 \end{subequations}
 where pressure and velocity acoustics are related by $\overline{ρ} \, \partial u_a / \partial t = \partial p_a / \partial x$ and we have made the assumption of a non-convected flow $\overline{u} \equiv 0$ and constant background pressure over the flame $\overline{p}_{\rm{U}} \equiv \overline{p}_{\rm{D}}$ which is physically reasonable for a slow flame travelling into a quiescent reactant mixture. Before introducing the discontinuity, we can close this system by introducing the boundary conditions $u_a(x = 0) = 0$ and $p_a(x = 1) = 0$ to model a closed-open tube.
 
-We now enforce the discontinuous temperature and density profile, with the flame located at $x_f \in (0, 1)$ representing the flame location and separating the fields $\oT_{\rm{U}} = 1$, $\oT_{\rm{D}} = r$, $u_a(x_f^-) = u_{a, \rm{U}}(x_f^-)$, $u_a(x_f^+) = u_{a, \rm{D}}(x_f^+)$ and so on. The wave equations \equ{eqn:wave_eqn} now describe the propagation on either side of the flame and from \cite{gaton-perez2025MitigationThermoacousticInstabilities}, the we use the boundary conditions:
+We now enforce the discontinuous temperature and density profile, with the flame located at $x_f \in (0, 1)$ representing the flame location and separating the fields $\oT_{\rm{U}} = 1$, $\oT_{\rm{D}} = r$, $u_a(x_f^-) = u_{a, \rm{U}}(x_f^-)$, $u_a(x_f^+) = u_{a, \rm{D}}(x_f^+)$ and so on. The wave equations \equ{eqn:wave_eqn} now describe the propagation on either side of the flame we use the boundary conditions \cite{gaton-perez2025MitigationThermoacousticInstabilities}:
 \begin{equation} \label{eqn:flame-BCs}
-p_a(x_f^-) = p_a(x_f^+)
+p_{a, \rm{U}}(x_f^-) = p_{a, \rm{D}}(x_f^+)
 \quad \text{and} \quad
-u_a(x_f^-) = r u_a(x_f^+).
+u_{a, \rm{U}}(x_f^-) = r \, u_{a, \rm{D}}(x_f^+).
 \end{equation}
-This junction also implicitly contains information on how waves are transmitted and reflected over this density jump.
-
-
-
-\subsubsection{1D Isothermal Acoustics}
-
-If we assume there is no flame, then we can set $x_f, r = 1$ and forget about the flame interface BCs \equ{eqn:flame-BCs} such that our acoustics are determined by the system:
-\begin{equation}
-\pdv[2]{u_a}{t} - \pdv[2]{u_a}{x} = 0;
-\qquad
-\pdv[2]{p_a}{t} - \pdv[2]{p_a}{x} = 0;
-\qquad
-u_a(x = 0) = 0;
-\qquad
-p_a(x = 1) = 0.
-\end{equation}
-To solve this set of equations, we would like to find eigenmode-esque solutions. This is done with the time-harmonic factor $u_a, p_a \propto \exp(i ω_r t)$ where $ω_r \in \bb{R}$ gives the frequency of the wave. We find that $u_a = i\frac{\oT}{ω_r} \pdv{p_a}{x}$, so we only need to solve our equations for $p_a$, then find $u_a$ afterwards. Note that because our system is of finite length, we expect allowed values of $ω_r$ to be quantised to a discrete, countable set (c.f. particles in a box). Our boundary value problem (BVP) for $p_a$ is:
-\begin{equation} \label{isot_eqn:BVP_p}
-\pdv[2]{p_a}{t} - \pdv[2]{p_a}{x} = 0;
-\qquad
-\pdv{p_a}{x}\,(x = 0) = 0;
-\qquad
-p_a(x = 1) = 0,
-\end{equation}
-where $p_a(x) \in \bb{C}$ alongside some appropriate initial conditions (ICs). It can be shown that solutions to this BVP are of the form $p_a(t, x) = \exp(i ω_r t) φ(x)$ where $φ(x) \in \bb{R}$ and obeys the BVP
-\begin{boxequ} \label{isot_eqn:BVP_phi}
-φ'' + ω_r^2 φ = 0;
-\qquad
-φ'(0) = 0;
-\qquad
-φ(1) = 0.
-\end{boxequ}
-Complementary functions for this second order ODE generically look like:
-\begin{equation}
-φ(x) = b \cos(ω_r x) + d \sin(ω_r x),
-\end{equation}
-but are constrained by the BCs:
-\begin{itemize}
-\item $φ'(0)=0$ forces $d = 0$
-\item $φ(1)=0$ quantises $ω_r$: $0 = \cos(ω_r) \iff ω_r = n π - π / 2$ for integer $n$ 
-\item $b$ is a remaining degree of freedom stemming from the linearity of our BCs - if $φ$ is a solution to \equ{isot_eqn:BVP_phi}, then so is $λ φ$. It is analogous to the free scaling of matrix eigenvectors. This degree of freedom is traditionally fixed by imposing some ICs.
-\end{itemize}
-So to summarise, we had 3 unknowns $(ω_r, b, d)$ and 2 constraints (the BCs above) which fixed our system up to an arbitrary linear scaling.
-
-
-
-\subsubsection{Resonant Eigenmodes}
-
-Having the isothermal solutions makes solutions to the problem including a flame much simpler. The BVP for $p_a$ reincludes the two interfacial BCs:
-\begin{equation} \label{isot_eqn:BVP_p}
-\pdv[2]{p_a}{t} - \oT \pdv[2]{p_a}{x} = 0;
-\qquad
-\pdv{p_a}{x}\,(x=0)=0;
-\qquad
-p_a(x=1)=0,
-\qquad
-p_a(x_f^-) = p_a(x_f^+);
-\qquad
-\pdv{p_a}{x}\,(x_f^-) = r \pdv{p_a}{x}\,(x_f^+).
-\end{equation}
-As stated in \cite{gaton-perez2025MitigationThermoacousticInstabilities}, solutions to this problem in the case where $r=1$ or $x_f = 0$ or 1 are just the isothermal tube harmonics shown above. Making the same ansatz that $p_a(t, x) = \exp(i ω_r t) φ(x)$ where $φ(x)\in\bb{R}$ this reduces to the problem:
-\begin{boxequ} \label{isot_eqn:BVP_phi}
-φ'' + \frac{ω_r^2}{\oT} φ = 0;
-\qquad
-φ'(0)=0;
-\qquad
-φ(1)=0;
-\qquad
-φ(x_f^-) = φ(x_f^-);
-\qquad
-φ'(x_f^-) = r φ'(x_f^-),
-\end{boxequ}
-and our complementary functions look similar
-\begin{equation}
-φ^\pm(x) = b^\pm \cos(\frac{ω_r}{\oT} x) + d^\pm \sin(\frac{ω_r}{\oT} x).
-\end{equation}
-Now we have a problem with 5 unknowns $(ω_r, b^\pm, d^\pm)$ and 4 BCs as constraints which should fix our problem up to an arbitrary scaling. The constraints are:
-
+This junction also implicitly contains information on how waves are transmitted and reflected over this density jump. Note that if $r = 1$ or $x_f = 0, 1$, we end up in the situation of isothermal acoustics, which have the classical eigenmode solutions (the previous test case). To find non-isothermal eigenmodes, we use the time-harmonic factor $u_a, p_a \propto \exp(i ω t)$ where $ω \equiv ω_r + i ω_i$. The real part represents frequency and the imaginary part represents mode damping. Note that because we are not modelling any dissipative effects in this simple model, we expect $ω_i = 0$ in all cases. One can show that $u_a = i (\oT / ω) \partial p_a / \partial x$, so we only need to solve our system for $p_a$. Note that because our system is of finite length, we expect the allowed values of $ω$ to be quantised to a discrete countable set (c.f. electron in a box). The boundary value problem for $p_a$ is:
 \begin{subequations}
-\begin{boxali}
-d_{\rm{U}} &= 0 \\
-0 &= b_{\rm{D}} \cos(\frac{ω_r}{\sqrt{r}}) + d_{\rm{D}} \sin(\frac{ω_r}{\sqrt{r}}) \\
-b_{\rm{U}} \cos(ω_r x_f) &= b_{\rm{D}} \cos(\frac{ω_r}{\sqrt{r}} x_f) + d_{\rm{D}} \sin(\frac{ω_r}{\sqrt{r}} x_f) \\
-- b_{\rm{U}} \sin(ω_r x_f) &= \sqrt{r} \, \Bigg[ - b_{\rm{D}} \sin(\frac{ω_r}{\sqrt{r}} x_f) + d_{\rm{D}} \cos(\frac{ω_r}{\sqrt{r}} x_f) \Bigg]
-\end{boxali}
+\begin{gather}
+\pdv[2]{u_a}{t} - \oT \pdv[2]{u_a}{x} = 0, \\
+\pdv{p_{a, \rm{U}}}{x}\,(x = 0) = 0,
+\qquad
+p_{a, \rm{D}}(x = 1) = 0,
+\qquad
+p_{a, \rm{U}}(x_f^-) = p_{a, \rm{D}}(x_f^+),
+\qquad
+\pdv{p_{a, \rm{U}}}{x}\,(x_f^-) = r \pdv{p_{a, \rm{D}}}{x}\,(x_f^+).
+\end{gather}
 \end{subequations}
-
-
-
-\subsubsection{Complex, Decaying Eigenmodes}
-
-\red{ANALYSIS NOT YET PERFORMED}
-
-Note that the acoustics are complex, $u_a, p_a \in \bb{C}$ but we observe only their real parts. We take the ansatz $φ(x) \equiv p_a(x, t) / \exp(i ω t)$, where the real part of $ω$ gives the frequency of the wave, $ω_r$, and the imaginary part of $ω$ gives the rate of decay $ω_i$. Note that we still expect quantised values of $ω$. This field obeys the complex BVP which no longer represents a simple harmonic oscillator:
-\begin{boxequ}
-φ'' + \frac{ω^2}{\oT} φ = 0
+where $p_a \in \bb{C}$ alongside some appropriate initial conditions for the given eigenmode. Using the time-harmonic assumption, we define the function $φ(x) \equiv p_a(x) / \exp(i ω t) \in \bb{C}$ so the second order PDE in time and space becomes a second order ODE in space:
+\begin{subequations}
+\begin{gather} \label{eqn:BVP_phi}
+φ'' + \frac{ω^2}{\oT} φ = 0, \\
+φ_{\rm{U}}'(0)=0,
 \qquad
-φ'(0)=0;
+φ_{\rm{D}}(1)=0,
 \qquad
-φ(1)=0;
+φ_{\rm{U}} (x_f^-) = φ_{\rm{D}}(x_f^+),
 \qquad
-φ(x_f^-) = φ(x_f^-);
-\qquad
-φ'(x_f^-) = r φ'(x_f^-)
-\end{boxequ}
-where $φ$ is a complex function of $x$.\footnote{Note that $φ$ being real would imply that at least one of $φ\equiv0$, $ω_r=0$ or $ω_i=0$.} The complementary functions of this equation are defined on either side of $x_f$ as:
+r \, φ_{\rm{U}}'(x_f^-) = φ_{\rm{D}}'(x_f^+).
+\end{gather}
+\end{subequations}
+The complementary functions of this equation are defined on either side of $x_f$ by solutions to the complex harmonic oscillator:
 \begin{equation}
-φ(x) = \exp\left(i \frac{ω_r}{\sqrt{\oT}} x\right) \left[ b \exp\left(- \frac{ω_i}{\sqrt{\oT}} x\right) + d \exp\left(\frac{ω_i}{\sqrt{\oT}} x\right) \right]
+φ_{\rm{U/D}}(x) = a_{\rm{U/D}} \exp\left(- i \frac{ω}{\sqrt{\oT}} x\right) + b_{\rm{U/D}} \exp\left(i \frac{ω}{\sqrt{\oT}} x\right),
 \end{equation}
-% for $b,d \in \bb{C}$. That is, either side of the flame has 4 unknowns from the real and imaginary parts of $b$ and $d$ as well as the shared unknown $ω$. Considering upstream and downstream sections of the solution, this is 10 unknowns total: $(ω_r, ω_i, b_r_{\rm{U}}, b_i_{\rm{U}}, d_r_{\rm{U}}, d_i_{\rm{U}}, b_r_{\rm{D}}, b_i_{\rm{D}}, d_r_{\rm{D}}, d_i_{\rm{D}})$. Comparing this to the 4 complex valued BCs \equ{eqn:p_BCS} which represent 8 real valued constraints to our unknowns, \red{we are left with wanting 2 more real valued constraints}. The 8 real valued constraints are listed in \appx{app:complex-constraints}. The solutions to this system of constraints determine the shape of our eigenmodes through $b$ and $d$, their frequency through $ω_r$ and their growth rate through $-ω_i$.
-
-
-
-
-
-
-
-% Prediction from Eigenmodes
-% - First we predict what results we get in a one-dimensional closed-open tube of the same length under the linear acoustic approximation, modelling the flame as a discontinuity which does not interact with the acoustics.
-% First take the non-dimensionalised equations for compressible, inviscid fully non-linear flow:
-% ... (continue on with maths)
-
-\begin{figure}[t]
-\centering
-\includegraphics[scale=0.35]{assets/graphs/r=7_harmonics_both.pdf}
-\caption{$r = 7$, LEFT: , RIGHT: divided by }
-\label{fig:flame-harmonics}
-\end{figure}
+where $a_{\rm{U/D}}, b_{\rm{U/D}} \in \bb{C}$ represent an extra four degrees of freedom for each side of each eigenmode. Because the boundary conditions for $φ$ are linear in $a_{\rm{U/D}}$ and $b_{\rm{U/D}}$, however, the problem of satisfying the boundary constraints boils down to finding the non-trivial (i.e. non-zero) solutions to the linear equation:
+\begin{subequations}
+\begin{equation}
+\vb{0} = \begin{pmatrix}
+φ_{\rm{U}}'(0) \\
+φ_{\rm{D}}(1)  \\
+φ_{\rm{D}}(x_f^+) - φ_{\rm{U}} (x_f^-)  \\
+φ_{\rm{D}}'(x_f^+) - r \, φ_{\rm{U}}'(x_f^-)
+\end{pmatrix}
+= A \begin{pmatrix}
+a_{\rm{U}} \\
+b_{\rm{U}} \\
+a_{\rm{D}} \\
+b_{\rm{D}}
+\end{pmatrix}
+\end{equation}
+where
+\begin{equation}
+A \equiv \begin{pmatrix}
+1 & -1 & 0 & 0 \\
+0 & 0  & \exp\left(i \frac{ω}{\sqrt{r}}\right) & \exp\left(-i \frac{ω}{\sqrt{r}}\right) \\
+\exp\left(i ω x_f\right) & \exp\left(-i ω x_f\right) & -\exp\left(i \frac{ω}{\sqrt{r}} x_f\right) & -\exp\left(-i \frac{ω}{\sqrt{r}} x_f\right) \\
+\exp\left(i ω x_f\right) & \exp\left(-i ω x_f\right) & -\sqrt{r} \exp\left(i \frac{ω}{\sqrt{r}} x_f\right) & -\sqrt{r} \exp\left(-i \frac{ω}{\sqrt{r}} x_f\right)
+\end{pmatrix}.
+\end{equation}
+\end{subequations}
+Hence, these non-trivial solutions occur only when $\det(A) = 0$, which can be solved using Newton's method. \fig{fig:flame-harmonics-complex} shows these harmonics for $r = 7$ and $x_f = 0.5$. Note that we have divided the frequencies by the expected fundamental frequency $ω_{\rm{fund}}$ which is the frequency of the 1/4 mode of the tube if the flame fully transmitted acoustic waves:
+\begin{equation}
+ω_{\rm{fund}} \equiv \frac{2π}{t_{\rm{fund}}}
+\quad \text{where} \quad
+t_{\rm{fund}} \equiv \frac{l_{\rm{U}}}{c_{\rm{U}}} + \frac{l_{\rm{D}}}{c_{\rm{D}}}
+\end{equation}
+assuming lengths and sound speeds are in the non-dimensional variables. Lines are drawn at odd integers representing the expected frequency for the 1/4, 3/4, 5/4 etc. isothermal harmonics. As expected, all of the eigenmodes lie on the real line, $ω_i = 0$ and lie close to the expected isothermal harmonic. \fig{fig:flame-harmonics} shows these true harmonics as well as the expected harmonics for a range of flame positions with $r = 7$. In the right graph at $x_f = 0.5$ we have the same frequencies found in \fig{fig:flame-harmonics-complex} and we can see how these frequencies oscillate about the expected fundamental frequency for different values of $x_f$. In the left graph we see how the true frequencies $ω_r$ get higher as $x_f$ approaches zero since more of the tube is filled with the hot gas which the acoustics travel fast through.
 
 \begin{figure}[t]
 \centering
 \includegraphics[scale=0.35]{assets/graphs/r=7_xf=05_complex_harmonics.pdf}
-\caption{$r = 7, x_f = 0.5$, CAPTION}
+\caption{Values of $\det{A(ω)}$ for different values of $ω$ with $r = 7, x_f = 0.5$. Non-trivial solutions occur when $\abs{\det{A(ω)}} \ll 1$, which are seen in the darker regions of the plot.}
 \label{fig:flame-harmonics-complex}
 \end{figure}
 
-% For a flame which is .. and .., we expect harmonics of frequencies .. provided that the acoustics remain linear and are not interacting with the flame
-% Note that this only accounts for the modes of a stationary density jump. If the flame is moving instead, the acoustic modes in the tube change with the moving flame. Hence the acoustics in the tube will be much more complex in this case in a way which is not predicted by this model. More complex control diagrams may be required to model the moving system instead.
+\begin{figure}[t]
+\centering    
+\includegraphics[scale=0.35]{assets/graphs/r=7_harmonics_both.pdf}
+\caption{Predicted harmonics and true harmonics for $r = 7$ over a range of $x_f$ values. }
+\label{fig:flame-harmonics}
+\end{figure}
 
+Note that this only accounts for the modes of a stationary density jump. If the flame were moving instead (as is the case for many thermoacoustically unstable flames in experimentation \cite{delfin2024ThermoacousticParametricInstability,delfin2024VideoTransientParametric, martinez-ruiz2018VideoPremixedflameOscillations}), the acoustic modes in the tube change with the moving flame. Hence the acoustics in the tube will be much more complex in this case in a way which is not predicted by this model. More complex control diagrams may be required to model the moving system as well as the coupled interaction of the flame with the acoustics, which is not explored here.
 
 
 
 
 \subsection{Simulation Results and Analysis}
 
-We now investigate a thermoacoustically unstable flame in a similar symmetric 2 cm by 2 mm rectangular DNS geometry resolving the flame and hydrodynamic region as well as ADCBC inflow and outflow with delays representing a 1 m long tube with closed upstream end and open downstream end. The upstream reactants $α = R$ and downstream products $α = P$ have the same properties as the gas from the previous inert test cases, except we specify a change in enthalpy of formation $Δ h_{f, R}^\plimsoll - Δ h_{f, P}^\plimsoll$ between the two such that the heat release parameter $q = T_2 / T_1 - 1 = 6$. Species diffusion is modelled by a constant Lewis number approximation where $\Le = 1$ for both species. We use a single step reacton $\rm{R} \to \rm{P}$ with Zel'dovich number $\Ze = 5$ and Arrhenius reaction term $K_f = A\exp(-E_a / R_0 T)$ with constants $A$ and $E_a$ chosen such that the laminar flame speed is $S_L = 0.2$ m s$^{-1}$. The resulting laminar flame thickness is $l_L \approx 0.216$ mm. The reactant enters the domain with properties $u_{\rm{in}, 0} = 0.2$ m s$^{-1}$ (a counterflow flame), $T_0 = 298$ K and $p_0 = 1$ bar, as before. It may seem like a large jump to go from a simulation of inert acoustics to fully reacting flame-acoustic interactions, but the sunset code is designed with flame simulations in mind, so the simulations are `easy' to perform having already implemented ADCBCs.
+We now investigate a thermoacoustically unstable flame in a 1 m long closed-open tube using ADCBC inflow and outflow. The DNS region is a similar rectangular region with symmetric top and bottom boundaries to before which is instead 2 cm by 2 mm, resolving the full flame and hydrodynamically active region. The reactant enters the domain with properties $u_{\rm{in}, 0} = 0.2$ m s$^{-1}$ (a counterflow flame), $T_0 = 298$ K and $p_0 = 1$ bar, as before. The upstream reactants $α = R$ and downstream products $α = P$ have the same properties as the gas from the previous inert test cases, except we specify a change in enthalpy of formation $Δ h_{f, R}^\plimsoll - Δ h_{f, P}^\plimsoll$ between the two such that the heat release parameter $q \equiv T_2 / T_1 - 1 = 6$. Species diffusion is modelled by a constant Lewis number approximation where $\Le = 1$ for both species. We use a single step reacton $\rm{R} \to \rm{P}$ with Zel'dovich number $\Ze = 5$ and Arrhenius reaction term $K_f = A\exp(-E_a / R_0 T)$. The constants $A$ and $E_a$ are chosen such that the laminar flame speed is $S_L = 0.2$ m s$^{-1}$. The resulting laminar flame thickness is $l_L \approx 0.216$ mm. It may seem like a large jump to go from a simulation of inert acoustics to fully reacting flame-acoustic interactions, but the sunset code is designed with flame simulations in mind, so the simulations are `easy' to perform having already implemented ADCBCs.
 
-To discretisse the interior of the domain, $k = 6$ is used for non-hyperviscosity differential operators, and $k_{\rm{HV}} = 8$ is used for $Δ^3$ hyperviscosity operators. The orders of these approximations drops for the boundary discretisation (see \cite{king2022HighOrderSimulationsIsothermal} for more details). Discretisation error should be dominated by the $\cl{O}(h^{k_{\rm{HV}} - 6 + 1}) = \cl{O}(h^{3})$ error in hyperviscosity operators. Even though LABFM enables variable discretisation resolutions, we use a constant resolution in the DNS domain as we don't know a priori where the flame will end up. A discretisation length scale of $s = 18$ {\textmu}m is used, resulting in a domain consisting of $\sim$50,000 discretisation points decomposed onto 52 processors of a single AMD Genoa compute node. As far as wallclock runtime is concerned, simulations are bottlenecked by the gradient and Laplacian calculations, where $\sim$50 nodes are in each stencil for interior nodes. As mentioned at the beginning of the chapter, a simple improvement to runtime is to simply use a high-order centred finite difference scheme on a rectangular lattice with similar hyperviscosity filtering for stability. This will, however, not be an option when we move on to simulating complex DNS geometries (although this is not explored in this report).
+To discretisse the interior of the domain, $k = 6$ is used for non-hyperviscosity differential operators, and $k_{\rm{HV}} = 8$ is used for $Δ^3$ hyperviscosity operators. The orders of these approximations drops for the boundary discretisation (see \cite{king2022HighOrderSimulationsIsothermal} for more details). Discretisation error should be dominated by the $\cl{O}(h^{k_{\rm{HV}} - 6 + 1}) = \cl{O}(h^{3})$ error in hyperviscosity operators. Even though LABFM enables variable discretisation resolutions, we use a constant resolution in the DNS domain as we don't know a priori where the flame will end up. A discretisation length scale of $s = 18$ {\textmu}m is used, resulting in a computational domain consisting of $\sim$50,000 discretisation points decomposed onto 52 processors of a single AMD Genoa compute node. As far as wallclock runtime is concerned, simulations are bottlenecked by the gradient and Laplacian calculations, where $\sim$50 nodes are in each stencil for interior nodes. As mentioned at the beginning of the chapter, a simple improvement to runtime is to simply use a high-order centred finite difference scheme on a rectangular lattice with similar hyperviscosity filtering for stability. This will, however, not be an option when we move on to simulating complex DNS geometries (although this is not explored in this report).
 
 The flame is initialised in its two-dimensional curved steady state by first running simulation in the same computational domain with non-reflecting NSCBC inflow and outflow boundaries. The flame is placed toward the right of the DNS domain such that, as the flame curves and increases its flame speed $S_c$, it has more room to move leftward.
 

@@ -23,7 +23,7 @@ p_a(t = 0, x) = A \exp\left( - x^2 / d^2 \right)
 \quad \text{and} \quad
 u_a(t = 0, x) = p_a(t = 0, x) / ρ c
 \end{equation}
-such that the maximum pressure disturbance is $A = 10$ Pa and diameter $d = 2$ mm. This simple linear approximation also results in a small $J_5$ bump which we ignore. Alternate methods approximating this initial disturbance could also be used, although the provide little relevant improvement. Fluid properties are $u_{\rm{IN}} = 0.2$ m s$^{-1}$, $T_{\rm{IN}} = 298$ K and $p_{\rm{IN}} = 0.1$ MPa comprised of a single species with properties $W = 28$ kg kmol$^{-1}$, $Pr = 0.7$ and $c_p = 1100$ J kg$^{-1}$ K$^{-1}$. The resulting sound speed is $c \approx 348$ m s$^{-1}$. A 6 mm long central DNS region is used as well as up- and downstream acoustic regions modelled using ADCBCs on the inflow and outflow respectively, each modelling 2 mm of truncated tube. These essentially model two one-dimensional acoustic regions to the left and right of the flame. A diagram for this test case is shown in \fig{fig:ac-bump-test}. A sample rate of $δt_{\rm{sample}} \approx 0.25$ {\textmu}s is used for both ADCBCs and we use \nth{0} order interpolation (constant sample values) at the moment, for reasons discussed later. The horizontal top and bottom boundaries used in the DNS region are symmetric mirror boundaries, 1 mm apart. The LABFM discretisation uses $k = 4$ on gradients and Lapacians and $k_{\rm{HV}} = 6$ for $-Δ^2$ hyperviscosity filtering. In total, there are 1224 LABFM discretisation points in this domain processed by a single processor and 11 boundary nodes per boundary. With the linear acoustics equations in the acoustic regions being non-dispersive, we expect the Gaussian to retain its shape after each up- and downstream bounce. The full reacting Navier-Stokes equations are solved in the DNS region as a precursor to the a flame being present in the DNS region. Only in the DNS region should viscous effects alter the wave packet's shape and even in this case, only slightly after many bounces back and forth the 1 cm long domain. The ADCBCs work almost identically when the viscous inert, isothermal equations, which are also implemented into the SUNSET code, are solved. Note that the response to transverse effects are not being tested here because the acoustic is entirely one-dimensional. As mentioned above, we should in fact be modelling the convected wave equation, not the wave equation for quiescent fluids. But, since our Mach number, $\Ma < 10^{-3}$ is so low in this case the convective effects are deemed to be asymptotically unimportant. For thin regions like these, the boundary averaging procedure makes some physical sense as transverse behaviour at the boundaries of longer computational domains would be negligible, as it is here under our artificial test case. As the DNS domain widens, however, it seems reasonable that this averaging would result in more and more inaccuracy and potential instability. Hence, the queues are used for each boundary node should instead be used in this case to model many separate one-dimensional acoustic domains for each node. For all the cases in this report, the boundary averaging procedure is used and we find reassuring results regardless.
+such that the maximum pressure disturbance is $A = 10$ Pa and diameter $d = 2$ mm. This simple linear approximation also results in a small $J_5$ bump which we ignore. Alternate methods approximating this initial disturbance could also be used, although the provide little relevant improvement. Fluid properties are $u_{\rm{IN}} = 0.2$ m s$^{-1}$, $T_{\rm{IN}} = 298$ K and $p_{\rm{IN}} = 0.1$ MPa comprised of a single species with properties $W = 28$ kg kmol$^{-1}$, $Pr = 0.7$ and $c_p = 1100$ J kg$^{-1}$ K$^{-1}$. The resulting sound speed is $c \approx 348$ m s$^{-1}$. A 6 mm long central DNS region is used as well as up- and downstream acoustic regions modelled using ADCBCs on the inflow and outflow respectively, each modelling 2 mm of truncated tube. These essentially model two one-dimensional acoustic regions to the left and right of the flame. A diagram for this test case is shown in \fig{fig:ac-bump-test}. A sample rate of $δt_{\rm{sample}} \approx 0.25$ {\textmu}s is used for both ADCBCs and we use \nth{0} order interpolation (constant sample values) at the moment, for reasons discussed later. The horizontal top and bottom boundaries used in the DNS region are symmetric mirror boundaries, 1 mm apart. The LABFM discretisation uses $k = 4$ on gradients and Laplacians and $k_{\rm{HV}} = 6$ for $-Δ^2$ hyperviscosity filtering. In total, there are 1224 LABFM discretisation points in this domain processed by a single processor and 11 boundary nodes per boundary. With the linear acoustics equations in the acoustic regions being non-dispersive, we expect the Gaussian to retain its shape after each up- and downstream bounce. The full reacting Navier-Stokes equations are solved in the DNS region as a precursor to the a flame being present in the DNS region. Only in the DNS region should viscous effects alter the wave packet's shape and even in this case, only slightly after many bounces back and forth the 1 cm long domain. The ADCBCs work almost identically when the viscous inert, isothermal equations, which are also implemented into the SUNSET code, are solved. Note that the response to transverse effects are not being tested here because the acoustic is entirely one-dimensional. As mentioned above, we should in fact be modelling the convected wave equation, not the wave equation for quiescent fluids. But, since our Mach number, $\Ma < 10^{-3}$ is so low in this case the convective effects are deemed to be asymptotically unimportant. For thin regions like these, the boundary averaging procedure makes some physical sense as transverse behaviour at the boundaries of longer computational domains would be negligible, as it is here under our artificial test case. As the DNS domain widens, however, it seems reasonable that this averaging would result in more and more inaccuracy and potential instability. Hence, the queues are used for each boundary node should instead be used in this case to model many separate one-dimensional acoustic domains for each node. For all the cases in this report, the boundary averaging procedure is used and we find reassuring results regardless.
 
 \begin{figure}[t]
 \centering
@@ -66,7 +66,7 @@ The above results are found provided constant interpolation is used to evaluate 
 \label{fig:ac-reconstruct_order3}
 \end{figure}
 
-We can now use the discretised acoustic region field reconstruction from the previous chapter to observe the acoustics in the fictitious region in a way which is not immediately available to us from the interior DNS data. In \fig{fig:ac-reconstruct_order0} are the results for the constant interpolation, where we see although the acoustic field has dissipated by $\sim$1 Pa, the symmetric Gaussian structure is maintained. Instead, in \fig{fig:ac-reconstruct_order3} an asymmetric structure resulting in the pressure drift mentioned above. The values of $\cl{L}$ in both figures showcase these values moving with $p_a$ and $u_a$ in the upstream acoustic domain, which is roughly $\propto ζ \exp(-ζ^2)$ for some variable $ζ(t, x)$. Notice that because $R_{\rm{U}} = 1$ in both cases we get that $\cl{L}_{5, \rm{U}}(t, x_{\rm{IN}} - l_{\rm{U}}) = \cl{L}_{1, \rm{U}}(t, x_{\rm{IN}} - l_{\rm{U}})$. This should always result in the Dirichlet condition $u_a(t, x_{\rm{IN}} - l_{\rm{U}}) = 0$ and Von Neumann condition $\partial p_a / \partial x(t, x_{\rm{IN}} - l_{\rm{U}}) = 0$, althoug we notice that this is not true for the third order simulation. In the case where an open acoustic boundary $R_{\rm{U}} = -1$ is used instead, we have $\cl{L}_{5, \rm{U}}(t, x_{\rm{IN}} - l_{\rm{U}}) = -\cl{L}_{1, \rm{U}}(t, x_{\rm{IN}} - l_{\rm{U}})$ so the boundary conditions on $p_a$ and $u_a$ swap. Both these cases match the desired acoustic properties for open and closed tubes under typical acoustic modelling.
+We can now use the discretised acoustic region field reconstruction from the previous chapter to observe the acoustics in the fictitious region in a way which is not immediately available to us from the interior DNS data. In \fig{fig:ac-reconstruct_order0} are the results for the constant interpolation, where we see although the acoustic field has dissipated by $\sim$1 Pa, the symmetric Gaussian structure is maintained. Instead, in \fig{fig:ac-reconstruct_order3} an asymmetric structure resulting in the pressure drift mentioned above. The values of $\cl{L}$ in both figures showcase these values moving with $p_a$ and $u_a$ in the upstream acoustic domain, which is roughly $\propto ζ \exp(-ζ^2)$ for some variable $ζ(t, x)$. Notice that because $R_{\rm{U}} = 1$ in both cases we get that $\cl{L}_{5, \rm{U}}(t, x_{\rm{IN}} - l_{\rm{U}}) = \cl{L}_{1, \rm{U}}(t, x_{\rm{IN}} - l_{\rm{U}})$. This should always result in the Dirichlet condition $u_a(t, x_{\rm{IN}} - l_{\rm{U}}) = 0$ and Von Neumann condition $\partial p_a / \partial x(t, x_{\rm{IN}} - l_{\rm{U}}) = 0$, although we notice that this is not true for the third order simulation. In the case where an open acoustic boundary $R_{\rm{U}} = -1$ is used instead, we have $\cl{L}_{5, \rm{U}}(t, x_{\rm{IN}} - l_{\rm{U}}) = -\cl{L}_{1, \rm{U}}(t, x_{\rm{IN}} - l_{\rm{U}})$ so the boundary conditions on $p_a$ and $u_a$ swap. Both these cases match the desired acoustic properties for open and closed tubes under typical acoustic modelling.
 
 
 
@@ -82,9 +82,23 @@ We can now use the discretised acoustic region field reconstruction from the pre
 
 \begin{figure}[t]
 \centering
+\begin{subfigure}{0.99\textwidth}
+\centering
 \includegraphics[scale=0.33]{assets/graphs/ac-plot-3-4_long.pdf}
 \caption{Reconstruction of acoustic fields for $N_κ = 2$.}
 \label{fig:ac-wave-later}
+\end{subfigure}
+
+\vspace*{0.5em}
+
+\begin{subfigure}{0.99\textwidth}
+\centering
+\includegraphics[scale=0.35]{assets/graphs/up_plot_wave.pdf}
+\caption{Time series of acoustic pressure and velocity at the ADCBC inflow for $N_κ = 2$.}
+\label{fig:up_plot_wave}
+\end{subfigure}
+\caption{}
+\label{fig:wave-later}
 \end{figure}
 
 We now initialise an acoustic standing wave in the same computational domain as the previous test case, using the same fluid properties and ADCBC parameters, except for the change that we instead model an open upstream acoustic boundary, so $R_{\rm{D}} = -1$ instead and we use constant interpolation. The desired initial acoustic pressure is:
@@ -95,7 +109,7 @@ where $A = 10$ Pa is the acoustic amplitude as before and $l_{\rm{tube}} \equiv 
 \begin{equation}
 κ = \frac{2N_κ - 1}{4 l_{\rm{tube}}}
 \end{equation}
-In the DNS region, the wave can be initialised by directly calculating $p_a(0, x)$ values. In the upstream and downstream region, however, we must instead calculate $\cl{L}_{1/5}(t = 0, x)$ using the formulae in \equ{eqn:λ_l_L}, discretise them and enter the resulting finite values into the initial queues $(\bb{T} \cross \bb{L})(t = 0)$ for the ADCBC inflow and outflow. The same LABFM discretisation is used as the acoustic bump test case above. \fig{fig:ac-wave-modes} shows the acoustic initial conditions in the full tube for the first three standing wave modes. In each of the three graphs, the wave continues smoothly into the acoustic domain owing the acoustic reconstruction introduced in the previous chapter. \fig{fig:ac-wave-later} shows the simulation after a few acoustic periods for the $N_κ = 2$ case. Clearly $u_a(t, x_{\rm{IN}} - l_{\rm{U}}) = 0$ and $p_a(t, x_{\rm{OUT}} + l_{\rm{D}}) = 0$ as desired. In this case you can see the reconstructed $\cl{L}_{1/5}$ fields travelling left and right respectively. Note that in the $N_κ = 2$ and 3 modes you can see a slight error with some $u_a(t = 0, x) \ne$ values in the up and downstream domain due to inaccuracies with the post-processing code.
+In the DNS region, the wave can be initialised by directly calculating $p_a(0, x)$ values. In the upstream and downstream region, however, we must instead calculate $\cl{L}_{1/5}(t = 0, x)$ using the formulae in \equ{eqn:λ_l_L}, discretise them and enter the resulting finite values into the initial queues $(\bb{T} \cross \bb{L})(t = 0)$ for the ADCBC inflow and outflow. The same LABFM discretisation is used as the acoustic bump test case above. \fig{fig:ac-wave-modes} shows the acoustic initial conditions in the full tube for the first three standing wave modes. In each of the three graphs, the wave continues smoothly into the acoustic domain owing the acoustic reconstruction introduced in the previous chapter. \fig{fig:ac-wave-later} shows the simulation after a few acoustic periods for the $N_κ = 2$ case. Clearly $u_a(t, x_{\rm{IN}} - l_{\rm{U}}) = 0$ and $p_a(t, x_{\rm{OUT}} + l_{\rm{D}}) = 0$ as desired. In this case you can see the reconstructed $\cl{L}_{1/5}$ fields travelling left and right respectively. Note that in the $N_κ = 2$ and 3 modes you can see a slight error with some $u_a(t = 0, x) \ne$ values in the up and downstream domain due to inaccuracies with the post-processing code. In \fig{fig:up_plot_wave} we have a time series of $p_{a}$ and $u_{a}$ values at the inflow boundary. Note that the maximum amplitude the waves reach at this inflow boundary is $\sim$6 Pa, hence the lower amplitude.
 
 \begin{figure}[t]
 \centering
@@ -116,7 +130,7 @@ Eventually, due to the sampling error introduced as the wave continuously enters
 \label{fig:inflow-instab}
 \end{figure}
 
-Under certain boundary discretisation schemes, a wringing instability in $u$ was observed at the inflow after many acoustic periods. This grows exponentially, suggesting that the instability behaves linearly, until the vorticity produced within the inflow region destroys the solution. This wringing behaviour is shown at a late stage of instability in \fig{fig:inflow-instab}. In this figure, four distinct cells of high vorticity are seen along the boundary, suggesting two wavelengths of the unstable mode fit in the vertical width of the symmetric domain. For the boundary discretisations this instability occured with, it only occured at the inflow what ADCBC inflows and outflows were used, suggesting it needs a continuous source of acoustics entering the upstream acoustic region. This instability was successfully inhibited in the other simulations by using a more stable boundary discretisation. Before this improved boundary discretisation was found, the instability was treated by simply increasing amplitudeu of the tangential hyperviscosity filter at the boundary nodes, so that the wringing mode was suppressed. The cause of the instability was likely the boundary averaging procedure coupling with the boundary discretisation, resulting in a feedback loop exacerbating tangential $u$ deviations. Hence, it seems reasonable that this instability should be precluded in an ADCBC formulation which does not perform boundary averaging, although this needs to be properly investigated.
+Under certain boundary discretisation schemes, a wringing instability in $u$ was observed at the inflow after many acoustic periods. This grows exponentially, suggesting that the instability behaves linearly, until the vorticity produced within the inflow region destroys the solution. This wringing behaviour is shown at a late stage of instability in \fig{fig:inflow-instab}. In this figure, four distinct cells of high vorticity are seen along the boundary, suggesting two wavelengths of the unstable mode fit in the vertical width of the symmetric domain. For the boundary discretisations this instability occurred with, it only occurred at the inflow what ADCBC inflows and outflows were used, suggesting it needs a continuous source of acoustics entering the upstream acoustic region. This instability was successfully inhibited in the other simulations by using a more stable boundary discretisation. Before this improved boundary discretisation was found, the instability was treated by simply increasing amplitude of the tangential hyperviscosity filter at the boundary nodes, so that the wringing mode was suppressed. The cause of the instability was likely the boundary averaging procedure coupling with the boundary discretisation, resulting in a feedback loop exacerbating tangential $u$ deviations. Hence, it seems reasonable that this instability should be precluded in an ADCBC formulation which does not perform boundary averaging, although this needs to be properly investigated.
 
 \begin{figure}[t]
 \centering
@@ -137,7 +151,7 @@ where $l_{\rm{U/D}, 0}$ are the initial up- and downstream acoustic region lengt
 \quad \text{and} \quad
 δτ_{\rm{D}}(t^n) = \frac{2 \overline{u}_{\rm{in}}(t^n)}{c} δt^n,
 \end{equation}
-where $t^n$ is the new simulation time, $δt^n$ is the time step size and $τ_{\rm{U/D}}(t^n) = τ_{\rm{U/D}}(t^{n - 1}) + δτ_{\rm{U/D}}(t^n)$. This is essentially a forward Euler integration, which will be accurate enough provided the non-acoustic inflow velocity is slowly-varying enough. Regardless, \fig{fig:moving-dns-region} shows these changing delay times being used in a longer simulation of the same 3/4 mode standing wave. Despite the translated DNS region in the latter three graphs, the acoustic mode remains the same (albeit with a change in phase). Note that the accuracy of the wave in the later graphs justifies the previous use of the low Mach number approximation: despite the use of non-convected waves to model the time delay (and field reconstructionn), the wave remains accurately resolved.
+where $t^n$ is the new simulation time, $δt^n$ is the time step size and $τ_{\rm{U/D}}(t^n) = τ_{\rm{U/D}}(t^{n - 1}) + δτ_{\rm{U/D}}(t^n)$. This is essentially a forward Euler integration, which will be accurate enough provided the non-acoustic inflow velocity is slowly-varying enough. Regardless, \fig{fig:moving-dns-region} shows these changing delay times being used in a longer simulation of the same 3/4 mode standing wave. Despite the translated DNS region in the latter three graphs, the acoustic mode remains the same (albeit with a change in phase). Note that the accuracy of the wave in the later graphs justifies the previous use of the low Mach number approximation: despite the use of non-convected waves to model the time delay (and field reconstruction), the wave remains accurately resolved.
 
 % With the correct frequency???
 
@@ -237,32 +251,89 @@ t_{\rm{fund}} \equiv \frac{l_{\rm{U}}}{c_{\rm{U}}} + \frac{l_{\rm{D}}}{c_{\rm{D}
 \end{equation}
 assuming lengths and sound speeds are in the non-dimensional variables. Lines are drawn at odd integers representing the expected frequency for the 1/4, 3/4, 5/4 etc. isothermal harmonics. As expected, all of the eigenmodes lie on the real line, $ω_i = 0$ and lie close to the expected isothermal harmonic. \fig{fig:flame-harmonics} shows these true harmonics as well as the expected harmonics for a range of flame positions with $r = 7$. In the right graph at $x_f = 0.5$ we have the same frequencies found in \fig{fig:flame-harmonics-complex} and we can see how these frequencies oscillate about the expected fundamental frequency for different values of $x_f$. In the left graph we see how the true frequencies $ω_r$ get higher as $x_f$ approaches zero since more of the tube is filled with the hot gas which the acoustics travel fast through.
 
+
 \begin{figure}[t]
+\begin{subfigure}{0.99\textwidth}
 \centering
 \includegraphics[scale=0.35]{assets/graphs/r=7_xf=05_complex_harmonics.pdf}
 \caption{Values of $\det{A(ω)}$ for different values of $ω$ with $r = 7, x_f = 0.5$. Non-trivial solutions occur when $\abs{\det{A(ω)}} \ll 1$, which are seen in the darker regions of the plot.}
 \label{fig:flame-harmonics-complex}
-\end{figure}
+\end{subfigure}
 
-\begin{figure}[t]
-\centering    
+\vspace*{0.5em}
+
+\begin{subfigure}{0.99\textwidth}
+\centering
 \includegraphics[scale=0.35]{assets/graphs/r=7_harmonics_both.pdf}
-\caption{Predicted harmonics and true harmonics for $r = 7$ over a range of $x_f$ values. }
+\caption{Predicted harmonics and true harmonics for $r = 7$ over a range of $x_f$ values.}
 \label{fig:flame-harmonics}
+\end{subfigure}
+\caption{}
+\label{fig:harmonics}
 \end{figure}
 
 Note that this only accounts for the modes of a stationary density jump. If the flame were moving instead (as is the case for many thermoacoustically unstable flames in experimentation \cite{delfin2024ThermoacousticParametricInstability,delfin2024VideoTransientParametric, martinez-ruiz2018VideoPremixedflameOscillations}), the acoustic modes in the tube change with the moving flame. Hence the acoustics in the tube will be much more complex in this case in a way which is not predicted by this model. More complex control diagrams may be required to model the moving system as well as the coupled interaction of the flame with the acoustics, which is not explored here.
+
+%%%% PLOT OF 1/4 and 3/4 EIGENMODE!!!!
 
 
 
 
 \subsection{Simulation Results and Analysis}
 
-We now investigate a thermoacoustically unstable flame in a 1 m long closed-open tube using ADCBC inflow and outflow. The DNS region is a similar rectangular region with symmetric top and bottom boundaries to before which is instead 2 cm by 2 mm, resolving the full flame and hydrodynamically active region. The reactant enters the domain with properties $u_{\rm{in}, 0} = 0.2$ m s$^{-1}$ (a counterflow flame), $T_0 = 298$ K and $p_0 = 1$ bar, as before. The upstream reactants $α = R$ and downstream products $α = P$ have the same properties as the gas from the previous inert test cases, except we specify a change in enthalpy of formation $Δ h_{f, R}^\plimsoll - Δ h_{f, P}^\plimsoll$ between the two such that the heat release parameter $q \equiv T_2 / T_1 - 1 = 6$. Species diffusion is modelled by a constant Lewis number approximation where $\Le = 1$ for both species. We use a single step reacton $\rm{R} \to \rm{P}$ with Zel'dovich number $\Ze = 5$ and Arrhenius reaction term $K_f = A\exp(-E_a / R_0 T)$. The constants $A$ and $E_a$ are chosen such that the laminar flame speed is $S_L = 0.2$ m s$^{-1}$. The resulting laminar flame thickness is $l_L \approx 0.216$ mm. It may seem like a large jump to go from a simulation of inert acoustics to fully reacting flame-acoustic interactions, but the sunset code is designed with flame simulations in mind, so the simulations are `easy' to perform having already implemented ADCBCs.
+We now investigate a thermoacoustically unstable flame in a 1 m long closed-open tube using ADCBC inflow and outflow. The DNS region is a similar rectangular region with symmetric top and bottom boundaries to before which is instead 2 cm by 2 mm, resolving the full flame and hydrodynamically active region. The reactant enters the domain with properties $u_{\rm{in}, 0} = 0.2$ m s$^{-1}$ (a counterflow flame), $T_0 = 298$ K and $p_0 = 1$ bar, as before. The upstream reactants $α = R$ and downstream products $α = P$ have the same properties as the gas from the previous inert test cases, except we specify a change in enthalpy of formation $Δ h_{f, R}^\plimsoll - Δ h_{f, P}^\plimsoll$ between the two such that the heat release parameter $q \equiv T_2 / T_1 - 1 = 6$. Species diffusion is modelled by a constant Lewis number approximation where $\Le = 1$ for both species. We use a single step reaction $\rm{R} \to \rm{P}$ with Zel'dovich number $\Ze = 5$ and Arrhenius reaction term $K_f = A\exp(-E_a / R_0 T)$. The constants $A$ and $E_a$ are chosen such that the laminar flame speed is $S_L = 0.2$ m s$^{-1}$. The resulting laminar flame thickness is $l_L \approx 0.216$ mm. It may seem like a large jump to go from a simulation of inert acoustics to fully reacting flame-acoustic interactions, but the sunset code is designed with flame simulations in mind, so the simulations are `easy' to perform having already implemented ADCBCs.
 
-To discretisse the interior of the domain, $k = 6$ is used for non-hyperviscosity differential operators, and $k_{\rm{HV}} = 8$ is used for $Δ^3$ hyperviscosity operators. The orders of these approximations drops for the boundary discretisation (see \cite{king2022HighOrderSimulationsIsothermal} for more details). Discretisation error should be dominated by the $\cl{O}(h^{k_{\rm{HV}} - 6 + 1}) = \cl{O}(h^{3})$ error in hyperviscosity operators. Even though LABFM enables variable discretisation resolutions, we use a constant resolution in the DNS domain as we don't know a priori where the flame will end up. A discretisation length scale of $s = 18$ {\textmu}m is used, resulting in a computational domain consisting of $\sim$50,000 discretisation points decomposed onto 52 processors of a single AMD Genoa compute node. As far as wallclock runtime is concerned, simulations are bottlenecked by the gradient and Laplacian calculations, where $\sim$50 nodes are in each stencil for interior nodes. As mentioned at the beginning of the chapter, a simple improvement to runtime is to simply use a high-order centred finite difference scheme on a rectangular lattice with similar hyperviscosity filtering for stability. This will, however, not be an option when we move on to simulating complex DNS geometries (although this is not explored in this report) where unstructure meshing is traditionally a requirement.
+To discretise the interior of the domain, $k = 6$ is used for non-hyperviscosity differential operators, and $k_{\rm{HV}} = 8$ is used for $Δ^3$ hyperviscosity operators. The orders of these approximations drops for the boundary discretisation (see \cite{king2022HighOrderSimulationsIsothermal} for more details). Discretisation error should be dominated by the $\cl{O}(h^{k_{\rm{HV}} - 6 + 1}) = \cl{O}(h^{3})$ error in hyperviscosity operators. Even though LABFM enables variable discretisation resolutions, we use a constant resolution in the DNS domain as we don't know a priori where the flame will end up. A discretisation length scale of $s = 18$ {\textmu}m is used, resulting in a computational domain consisting of $\sim$50,000 discretisation points decomposed onto 52 processors of a single AMD Genoa compute node. As far as wallclock runtime is concerned, simulations are bottlenecked by the gradient and Laplacian calculations, where $\sim$50 nodes are in each stencil for interior nodes. As mentioned at the beginning of the chapter, a simple improvement to runtime is to simply use a high-order centred finite difference scheme on a rectangular lattice with similar hyperviscosity filtering for stability. This will, however, not be an option when we move on to simulating complex DNS geometries (although this is not explored in this report) where unstructured meshing is traditionally a requirement.
 
 The flame is initialised in its two-dimensional curved steady state by first running simulation in the same computational domain with non-reflecting NSCBC inflow and outflow boundaries. The flame is placed toward the right of the DNS domain such that, as the flame curves and increases its flame speed $S_c$, it has more room to move leftward.
+
+\begin{figure}[t]
+\centering
+\begin{subfigure}{0.99\textwidth}
+\centering
+\includegraphics[scale=0.36]{assets/graphs/THERMOAC_mag-v.png}
+\caption{BLACH}
+\label{fig:mag-v}
+\end{subfigure}
+
+\vspace*{0.5em}
+
+\begin{subfigure}{0.99\textwidth}
+\centering
+\includegraphics[scale=0.35]{assets/graphs/2mmx1m_still_hrr-flame.pdf}
+\caption{HRR FLAME}
+\label{fig:hrr-flame}
+\end{subfigure}
+\caption{HASHDHIAISUDH}
+\label{fig:flame}
+\end{figure}
+
+\begin{figure}[t]
+\begin{subfigure}{0.99\textwidth}
+\centering
+\includegraphics[scale=0.35]{assets/graphs/2mmx1m_still_pu.pdf}
+\caption{PU}
+\label{fig:2mmx1m_still_pu}
+\end{subfigure}
+
+\vspace*{0.5em}
+
+\begin{subfigure}{0.99\textwidth}
+\centering
+\includegraphics[scale=0.35]{assets/graphs/2mmx1m_still_spec2.pdf}
+\caption{SPECTROGRAM}
+\label{fig:spectrogram}
+\end{subfigure}
+\caption{}
+\label{fig:in-ac}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.35]{assets/graphs/2mmx1m_still_ac.pdf}
+\caption{ASLKDLAKD}
+\label{fig:thermoac-reconstruct}
+\end{figure}
 
 
 %%%% ACTUAL RESULTS!!!
@@ -277,28 +348,4 @@ The flame is initialised in its two-dimensional curved steady state by first run
 % frequencies
 
 % mode structures!
-
-
-
-\begin{figure}[t]
-\centering
-\includegraphics[scale=0.35]{assets/graphs/fft-windowing.png}
-\caption{[PLACEHOLDER IMG] FFT WINDOWING}
-\label{fig:windowing}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\includegraphics[scale=0.35]{assets/graphs/spectrogram.png}
-\caption{[PLACEHOLDER IMG] SPECTROGRAM}
-\label{fig:spectrogram}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\includegraphics[scale=0.35]{assets/graphs/pp-tones.png}
-\caption{[PLACEHOLDER IMG] POST-PROCESSED 1/4 AND 3/4 WAVE EVIDENCE}
-\label{fig:pp-tones}
-\end{figure}
-
 

@@ -247,7 +247,8 @@ Hence, these non-trivial solutions occur only when $\det(A) = 0$, which can be s
 \begin{equation}
 ω_{\rm{fund}} \equiv \frac{2π}{t_{\rm{fund}}}
 \quad \text{where} \quad
-t_{\rm{fund}} \equiv \frac{l_{\rm{U}}}{c_{\rm{U}}} + \frac{l_{\rm{D}}}{c_{\rm{D}}}
+t_{\rm{fund}} \equiv 4 \left( \frac{l_{\rm{U}}}{c_{\rm{U}}} + \frac{l_{\rm{D}}}{c_{\rm{D}}} \right)
+= 4x_f + \frac{4(1 - x_f)}{\sqrt{r}}
 \end{equation}
 assuming lengths and sound speeds are in the non-dimensional variables. Lines are drawn at odd integers representing the expected frequency for the 1/4, 3/4, 5/4 etc. isothermal harmonics. As expected, all of the eigenmodes lie on the real line, $ω_i = 0$ and lie close to the expected isothermal harmonic. \fig{fig:flame-harmonics} shows these true harmonics as well as the expected harmonics for a range of flame positions with $r = 7$. In the right graph at $x_f = 0.5$ we have the same frequencies found in \fig{fig:flame-harmonics-complex} and we can see how these frequencies oscillate about the expected fundamental frequency for different values of $x_f$. In the left graph we see how the true frequencies $ω_r$ get higher as $x_f$ approaches zero since more of the tube is filled with the hot gas which the acoustics travel fast through.
 
@@ -272,7 +273,20 @@ assuming lengths and sound speeds are in the non-dimensional variables. Lines ar
 \label{fig:harmonics}
 \end{figure}
 
-Note that this only accounts for the modes of a stationary density jump. If the flame were moving instead (as is the case for many thermoacoustically unstable flames in experimentation \cite{delfin2024ThermoacousticParametricInstability,delfin2024VideoTransientParametric, martinez-ruiz2018VideoPremixedflameOscillations}), the acoustic modes in the tube change with the moving flame. Hence the acoustics in the tube will be much more complex in this case in a way which is not predicted by this model. More complex control diagrams may be required to model the moving system as well as the coupled interaction of the flame with the acoustics, which is not explored here.
+For a flame where $x_f = 0.5$ and $r = 7$, we found that $ω_1 \approx 1.193 \, ω_{\rm{fund}}$ for the first harmonic and $ω_2 \approx 3.185 \, ω_{\rm{fund}}$. To transform these to dimensional variables, we must simply find the dimensional $\hat{ω}_{\rm{fund}}$. In a $\hat{l}_{\rm{tube}} = 1$ m long closed-open tube with $\hat{c}_{\rm{U}} \approx 348.15$ m s$^{-1}$, we get:
+\begin{gather}
+\hat{t}_{\rm{fund}} = \frac{\hat{l}_{\rm{tube}}}{\hat{c}_{\rm{U}}} \left( 4x_f  + \frac{4(1 - x_f)}{\sqrt{r}} \right)
+\approx 7.92~\rm{ms}
+\quad \text{so} \\
+\hat{ω}_{\rm{fund}} = \frac{2π}{\hat{t}_{\rm{fund}}}
+\approx 793.7~\rm{rad}~\rm{Hz}
+\quad \text{and} \quad
+\hat{f}_{\rm{fund}} = \frac{1}{\hat{t}_{\rm{fund}}}
+\approx 126.3~\rm{Hz}
+\end{gather}
+where $\hat{f}$ if frequency and $\hat{ω}$ is angular frequency. The harmonics thus have dimensional frequency $\hat{f}_1 \approx 1.193 \, \hat{f}_{\rm{fund}} = 150.7$ Hz and $\hat{f}_2 \approx 3.185 \, \hat{f}_{\rm{fund}} = 402.4$ Hz.
+
+Note that this analysis only accounts for the modes of a stationary density jump. If the flame were moving instead (as is the case for many thermoacoustically unstable flames in experimentation \cite{delfin2024ThermoacousticParametricInstability,delfin2024VideoTransientParametric, martinez-ruiz2018VideoPremixedflameOscillations}), the acoustic modes in the tube change with the moving flame. Hence the acoustics in the tube will be much more complex in this case in a way which is not predicted by this model. More complex control diagrams may be required to model the moving system as well as the coupled interaction of the flame with the acoustics, which is not explored here.
 
 %%%% PLOT OF 1/4 and 3/4 EIGENMODE!!!!
 
@@ -285,14 +299,14 @@ We now investigate a thermoacoustically unstable flame in a 1 m long closed-open
 
 To discretise the interior of the domain, $k = 6$ is used for non-hyperviscosity differential operators, and $k_{\rm{HV}} = 8$ is used for $Δ^3$ hyperviscosity operators. The orders of these approximations drops for the boundary discretisation (see \cite{king2022HighOrderSimulationsIsothermal} for more details). Discretisation error should be dominated by the $\cl{O}(h^{k_{\rm{HV}} - 6 + 1}) = \cl{O}(h^{3})$ error in hyperviscosity operators. Even though LABFM enables variable discretisation resolutions, we use a constant resolution in the DNS domain as we don't know a priori where the flame will end up. A discretisation length scale of $s = 18$ {\textmu}m is used, resulting in a computational domain consisting of $\sim$50,000 discretisation points decomposed onto 52 processors of a single AMD Genoa compute node. As far as wallclock runtime is concerned, simulations are bottlenecked by the gradient and Laplacian calculations, where $\sim$50 nodes are in each stencil for interior nodes. As mentioned at the beginning of the chapter, a simple improvement to runtime is to simply use a high-order centred finite difference scheme on a rectangular lattice with similar hyperviscosity filtering for stability. This will, however, not be an option when we move on to simulating complex DNS geometries (although this is not explored in this report) where unstructured meshing is traditionally a requirement.
 
-The flame is initialised in its two-dimensional curved steady state by first running simulation in the same computational domain with non-reflecting NSCBC inflow and outflow boundaries. The flame is placed toward the right of the DNS domain such that, as the flame curves and increases its flame speed $S_c$, it has more room to move leftward.
+The flame is initialised in its two-dimensional curved steady state by first running a simulation in the same computational domain with the same flame and fluid properties with non-reflecting NSCBC inflow and outflow boundaries. The flame is placed toward the right of the DNS domain such that the flame has more room to move leftward as it curves, increasing its flame speed $S_c$.
 
 \begin{figure}[t]
 \centering
 \begin{subfigure}{0.99\textwidth}
 \centering
 \includegraphics[scale=0.36]{assets/graphs/THERMOAC_mag-v.png}
-\caption{BLACH}
+\caption{Velocity magnitudes in the hydrodynamic zone surrounding the flame at the end of the simulation. Notice that although we have $\overline{u}_{\rm{IN}} = 0.2$ m s$^{-1}$ and $\overline{u}_{\rm{OUT}} = r \, \overline{u}_{\rm{IN}}$ (where $r = 7$ for this flame), the values shown are higher due to a positive contribution from the acoustics $u_a > 0$ in the DNS region.}
 \label{fig:mag-v}
 \end{subfigure}
 
@@ -301,18 +315,21 @@ The flame is initialised in its two-dimensional curved steady state by first run
 \begin{subfigure}{0.99\textwidth}
 \centering
 \includegraphics[scale=0.35]{assets/graphs/2mmx1m_still_hrr-flame.pdf}
-\caption{HRR FLAME}
+\caption{Time series' of (left) integrated Heat Release Rate (HRR) in the DNS region and (right) leftmost flame position.}
 \label{fig:hrr-flame}
 \end{subfigure}
-\caption{HASHDHIAISUDH}
+\caption{}
 \label{fig:flame}
 \end{figure}
+
+Unfortunately, as of submitting this report, the thermoacoustic mode in these simulations has not fully developed, so results shown are only preliminary. However, they should exemplify the ability of ADCBCs to accurately reconstruct the expected acoustic behaviour. Because of this early stage, the final flame structure shown in \fig{fig:mag-v} is the result primarily of the Darrieus-Landau (DL) instability and closely matches that expected of two-dimensional simulations \cite{creta2011StrainRateEffects}. In the right of \fig{fig:hrr-flame}, the acoustic displacement of the flame results in very small but noticeable `wobbling'.\footnote{You may have to zoom in!} The heat release shown in the left graph appears to be much more aperiodic in nature. This is most likely the result of the complex interaction of the flame to the surrounding acoustic field on top of the DL mode.
+
 
 \begin{figure}[t]
 \begin{subfigure}{0.99\textwidth}
 \centering
 \includegraphics[scale=0.35]{assets/graphs/2mmx1m_still_pu.pdf}
-\caption{PU}
+\caption{Time series of acoustic pressure and velocity values at the ADCBC inflow.}
 \label{fig:2mmx1m_still_pu}
 \end{subfigure}
 
@@ -321,7 +338,7 @@ The flame is initialised in its two-dimensional curved steady state by first run
 \begin{subfigure}{0.99\textwidth}
 \centering
 \includegraphics[scale=0.35]{assets/graphs/2mmx1m_still_spec2.pdf}
-\caption{SPECTROGRAM}
+\caption{Spectrogram of acoustic pressure values at the ADCBC inflow. The final $\sim$0.03 s has spuriously higher mode amplitudes due to zero padding used at the end of the time series.}
 \label{fig:spectrogram}
 \end{subfigure}
 \caption{}
@@ -331,21 +348,9 @@ The flame is initialised in its two-dimensional curved steady state by first run
 \begin{figure}[t]
 \centering
 \includegraphics[scale=0.35]{assets/graphs/2mmx1m_still_ac.pdf}
-\caption{ASLKDLAKD}
+\caption{Reconstruction of the acoustic fields for this flame simulation at times $t = 0.1, 0.2, 0.3$ and 0.4 s. The reconstructed fields $p_a$ and $u_a$ are translated vertically here such that $p_a(x_{\rm{OUT}} + l_{\rm{D}}) = 0$, $u_a(x_{\rm{IN}} - l_{\rm{U}}) = 0$, $p_a(x_{\rm{IN}}) = p_a(x_{\rm{OUT}})$ and $u_a(x_{\rm{IN}}) = u_a(x_{\rm{OUT}})$. These boundary conditions do not match those defined in the previous chapter, and are just used for simpler visualisation since the non-acoustic pressure and velocity are different on either side of the flame.}
 \label{fig:thermoac-reconstruct}
 \end{figure}
 
-
-%%%% ACTUAL RESULTS!!!
-
-
-% Show some fields at an example time for both simulations
-
-% stats data fft postprocessing/windowing
-
-% spectrogram results
-
-% frequencies
-
-% mode structures!
+In \fig{fig:2mmx1m_still_pu} we show the acoustic pressure and velocity at the ADCBC inflow over the course of the simulation. We can clearly see the growth of the primary instability in the acoustic envelope. When this primary thermoacoustic mode is fully developed, we expect the flame to quickly flatten and for the acoustic amplitude to plateau as the instability reaches a limit cycle. To predict growth rate and onset of secondary instability, one could also calculate the Rayleigh index RI introduced in \chap{ch:lit-review}, although this analysis is not performed here. True growth rates can also be calculated by finding the envelope of the acoustic data shown in \fig{fig:2mmx1m_still_pu} since $\log(\rm{env}(t)) \propto -ω_i t$ where $-ω_i$ is the growth rate and the function $\rm{env}(t)$ defines the acoustic envelope for these inflow acoustics. Increasing the growth rate of these modes in future simulations would allow us to reach and study the thermoacoustic instability faster. A spectrogram of this data is shown in \fig{fig:spectrogram}, where large spikes are seen across the whole simulation for $f_1 = \sim$150 Hz and $f_2 = \sim$400 Hz. These are very close to the frequencies predicted by the acoustic analysis in the previous section! We note, however, that we expect the interaction of the acoustics with the flame to modulate the resonating frequency \cite{silva2023IntrinsicThermoacousticInstabilities}. This remains unexplained as acoustic-flame coupling is not explored in the acoustic model. The dominance of the perturbed 1/4 mode in the acoustic fields is shown in \fig{fig:thermoac-reconstruct}, where the 1/4 mode can be seen clearly in each snapshot of the acoustic field. Note that although the 3/4 mode is also present, its amplitude is at least one order of magnitude throughout the simulation. This makes it difficult to observe in the full acoustic reconstruction.
 

@@ -1,13 +1,13 @@
 \section{The SUNSET Combustion Code}
 
-For the simulations performed in the remainder of this report, we use the \emph{Scalable Unstructured Node-SET} (SUNSET) code \cite{kingSunsetFlames,king2024MeshFreeFrameworkHighOrdera}, to perform DNS of the governing equations (described in \chap{ch:combust-model}) with high accuracy in domains of arbitrary complex geometries and highly variable node densities. That it is DNS allows us to simulate turbulent combustion without requiring any model for the subgrid-scale vortices present in turbulent flows. For the simulations performed in \chap{ch:results} we actually simulate laminar, not turbulent flows, but the simulation code nevertheless provides high accuracy discretisations such that discretisation error is reliably minimised. The method used to this end is the \emph{Local Anisotropic Basis Function Method} (LABFM), and is explained thoroughly in the proceeding section. Boundary conditions are provided via the \emph{Navier-Stokes Characteristic Boundary Conditions} (NSCBC) formalism, and are detailed in \sect{sec:NSCBC}.
+For the simulations performed in the remainder of this report, we use the \emph{Scalable Unstructured Node-SET} (SUNSET) code \cite{kingSunsetFlames,king2024MeshFreeFrameworkHighOrdera}, to perform DNS of the governing equations (described in \chap{ch:combust-model}) with high accuracy in domains of arbitrary complex geometries and highly variable node densities. The DNS allows us to simulate combustion without requiring any model for the flame. For the simulations performed in \chap{ch:results} we actually simulate laminar, not turbulent flows, but the simulation code nevertheless provides high accuracy discretisations such that discretisation error is reliably small. The method used to this end is the \emph{Local Anisotropic Basis Function Method} (LABFM), and is explained thoroughly in the proceeding section. Boundary conditions are provided via the \emph{Navier-Stokes Characteristic Boundary Conditions} (NSCBC) formalism, and are detailed in \sect{sec:NSCBC}.
 
 Time integration makes use of the explicit Runge-Kutta scheme denoted as RK3(2)4[2R+]C under the classification of \cite{kennedy2000LowStorageExplicitRunge}, which is a third order, low storage (only requiring two or three registers per field per node), four step method in time with embedded second order error estimation. Even under turbulent combustion, error accumulated in time stems primarily from spatial detail (such as thin reacting zones, small Kolmogorov vortices etc.) rather than temporal dynamics (such as the vortex energy cascade, acoustics and diffusion). Thus, a third order error correcting scheme is suitable and our focus remains on the discretisation scheme used.
 
-To ensure the stability of numerical solution, time steps $δ t$ are chosen dynamically. Specifically, such that the fastest travelling information in the solution may travel only $\cl{O}(δ x)$ where $δ x$ is the discretisation length scale \cite{courant1928UeberPartiellenDifferenzengleichungen}. Considering only the travelling of acoustic waves and diffusion terms through a computational domain of nodes $\vb{x}_i$ for $i \in \cl{I}$:
+To ensure the stability of numerical solution, time steps $δ t$ are chosen dynamically. Specifically, they are chosen such that the fastest travelling information in the solution may travel only $\cl{O}(δ x)$ where $δ x$ is the discretisation length scale \cite{courant1928UeberPartiellenDifferenzengleichungen}. Considering only the travelling of acoustic waves and diffusion terms through a computational domain $Ω$ of nodes $\vb{x}_i$ for $i \in \cl{N}_Ω$:
 \begin{equation} \label{eqn:dt-stab}
 \boxed{
-\delta t = \min_{i\,\in\,\cl{I}}\left[ \min \left( C_{\rm{aco}} \frac{δ x_i}{|\vb{u}_i| + c_i}, \: C_{\rm{mom}} \frac{δ x_i^2}{\cl{D}_{\rm{mom}, i}}, \:  C_{\rm{sp}} \frac{δ x_i^2}{\min_α \cl{D}_{α, i}}, \: C_{\rm{th}} \frac{δ x_i^2}{\cl{D}_{\rm{th}, i}} \right) \right]
+\delta t = \min_{i\,\in\,\cl{N}_Ω}\left[ \min \left( C_{\rm{aco}} \frac{δ x_i}{|\vb{u}_i| + c_i}, \: C_{\rm{mom}} \frac{δ x_i^2}{\cl{D}_{\rm{mom}, i}}, \:  C_{\rm{sp}} \frac{δ x_i^2}{\min_α \cl{D}_{α, i}}, \: C_{\rm{th}} \frac{δ x_i^2}{\cl{D}_{\rm{th}, i}} \right) \right]
 }
 \end{equation}
 where a subscript $i$ represents the value of that field at node $\vb{x}_i$. Variables $\cl{D}_{\rm{mom}, i}$, $\cl{D}_{α, i}$ and $\cl{D}_{\rm{th}, i}$ are local diffusion scales corresponding to viscosity, species mass transport and heat diffusion:
@@ -16,7 +16,7 @@ where a subscript $i$ represents the value of that field at node $\vb{x}_i$. Var
 \end{equation}
 and the constants $C_\rm{aco}$, $C_\rm{mom}$, $C_\rm{sp}$ and $C_\rm{th}$ are determined separately by the stability of time integrator.
 
-Parallelism is primarily implemented via domain decomposition, exploiting the local nature of the discretisation method by splitting the domain into $N_{\rm{procs}}$ smaller sub-domains used by each of the $N_{\rm{procs}}$ processors. Under the architecture of a distributed system, each processor stores data of the nodes in its subdomain and information is passed between processors via the MPI \cite{walker1996MPIStandardMessage} standard where needed. Load balancing is achieved simply by ensuring the number of nodes per processor is roughly the same. Due to the size of stencils required by LABFM, there is a minimum size of roughly 1000 nodes per processor, meaning there is a practical maximum number of processors which may be used to parallelise the simulation of a given  computational domain discretisation.
+Parallelism is primarily implemented via domain decomposition, exploiting the local nature of the discretisation method by splitting the domain into $N_{\rm{procs}}$ smaller sub-domains used by each of the $N_{\rm{procs}}$ processors. Under the architecture of a distributed system, each processor stores data of the nodes in its subdomain and information is passed between processors via the MPI \cite{walker1996MPIStandardMessage} standard where needed. Load balancing is achieved by ensuring the number of nodes per processor is roughly the same. Due to the size of stencils required by LABFM, there is a minimum load of roughly 1000 nodes per processor, meaning there is a practical maximum number of processors which may be used to parallelise a given discretisation.
 
 
 
@@ -25,12 +25,12 @@ Parallelism is primarily implemented via domain decomposition, exploiting the lo
 \section{The Local Anisotropic Basis Function Method}
 \sectionmark{LABFM}
 
-LABFM \cite{king2024MeshFreeFrameworkHighOrder, king2020HighOrderDifference, king2024MeshFreeFrameworkHighOrdera, king2022HighOrderSimulationsIsothermal, broadley2025HighorderMeshfreeDirect, starepravo2025CanNeuralNetworks} is a high order spatial method used particularly in the computation of fluid flows. It allows for the calculation of arbitrary order approximations to spatial derivatives with arbitrary orders of accuracy, all on unstructured, mesh-free node sets. In keeping with the tradition set forth in prior methods (e.g.\ finite differences), polynomial interpolation is used as a first step before making derivative approximations. Specifically, we choose to set out the method in the context of making a high order interpolation based off finitely many discrete function values $φ_j$, before extending this to high-order derivatives, where further assumptions can be made to simplify derivation
+LABFM \cite{king2020HighOrderDifference} is a high order spatial method used particularly in the computation of fluid flows. It allows for the calculation of arbitrary order approximations to spatial derivatives with arbitrary orders of accuracy, all on unstructured, mesh-free node sets. In keeping with the tradition set forth in prior methods (e.g.\ finite differences), polynomial interpolation is used as a first step before making derivative approximations. Specifically, we choose to set out the method in the context of making a high order interpolation based off finitely many discrete function values $φ_j$, before extending this to high-order derivatives, where further assumptions can be made to simplify the derivation.
 
 
 \subsection{High-Order Interpolations}
 
-Consider a location $\vb{x}$ surrounded locally by finitely many nodes $\vb{x}_j$ which are enumerated by $j \in \cl{N}(\vb{x})$, where $\abs{\vb{x} - \vb{x}_j} < h(\vb{x})$ for all $j$. Assume the field $φ(\vb{x})$, which is only known at the points $φ_j = φ(\vb{x}_j)$, is smooth enough.\footnote{Such that as many derivatives of $φ$ as are used in the derivation below are available to us.} Then, we express the interpolated value $φ(\vb{x})$ as a linear combination of the surrounding values $φ_j$:
+Consider a location $\vb{x}$ surrounded locally by finitely many nodes $\vb{x}_j$ which are enumerated by $j \in \cl{N}(\vb{x})$, where $\abs{\vb{x} - \vb{x}_j} < h(\vb{x})$ for all $j$. Assume the field $φ(\vb{x})$, which is only known at the points $φ_j = φ(\vb{x}_j)$, is smooth enough (such that as many derivatives of $φ$ as are used in the derivation below are available to us). Then, we express the interpolated value $φ(\vb{x})$ as a linear combination of the surrounding values $φ_j$:
 \begin{equation} \label{eqn:L}
 L^{\rm{int}}[φ](\vb{x}) \equiv \sum_{j \in \cl{N}(\vb{x})} φ_j w^{\rm{int}}(\vb{x}, \vb{x}_j) \approx φ(\vb{x}).
 \end{equation}
@@ -74,7 +74,7 @@ What's left is to find the weights of $w^{\rm{int}}$ for any point $\vb{x}$ and 
 \begin{equation}
 w^{\rm{int}}(\vb{x}, \vb{x}_j) = \vv{W}^k(\vb{x}_j - \vb{x}) \cdot \vv{\Psi}^{\rm{int}, k}(\vb{x})
 \end{equation}
-where the anisotropy is seen in the dependence of $\vv{W}^k$ on $(\vb{x}_j - \vb{x})$ rather than $|\vb{x}_j - \vb{x}|$ (contrasting to the radial basis function, RBF, method). Assuming that $\vv{W}^k$ comprises some suitable \emph{anisotropic basis functions} (ABFs) \cite{king2022HighOrderSimulationsIsothermal}, we must find the vector of weights $\vv{\Psi}^{\rm{int}, k}(\vb{x})$. This is done by substituting the new form into the vector of moments:
+where the anisotropy is seen in the dependence of $\vv{W}^k$ on $(\vb{x}_j - \vb{x})$ rather than $|\vb{x}_j - \vb{x}|$ (contrasting to the radial basis function, RBF, method). Assuming that $\vv{W}^k$ comprises some suitable \emph{Anisotropic Basis Functions} (ABFs) \cite{king2022HighOrderSimulationsIsothermal}, we must find the vector of weights $\vv{\Psi}^{\rm{int}, k}(\vb{x})$. This is done by substituting the new form into the vector of moments:
 \begin{align}
 \vv{C}^{\rm{int}, k}
 \approx \vv{B}^{\rm{int}, k}(\vb{x})
@@ -93,7 +93,7 @@ where $M$ is a $n \times n$ matrix and $n$ is the number of components of $\vv{C
 \label{fig:labfm-stencil}
 \end{figure}
 
-If we choose to evaluate a derivative at $\vb{x}$ instead, very little changes besides the following. Firstly, we assume that the point $\vb{x}$ is itself a node in our stencil, $\vb{x} = \vb{x}_i$, such that $\abs{\vb{x}_{ij}} < h_i$ for all $\vb{x}_j$ provided $\vb{x}_{ij} \equiv \vb{x}_j - \vb{x}_i$. An example discretisation and stencil is shown in \fig{fig:labfm-stencil}. Then, taking a page out of centred finite differences, we redefine our operator via the differences $φ_{ij} \equiv φ_j - φ_i$:
+If we choose to evaluate a derivative at $\vb{x}$ instead, very little changes besides the following. Firstly, we assume that the point $\vb{x}$ is itself a node in our stencil, $\vb{x} = \vb{x}_i$, such that $\abs{\vb{x}_{ij}} < h_i$ for all $\vb{x}_j$ provided $\vb{x}_{ij} \equiv \vb{x}_j - \vb{x}_i$. An example discretisation and stencil is shown in \fig{fig:labfm-stencil}. Then, taking a page out of centred finite differences, we redefine our operator via a weighted sum of the differences $φ_{ij} \equiv φ_j - φ_i$:
 \begin{equation} \label{eqn:labfm-L}
 L[φ]_i \equiv \sum_{j \in \cl{N}_i} φ_{ij} w_{i, j}.
 \end{equation}
@@ -109,22 +109,20 @@ L[φ]_i
 \approx \vv{D}^k[φ]_i \, \cdot \sum_{j \in \cl{N}_i} \vv{X}^k_{ij} w_{i, j}
 \equiv \vv{D}^k[φ]_i \, \cdot \vv{B}^k_i \approx \vv{D}^k[φ]_i \, \cdot \vv{C}^k
 \end{align}
-where we have reintroduced the vector of moments, $\vv{B}^k_i$, at node $\vb{x}_i$. As above, this approximation has $\cl{O}(h_i^{k + 1})$ truncation error. In this case, however, to ensure consistency we instead require $w_{i, j} = \cl{O}(h_i^d)$ where $d$ is the order of derivative we are approximating. This results in a $\cl{O}(h_i^{k + 1 - d})$ approximation thus far.
-
-Once again, we represent the weights $w_{i, j}$ as a weighted average of the $k$ ABFs:
+where we have reintroduced the vector of moments, $\vv{B}^k_i$, at node $\vb{x}_i$. As above, this approximation introduces $\cl{O}(h_i^{k + 1})$ truncation error. In this case, however, to ensure consistency we instead require $w_{i, j} = \cl{O}(h_i^d)$ where $d$ is the order of derivative we are approximating. This results in a $\cl{O}(h_i^{k + 1 - d})$ approximation thus far. Once again, we represent the weights $w_{i, j}$ as a weighted average of the $k$ ABFs:
 \begin{equation}
 w_{i, j} = \vv{W}^k_{ij} \cdot \vv{\Psi}^k_i
 \quad \text{where} \quad
 \vv{W}^k_{ij} \equiv \vv{W}^k(\vb{x}_{ij})
 \end{equation}
-with the same form of linear system $\vv{C}^k = M_i \, \vv{\Psi}^k_i$ where $M_i \equiv \sum_{j \in \cl{N}_i} \vv{X}^k_{ij} \otimes \vv{W}^k_{ij}$. Once solutions to the linear system are found, we should have weights $w_{i, j}$ to order of accuracy $(k + 1 - d)$ provided again that $M_i$ is well-posed and $h_i$ remains small.
+with the same form of linear system $\vv{C}^k = M_i \, \vv{\Psi}^k_i$ where $M_i \equiv \sum_{j \in \cl{N}_i} \vv{X}^k_{ij} \otimes \vv{W}^k_{ij}$. Once solutions to the linear system are found, we have the weights $w_{i, j}$ to order of accuracy $(k + 1 - d)$ provided again that $M_i$ is well-posed and $h_i$ remains small.
 
 
 
 
 \subsection{Matrix Conditioning and Choice of Anisotropic Basis Functions}
 
-The computational accuracy of the solutions in the linear system shown above is determined by the condition number of the matrix $M_i$. Given we expect any disordered set of nodes $\vb{x}_j$ for $j \in \cl{N}_i$ close to $\vb{x}_i$ for the moment, there are no further assumptions we can make on $\vv{X}^k_{ij}$ yet. The choice of ABFs, however, can greatly improve the conditioning of $M_i$ by ensuring a linear independence of its columns, regardless of the order $k$ used. In particular, orthogonal basis functions do this automatically, such as the orthogonal Hermite and Legendre polynomials, and the Fourier basis modes -- combinations of $\sin(nx)$, $\cos(nx)$, $\sin(ny)$ and $\cos(ny)$ for different values of $n < k$.
+The computational accuracy of the solutions in the linear system above is determined by the condition number of the matrix $M_i$. Given we expect any disordered set of nodes $\vb{x}_j$ for $j \in \cl{N}_i$ close to $\vb{x}_i$ for the moment, there are no further assumptions we can make on $\vv{X}^k_{ij}$ yet. The choice of ABFs, however, can greatly improve the conditioning of $M_i$ by ensuring a linear independence of its columns, regardless of the order $k$ used. In particular, orthogonal basis functions do this automatically, such as the orthogonal Hermite and Legendre polynomials, and the Fourier basis modes -- combinations of $\sin(nx)$, $\cos(nx)$, $\sin(ny)$ and $\cos(ny)$ for different values of $n < k$.
 
 It is also prudent to ensure that the weight values $w_{i ,j}$ do not change depending on the specific stencil size $h_i$ which we have taken. This is equivalent to ensuring the analysis may be done in a non-dimensional sense -- so derivative operators may be scaled to whatever dimensions are required in a particular simulation. In general, our ABFs already do not scale with $h_i$, but the vector of monomials $\vv{X}^k_{ij}$ does. We can cancel out this dependence by simply introducing the matrix $H_i = \rm{diag}(h, h, h^2, h^2, h^2, ..., h^k)$ and instead solving the system $H_i^{-1} \vv{C}^k = (H_i^{-1} M_i) \, \vv{\Psi}^k_i$ where instead $H_i^{-1} M_i = \sum_{j \in \cl{N}_i} (H_i^{-1} \vv{X}^k_{ij}) \otimes \vv{W}^k_{ij}$. This system condition number can no longer scale with $h_i$, since:
 \begin{equation}
@@ -138,28 +136,28 @@ The subscript $m$ is used for vector components, as above, and the index $n(m)$ 
 
 \subsection{Stencil Size, Computational Cost and Sampling}
 
-One major advantage of LABFM and other unstructured methods, is that the distance between nodes, $\abs{\vb{x}_{ij}}$, and the resulting stencil size, $h_i$, is allowed to vary in space. This means we can move from a region of low-density nodes in, for example, a non-reacting part of our computational domain, to a high-density region where the flame is. But there is a limit to how fast this variation can occur, since any given order of polynomial reconstruction $k$, has $n(k)$ ABFs which must each be accurately sampled. Equivalently, this means we require at least one node per each of the $2k$ even slices of the circular stencil (each with angle $\pi / k$), assuming two-dimensions \cite{king2020HighOrderDifference}. This, of course, means that there is a practical lower limit to the number of nodes $N_{\rm{st}}$ required in a stencil which is well above the lower limit of $n(k)$ nodes required by compact methods like \cite{jensen1972FiniteDifferenceTechniques}. This results in a quadratic growth in required nodes as the slices get smaller, since $k \sim h_i \propto \sqrt{N_{\rm{st}}}$. Often, the stencil is increased furthermore to ensure a reliable sampling and improve stability and accuracy properties in spite of a strongly uneven node distribution. In a typical configuration, at $k = 6$ we may use $N_{\rm{st}} \approx 50$ and for $k = 8$ we may use $N_{\rm{st}} \approx 80$. In three-dimensions this would be a cubic growth instead, since $k \sim h_i \propto \sqrt[3]{N_{\rm{st}}}$. Another obvious consequence of the sampling requirement, is that the order of LABFM used must be decreased at boundaries as no nodes are available to accurately sample the ABFs outside the computational domain.
+One major advantage of LABFM and other unstructured methods, is that the distance between nodes, $\abs{\vb{x}_{ij}}$, and the resulting stencil size, $h_i$, is allowed to vary in space. This means we can move from a region of low-density nodes in, for example, an inert part of our computational domain, to a high-density region where the flame is. But there is a limit to how fast this variation can occur, since any given order of polynomial reconstruction $k$, has $n(k)$ ABFs which must each be accurately sampled. Equivalently, this means we require at least one node per each of the $2k$ even slices of the circular stencil (each with angle $\pi / k$), assuming two-dimensions \cite{king2020HighOrderDifference}. This, of course, means that there is a practical lower limit to the number of nodes $N_{\rm{st}}$ required in a stencil which is well above the lower limit of $n(k)$ nodes required by compact methods like GFDM in \cite{jensen1972FiniteDifferenceTechniques}. This results in a quadratic growth in required nodes as the slices get smaller, since $k \sim h_i \propto \sqrt{N_{\rm{st}}}$. Often, the stencil is increased furthermore to ensure a reliable sampling and improve accuracy properties in spite of an uneven node distribution. In a typical configuration, at $k = 6$ we may use $N_{\rm{st}} \approx 50$ and for $k = 8$ we may use $N_{\rm{st}} \approx 80$. In three-dimensions this would be a cubic growth instead, since $k \sim h_i \propto \sqrt[3]{N_{\rm{st}}}$. Another obvious consequence of the sampling requirement, is that the order of LABFM used must be decreased at boundaries as no nodes are available to sample the ABFs outside the computational domain.
 
-Provided these conditions are met, this means we can approximate any derivative we like to arbitrary order simply by preprocessing the values of $w_{i, j}$ at each node\footnote{Only provided the nodes do not move. This precludes a Lagrangian formulation for LABFM.} and evaluating $L[φ]_i$ during the simulation as we like. The preprocessing step is crucial as it means all that has to be done is calculate the sum in \equ{eqn:labfm-L} every time a derivative of an arbitrary function $φ$ is required at a node $i$. The computational complexity of this operation is $\cl{O}(N_{\rm{st}})$. For a simulation of $N_{\rm{tot}}$ nodes, each with a constant stencil size of $N_{\rm{tot}}$ nodes, the cost becomes $\cl{O}(N_{\rm{tot}} N_{\rm{st}})$ to evaluate the same derivative of $φ$ for each node.
+Provided these conditions are met, this means we can approximate any derivative we like to arbitrary order simply by preprocessing the values of $w_{i, j}$ at each node\footnote{Only provided the nodes do not move. This precludes a Lagrangian formulation for LABFM.} and evaluating $L[φ]_i$ during the simulation as we like. The preprocessing step is crucial as it means all that has to be done is calculate the sum in \equ{eqn:labfm-L} every time a derivative of an arbitrary function $φ$ is required at a node $i$. The computational complexity of this operation is $\cl{O}(N_{\rm{st}})$. For a simulation of $N_{\rm{tot}}$ nodes, each with a constant stencil size of $N_{\rm{st}}$ nodes, the cost becomes $\cl{O}(N_{\rm{tot}} N_{\rm{st}})$ to evaluate the same derivative of $φ$ for each node.
 
 
 
 \subsection{Operator Stability and Filtering}
 
-Numerical approximations to differential operators such as the above contain error of two different behaviours: diffusive and dispersive. The former promotes the spurious damping of the signal, and the latter results in an incorrect phase velocity $c(κ)$ for a given wavenumber mode $κ$ in the solution. These can be seen as the real and imaginary parts of eigenvalues to the linear stability problem concerning the operator. Unsurprisingly, the amplitude of these error terms gets smaller, faster, when the order of method increases. The same is true in the case of LABFM, with the unfortunate caveat that the higher order formulations result in eigenvalues which have positive real parts for the highest wavenumbers. This corresponds to an inverted diffusion effect for the shortest wavelength inaccuracies, such that any small floating-point errors destroy the simulation after only a few time steps. The natural solution to this, is to preprocess weights $w^{\rm{HV}}_{i, j}$ for a \emph{hyperviscosity} operator $-Δ^2$, $Δ^3$ or $-Δ^4$ and apply this hyperviscosity at the end of each time step. This results in a filter where the wavenumber modes close to and above the \emph{Nyquist} wavenumber \cite{nyquist1928CertainTopicsTelegraph} are severely damped, without affecting the broader solution comprised of lower wavenumbers. Compared to other filtering methods, such as the direct removal of high wavenumber modes via spectral Fourier analysis, this has the obvious benefit of being easily calculated under the same LABFM formulation as the other derivatives (usually first- and second-order derivatives in the case of Navier-Stokes).
+Numerical approximations to differential operators such as the above contain error of two different behaviours: diffusive and dispersive. The former promotes the spurious damping of the signal, and the latter results in an incorrect phase velocity $c(κ)$ for a given wavenumber mode $κ$ in the solution. These can be seen as the real and imaginary parts of eigenvalues to the linear stability problem concerning the operator $L$. Unsurprisingly, the amplitude of these error terms gets smaller, faster, when the order of method increases. The same is true in the case of LABFM, with the unfortunate caveat that the higher order formulations result in eigenvalues which have positive real parts for the highest wavenumbers. This corresponds to an inverted diffusion effect for the shortest wavelength inaccuracies, such that any small floating-point errors destroy the simulation after only a few time steps. The natural solution to this, is to preprocess weights $w^{\rm{HV}}_{i, j}$ for a \emph{hyperviscosity} operator $-Δ^2$, $Δ^3$ or $-Δ^4$ and apply this hyperviscosity at the end of each time step. This results in a filter where the wavenumber modes close to and above the Nyquist wavenumber \cite{nyquist1928CertainTopicsTelegraph} are severely damped, without affecting the broader solution comprised of lower wavenumbers. Compared to other filtering methods, such as the direct removal of high wavenumber modes via spectral Fourier analysis, this has the obvious benefit of being easily calculated under the same LABFM formulation as the other derivatives (usually first- and second-order derivatives in the case of Navier-Stokes).
 
 
 \subsection{Boundary Discretisation}
 
 \begin{figure}[t]
 \centering
-\includegraphics[scale=0.65]{assets/imgs/LABFM-boundary-stencils.pdf}
+\includegraphics[scale=0.60]{assets/imgs/LABFM-boundary-stencils.pdf}
 \vspace*{0.5em}
 \caption{Diagram showing a LABFM discretisation of an inflow and curved wall.}
 \label{fig:labfm-boundary}
 \end{figure}
 
-Under LABFM, the majority of the computational domain is discretised with an unstructured point cloud. This leaves the boundaries (excluding periodic and symmetry boundaries) which are instead discretised using uniformly spaced boundary nodes alongside four more nodes which are evenly spaced normal to the boundary \cite{king2022HighOrderSimulationsIsothermal}. The normal nodes allow normal gradients to be calculated using one-sided (boundary and first row) and centred (third row) finite differences -- these nodes are hence referred to as finite difference nodes. Tangential gradients are calculated via a transformed one-dimensional LABFM on the row of finite difference nodes tangential to the boundary. For the third and fourth row of finite difference nodes, derivatives are simply calculated using lower, usually fourth-order, LABFM. \fig{fig:labfm-boundary} shows these discretisations in a model domain containing a curved wall near an inflow. Importantly, these finite difference nodes can be very efficiently placed into the domain provided the curved boundaries are smooth enough. The rest of the interior point cloud or unstructured nodes are placed after based on an energy minimisation approach \cite{king2020HighOrderDifference}.
+Under LABFM, the majority of the computational domain is discretised with an unstructured point cloud. This leaves the boundaries (excluding periodic and symmetry boundaries) which are instead discretised using uniformly spaced boundary nodes alongside four more nodes which are evenly spaced normal to the boundary \cite{king2022HighOrderSimulationsIsothermal}. The normal nodes allow normal gradients to be calculated using one-sided (boundary and first row) and centred (second row) finite differences -- these nodes are referred to as finite difference nodes. Tangential gradients are calculated via a transformed one-dimensional LABFM on the row of finite difference nodes tangential to the boundary. For the third and fourth row of finite difference nodes, derivatives are simply calculated using lower, usually fourth-order, LABFM. \fig{fig:labfm-boundary} shows these discretisations in a model domain containing a curved wall near an inflow. Importantly, these finite difference nodes can be very efficiently placed into the domain provided the curved boundaries are smooth enough. The rest of the interior point cloud or unstructured nodes are placed after based on an energy minimisation approach \cite{king2020HighOrderDifference}.
 
 
 
@@ -169,7 +167,7 @@ Under LABFM, the majority of the computational domain is discretised with an uns
 \section{Navier-Stokes Characteristic Boundary Conditions} \label{sec:NSCBC}
 \sectionmark{NSCBC}
 
-Alongside spatial discretisation, boundary conditions comprise one of the most important parts of any simulation code. Not least because of the modelling which is enforced, but also because of changes to a simulation code's architecture which are necessitated as a result. The NSCBC \cite{poinsot1992BoundaryConditionsDirect,poinsot2001TheoreticalNumericalCombustion} formulation represents not a specific type of boundary condition, but a sort of instruction set to be applied to whichever boundary it concerns. The method was first outlined in \cite{thompson1987TimeDependentBoundary,thompson1987LecturesSeriesComputational,thompson1990TimeDependentBoundaryConditions} for non-reacting one-dimensional flows, in what is now known as the \emph{Locally One-Dimensional Inviscid} (LODI) approximation. The NSCBC formulation was developed as an extension of this to higher-dimensional, reacting flows of imperfect gases, where diffusive effects are included in extra physical conditions on top of those prescribed in the LODI case.
+Alongside spatial discretisation, boundary conditions comprise one of the most important parts of any simulation code. Not least because of the modelling which is enforced, but because of the changes to a simulation code's architecture which are necessitated as a result. The LODI formulation \cite{thompson1987TimeDependentBoundary,thompson1987LecturesSeriesComputational,thompson1990TimeDependentBoundaryConditions} represents not a specific type of boundary condition, but a sort of instruction set to be applied to whichever boundary it concerns. The NSCBC formulation \cite{poinsot1992BoundaryConditionsDirect,poinsot2001TheoreticalNumericalCombustion} was developed as an extension of this to higher-dimensional, reacting flows of imperfect gases, where diffusive effects are included in extra physical conditions on top of those prescribed in the LODI case.
 
 
 \subsection{The Locally One-Dimensional Inviscid Approximation} \label{sec:LODI}
@@ -178,7 +176,7 @@ Any hyperbolic system can be written in the form:
 \begin{equation} \label{eqn:hyp-source}
 \pdv{\und{U}}{t} + \vnab \cdot\und{\vb{F}} + \und{B} = 0,
 \end{equation}
-where $\und{U}$ are the $N_\rm{V}$ conservative variables, $\und{\vb{F}}$ are the fluxes for each of these variables in each dimension and $\und{B}$ are source terms. We assume that these terms are non-diffusive for this approximation. Bold variables represent vectors in space, as usual, with their components determined by superscript indices like $F^x$ being the $x$-component of $\vb{F}$. Vectors and matrices of variables, however, are underlined once and twice, respectively, with the intention of providing more clarity. This equation is unique up to linear combinations of the conserved variables, but can be transformed into a form for the primitive variables $\und{V}$:
+where $\und{U}$ are the $N_\rm{V}$ conservative variables, $\und{\vb{F}}$ are the fluxes for each of these variables in each dimension and $\und{B}$ are source terms. We assume that these terms are non-diffusive for this approximation. Bold variables represent vectors in space, as usual, with their components determined by superscript indices: $F^x$ is the $x$-component of $\vb{F}$. Vectors and matrices of the variables, are underlined once and twice, respectively, with the intention of providing more clarity. This equation is unique up to linear combinations of the conserved variables, but can be transformed into a form for some primitive variables $\und{V}$:
 \begin{equation}
 \pdv{\und{V}}{t} + \undt{\vb{A}} \cdot \vnab  \und{V} + \und{b} = 0
 \end{equation}
@@ -200,7 +198,7 @@ The matrix $\undt{P}$ is the Jacobian matrix, $\undt{\vb{A}}$ represents the con
 \quad \text{and} \quad
 \und{C} \equiv \undt{P} \, \und{c}.
 \end{equation}
-The statement that the system is hyperbolic is now the statement that the $N_\rm{V}$ eigenvalues $λ_m = λ_m(\und{V})$ of $\undt{A}^x$ are real and can be ordered like $λ_1 \leq \dots \leq λ_{N_\rm{V}}$. Owing to this, we consider the left-eigenvectors $\und{l}_m = \und{l}_m(\und{V})$ of $\undt{A}^x$:
+The statement that the system is hyperbolic is equivalent the statement that the $N_\rm{V}$ eigenvalues $λ_m = λ_m(\und{V}\,)$ of $\undt{A}^x$ are real and can be ordered like $λ_1 \leq \dots \leq λ_{N_\rm{V}}$. Owing to this, we consider the left-eigenvectors $\und{l}_m = \und{l}_m(\und{V}\,)$ of $\undt{A}^x$:
 \begin{equation}
 \und{l}_m^T \undt{A}^x = λ_m \und{l}_m^T.
 \end{equation}
@@ -210,11 +208,11 @@ Multiplying equation \equ{eqn:with_A} by an eigenvector we project our equation 
 \quad \iff \quad
 \pdv{J_m}{t} + λ_m \pdv{J_m}{x} = 0.
 \end{boxequ}
-We notice that along any trajectory $\vb{x}_m(t)$ which satisfies $\dd{\vb{x}_m}/\dd{t} = λ_m$ (i.e.\ the m\sus{th} characteristic has velocity $λ_m$), the invariant obeys:
+We notice that along any trajectory $\vb{x}_m(t)$ which satisfies $\dd{\vb{x}_m}/\dd{t} = λ_m$ (i.e.\ the $m$\sus{th} characteristic has velocity $λ_m$), the invariant obeys:
 \begin{equation}
 \dv{J_m}{t} = 0.
 \end{equation}
-This tells us the $J_m$ are constant along the trajectories $\vb{x}_m(t)$, which completes the characteristic analysis traditionally. But, numerically $J_m$ is not so useful since it needs to be transformed back into the primitive variables anyway for a simulation. Instead we use the form of the equation in primitive or conservative variables under the transformation $\undt{A}^x = \undt{S} \, \undt{Λ} \, \undt{S}^{-1}$ where $\undt{Λ}=\rm{diag}(λ_1, \dots, λ_{N_\rm{V}})$ is the diagonal matrix of eigenvalues and rows of the matrix $\undt{S}^{-1}$ are the corresponding \emph{left eigenvectors} $\und{l}_m^T$:
+This tells us the $J_m$ are constant along the trajectories $\vb{x}_m(t)$, which completes the characteristic analysis traditionally. But, numerically $J_m$ is not so useful since it needs to be transformed back into the conservative variables anyway for a simulation. Instead we use the form of the equation in primitive or conservative variables under the transformation $\undt{A}^x = \undt{S} \, \undt{Λ} \, \undt{S}^{-1}$ where $\undt{Λ} \equiv \rm{diag}(λ_1, \dots, λ_{N_\rm{V}})$ is the diagonal matrix of eigenvalues and rows of the matrix $\undt{S}^{\,-1}$ are the corresponding \emph{left eigenvectors} $\und{l}_m^T$:
 \begin{gather}
 \cl{L}_m \equiv λ_m \pdv{J_m}{x} \equiv λ_m \und{l}_m^T \pdv{\und{V}}{x}, \\
 \implies \quad
@@ -225,12 +223,14 @@ This tells us the $J_m$ are constant along the trajectories $\vb{x}_m(t)$, which
 }
 \label{eqn:char-bcs-end}
 \end{gather}
-where $\und{\cl{L}} = (\cl{L}_1, \dots, \cl{L}_{N_\rm{V}})$. So each value $\cl{L}_m$ then represents the convection of the m\sus{th} characteristic wave at a point in space. The \emph{Locally One-Dimensional Inviscid} (LODI) characteristic boundary formulation\footnote{So-called as we preclude diffusive effects in any hyperbolic system of equations and we only observe characteristic waves moving over a boundary normal to a single dimension, i.e.\ not at a corner.} focuses on points at the boundary of a computational domain, and posits that outgoing characteristics through this boundary can be calculated as normal using one-sided derivatives -- which are innately upwinded -- but characteristics entering the domain, such as an acoustic reflection, must instead be modelled. The key to LODI then, is that these incoming waves may be controlled by imposing their respective values of $\cl{L}_m$ at that boundary.
-
-Note that, because we have the matrix $\undt{S}^{-1}$ not $\undt{S}$, we find the flux term $\und{d} \equiv \undt{S} \, \und{\cl{L}}$ by solving the linear system:
+where $\und{\cl{L}} \equiv (\cl{L}_1, \dots, \cl{L}_{N_\rm{V}})$. So each value $\cl{L}_m$ then represents the convection of the $m$\sus{th} characteristic wave at a point in space. Note that, because we have the matrix $\undt{S}^{-1}$ not $\undt{S}$, we find the flux term $\und{d} \equiv \undt{S} \, \und{\cl{L}}$ by solving the linear system:
 \begin{equation}
 \undt{S}^{-1} \und{d} = \und{\cl{L}}.
 \end{equation}
+
+The LODI formulation focuses on boundary nodes, and posits that outgoing characteristics through this boundary can be calculated as normal using one-sided derivatives -- which are innately upwinded -- but characteristics entering the domain, such as an acoustic reflection, must instead be modelled. The key to LODI then, is that these incoming waves may be controlled by imposing their respective values of $\cl{L}_m$ at that boundary.
+
+
 
 
 
@@ -239,7 +239,7 @@ Note that, because we have the matrix $\undt{S}^{-1}$ not $\undt{S}$, we find th
 
 \begin{figure}[t]
 \centering
-\includegraphics[scale=0.65]{assets/imgs/NSCBC-L.pdf}
+\includegraphics[scale=0.60]{assets/imgs/NSCBC-L.pdf}
 \caption{Diagram of $\cl{L}_m$ values for a three-dimensional computational domain simulating a reacting flow. The direction and colour of arrows signifies the direction and strength of the corresponding wave speed $λ_m$.}
 \label{fig:NSCBC}
 \end{figure}
@@ -253,7 +253,7 @@ The LODI approximation of the governing equations of perfect, reacting gases fir
 \pdv{ρ Y_α}{t} &+ \vnab  \cdot [ρ Y_α \vb{u}] && - \dot{ω}_α &&= 0
 \end{alignat}
 \end{subequations}
-for $α = 1, \dots, N_{\rm{S}}$. The energy $e$ modelled here is the \emph{internal energy of a perfect gas} rather than the total energy specified in \chap{ch:combust-model}. The algebraic equations for internal energy and pressure are, in three-dimensions:
+for $α = 1, \dots, N_{\rm{S}}$. The energy $e$ modelled here is the internal energy of a perfect gas with constant molecular mass, rather than the total energy specified in \chap{ch:combust-model}. The algebraic equations for internal energy and pressure are, in three-dimensions:
 \begin{equation}
 ρ e = ρ E_{\rm{th}} + ρ E_{\rm{ki}},
 \quad \text{where} \quad
@@ -300,12 +300,12 @@ u^x & ρ & 0 & 0 & 0 & 0 & \\
 This gives us the full equations in the primitive variables, the full form of which is omitted. Considering the eigenvalue problem of $\undt{A}^x$, we have:
 \begin{subequations} \label{eqn:λ_l_L}
 \begin{alignat}{5}
-λ_1 &= u^x - c  \qquad && \und{l}^T_1 &&= (0, -ρ c, 0, 0, 1, 0, \dots) \quad && \text{and} \quad \cl{L}_1 &&= λ_1 \left(\pdv{p}{x} - ρ c \pdv{u^x}{x}\right), \\
-λ_2 &= u^x      \qquad && \und{l}^T_2 &&= (c^2, 0, 0, 0, -1, 0, \dots)  \quad && \text{and} \quad \cl{L}_2 &&= λ_2 \left(c^2 \pdv{ρ}{x} - \pdv{p}{x}\right), \\
-λ_3 &= u^x      \qquad && \und{l}^T_3 &&= (0, 0, 1, 0, 0, 0, \dots)     \quad && \text{and} \quad \cl{L}_3 &&= λ_3 \pdv{u^y}{x}, \\
-λ_4 &= u^x      \qquad && \und{l}^T_4 &&= (0, 0, 0, 1, 0, 0, \dots)     \quad && \text{and} \quad \cl{L}_4 &&= λ_4 \pdv{u^z}{x}, \\
-λ_5 &= u^x + c  \qquad && \und{l}^T_5 &&= (0, ρ c, 0, 0, 1, 0, \dots)     \quad && \text{and} \quad \cl{L}_5 &&= λ_5 \left(\pdv{p}{x} + ρ c \pdv{u^x}{x}\right), \\
-λ_{5 + 1} &= u^x      \qquad && \und{l}^T_{5 + 1} &&= (0, 0, 0, 0, 0, 1, \dots)     \quad && \text{and} \quad \cl{L}_{5 + 1} &&= λ_{5 + 1} \pdv{Y_1}{x}
+λ_1 &= u^x - c,  \qquad && \und{l}^T_1 &&= (0, -ρ c, 0, 0, 1, 0, \dots) \quad && \text{and} \quad \cl{L}_1 &&= λ_1 \left(\pdv{p}{x} - ρ c \pdv{u^x}{x}\right), \\
+λ_2 &= u^x,      \qquad && \und{l}^T_2 &&= (c^2, 0, 0, 0, -1, 0, \dots)  \quad && \text{and} \quad \cl{L}_2 &&= λ_2 \left(c^2 \pdv{ρ}{x} - \pdv{p}{x}\right), \\
+λ_3 &= u^x,      \qquad && \und{l}^T_3 &&= (0, 0, 1, 0, 0, 0, \dots)     \quad && \text{and} \quad \cl{L}_3 &&= λ_3 \pdv{u^y}{x}, \\
+λ_4 &= u^x,      \qquad && \und{l}^T_4 &&= (0, 0, 0, 1, 0, 0, \dots)     \quad && \text{and} \quad \cl{L}_4 &&= λ_4 \pdv{u^z}{x}, \\
+λ_5 &= u^x + c,  \qquad && \und{l}^T_5 &&= (0, ρ c, 0, 0, 1, 0, \dots)     \quad && \text{and} \quad \cl{L}_5 &&= λ_5 \left(\pdv{p}{x} + ρ c \pdv{u^x}{x}\right), \\
+λ_{5 + 1} &= u^x,      \qquad && \und{l}^T_{5 + 1} &&= (0, 0, 0, 0, 0, 1, \dots)     \quad && \text{and} \quad \cl{L}_{5 + 1} &&= λ_{5 + 1} \pdv{Y_1}{x}
 \end{alignat}
 \end{subequations}
 and so on. For the inverse problem:
@@ -319,26 +319,27 @@ and so on. For the inverse problem:
 & \pdv{Y_1}{x} &&= \frac{\cl{L}_{5 + 1}}{λ_{5 + 1}} && \quad \text{and} \quad && d_{5 + 1} &&= \cl{L}_{5 + 1}
 \end{alignat}
 \end{subequations}
-and so on. Evidently, the eigenvalues $λ_1$ and $λ_5$ correspond to the speed of sound but since positive $x$ points into the domain, only one of these corresponds to an acoustic wave entering the domain.
+and so on. Evidently, the eigenvalues $λ_1$ and $λ_5$ correspond to the speed of sound but only one corresponds to an acoustic wave entering the domain.
 
 
 \subsection{Non-Reflecting Subsonic Boundaries}
 
 \subsubsection{Outflows}
 
-The first non-reflective boundaries under this formulation come from \cite{thompson1987TimeDependentBoundary} in the case of the one-dimensional, subsonic, inviscid, non-isothermal Euler equations (the equations above if we lower the dimension of $\vb{x}$ and $\vb{u}$ and drop the mass fraction equations). This was promptly extended to the set of equations shown above in \cite{poinsot1992BoundaryConditionsDirect} for reacting flows. In both cases, a simple condition for acoustically non-reflecting boundaries was found by requiring that the Riemann invariant corresponding to the entering acoustic wave remain constant under the assumption that transverse terms can be neglected. At a subsonic outflow boundary on the left end of the computational domain, where $0 < u^x < c$, this means the invariant $J_5$ should remain constant at the boundary, provided transverse derivatives vanish. Equivalently, we require
+The first non-reflective boundaries under this formulation come from \cite{thompson1987TimeDependentBoundary} in the case of the one-dimensional, subsonic, inviscid, non-isothermal Euler equations (the equations above if we lower the dimension of $\vb{x}$ and $\vb{u}$ and drop the mass fraction equations). This was promptly extended to the set of equations shown above in \cite{poinsot1992BoundaryConditionsDirect} for reacting flows. In both cases, a simple condition for acoustically non-reflecting boundaries was found by requiring that the Riemann invariant corresponding to the entering acoustic wave remain constant under the assumption that transverse terms can be neglected. At a subsonic outflow boundary on the right end of the computational domain, where $0 < u^x < c$, this means the invariant $J_1$ should remain constant at the boundary, provided transverse derivatives vanish. Equivalently, we require
 \begin{equation}
-0 = \und{l}^T_5 \pdv{\und{V}}{t} = \left( \pdv{p}{t} + ρ c \pdv{u^x}{t} \right)
+0 = \und{l}^T_1 \pdv{\und{V}}{t} = \left( \pdv{p}{t} - ρ c \pdv{u^x}{t} \right)
 \end{equation}
 given that, from equation \equ{eqn:single_char_prob}:
 \begin{equation}
-0 = \und{l}^T_5 \pdv{\und{V}}{t} + \cl{L}_5 + \und{l}^T_5 \und{b} = \left( \pdv{p}{t} + ρ c \pdv{u^x}{t} \right) + \cl{L}_5 - ρ c g^x.
+0 = \und{l}^T_1 \pdv{\und{V}}{t} + \cl{L}_1 + \und{l}^T_1 \und{b} = \left( \pdv{p}{t} - ρ c \pdv{u^x}{t} \right) + \cl{L}_1 + ρ c g^x.
 \end{equation}
-So we must enforce $\cl{L}_5 = ρ c g^x$. Similarly, a subsonic outflow at the right end of the computational domain requires $\cl{L}_1 = - ρ c g^x$.
+So we must enforce $\cl{L}_1 = - ρ c g^x$. Similarly, a subsonic outflow at the right end of the computational domain requires $\cl{L}_5 = ρ c g^x$.
+
 
 \subsubsection{Inflows}
 
-For subsonic outflows, regardless which side of the domain they reside, the only characteristic wave which enters the domain are either $\cl{L}_5$ for left-side boundaries and $\cl{L}_1$ for right-side boundaries, as shown in \fig{fig:NSCBC}. All the other $\cl{L}_m$ values required in \equ{eqn:char-bcs-end} may be found via the one-sided derivatives mentioned above. For inflows the situation flips on its head. We instead have access to \emph{only} $\cl{L}_1$ for left-side boundaries and $\cl{L}_5$ for right-side boundaries and all others represent waves which must be modelled as we have no information on in the interior and boundary of the domain. Presuming our inflow is on the left end of the computational domain, then $\cl{L}_1$ may be found from the interior, as above, $\cl{L}_5$ may be found using the acoustic non-reflection condition for the outflows, also as above, and the rest must model some sensible physics on waves entering the domain. For example, the entrance of shear waves into the domain are given by $\cl{L}_{3}$ and $\cl{L}_{4}$, but may be removed simply by assigning $\cl{L}_{3} = g^y$ and $\cl{L}_{4} = g^z$. The entropy and species density waves $\cl{L}_{2}$ and $\cl{L}_{5 + α}$ are assigned zero as the corresponding source terms in $\und{b}$ vanish.
+For subsonic outflows, regardless which side of the domain they reside, the only characteristic wave which enters the domain are either $\cl{L}_5$ for left-side boundaries and $\cl{L}_1$ for right-side boundaries, as shown in \fig{fig:NSCBC}. All the other $\cl{L}_m$ values required in \equ{eqn:char-bcs-end} may be found via the one-sided derivatives mentioned above. For inflows the situation flips on its head. We instead have access to \emph{only} $\cl{L}_1$ for left-side boundaries and $\cl{L}_5$ for right-side boundaries and all others represent waves which must be modelled. Presuming our inflow is on the left end of the computational domain, then $\cl{L}_1$ may be found from the interior, as above, $\cl{L}_5$ may be found using the acoustic non-reflection condition for the outflows, also as above, and the rest must model some sensible physics on waves entering the domain. For example, the entrance of shear waves into the domain are given by $\cl{L}_{3}$ and $\cl{L}_{4}$, but may be removed simply by assigning $\cl{L}_{3} = g^y$ and $\cl{L}_{4} = g^z$. The entropy and species density waves $\cl{L}_{2}$ and $\cl{L}_{5 + α}$ are assigned zero as the corresponding source terms in $\und{b}$ vanish.
 
 
 \subsection{Extra Boundary Considerations}

@@ -139,7 +139,7 @@
   }%
 
 % \geometry{a4paper, top=\margintop, left=\marginleft, right=\marginright, bottom=\marginbottom, nohead, nofoot, nomarginpar}
-\geometry{a4paper, top=\margintop, left=\marginleft, right=\marginright, bottom=\marginbottom, nomarginpar}
+\geometry{a4paper, top=\margintop, left=\marginleft, right=\marginright, bottom=\marginbottom, nomarginpar, headheight=0cm}
 
 
 %% Formatting options - mainly for font size

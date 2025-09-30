@@ -49,15 +49,21 @@
 % \usepackage{textalpha}
 \usepackage{unicode-math}  % Enter greek characters with unicode characters! α, β etc.
 \usepackage{fancyhdr}
+\usepackage{emptypage}
 
 
 
-
-% \geometry{margin=1cm}
-% \titlespacing*{\chapter}{0pt}{-40pt}{10pt}
+% \fancyhead{}
+% \fancyhead[LE]{\thechapter~\Chaptername}
+% \fancyhead[RO]{\thesection~\Sectionname}
 \fancyfoot{}
 \fancyfoot[LE,RO]{\raisebox{-0.15cm}\thepage}
 \raggedbottom
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\renewcommand{\sectionmark}[1]{\gdef\rightmark{#1}}
+\addtolength{\headheight}{12.0pt}
+\addtolength{\topmargin}{-12.0pt}
+
 
 \newenvironment{boxequ}{\empheq[box=\widefbox]{equation}}{\endempheq}
 \newenvironment{boxali}{\empheq[box=\widefbox]{align}   }{\endempheq}

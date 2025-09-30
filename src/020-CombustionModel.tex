@@ -2,24 +2,24 @@
 
 Throughout this report, we consider a three-dimensional, reacting, multicomponent mixture of $N_{\rm{S}}$ species (indexed with the variable $α$) of gases, each with mass fraction $Y_α$, specific heat capacity $c_{p, α}$, molecular mass $W_{α}$ and enthalpy of formation $Δ h_{f, α}^\plimsoll$. The local specific heat capacity and molecular mass of the mixture are given by:
 \begin{equation}
-c_p = \sum_α Y_α c_{p, α}
+c_p \equiv \sum_α Y_α c_{p, α}
 \quad \text{and} \quad
-W = 1 \bigg/ \sum_α \frac{Y_α}{W_α},
+W \equiv 1 \bigg/ \sum_α \frac{Y_α}{W_α},
 \quad \text{where} \quad
-\sum_α \, (\,\cdot \,) = \sum_{α=1}^{N_\rm{S}} \, (\,\cdot \,) .
+\sum_α \, (\,\cdot \,) \equiv \sum_{α=1}^{N_\rm{S}} \, (\,\cdot \,) .
 \end{equation}
 Hence, the following governing equations will be used for density $ρ > 0$, velocity $\vb{u} \in \bb{R}^3$, mass fraction $Y_α \in [0, 1]$, temperature $T > 0$ and energy $E$:
 \begin{subequations} \label{eqn:EQUATIONS-DIFF}
-\begin{boxali}
-\pdv{ρ}{t} + \vnab \cdot(ρ\vb{u})
-&= 0, \\
-\pdv{ρ \vb{u}}{t} + \vnab  \cdot (ρ \vb{u} \otimes \vb{u})
-&= -\vnab p + \vnab \cdot\mathbf{T} + ρ \vb{g} \\ 
-\pdv{ρ Y_α}{t} + \vnab  \cdot (ρ Y_α \vb{u})
-&= \dot{ω}_α - \vnab \cdot(ρ \vb{V}_{\!α} Y_α) \qquad (\text{for } α = 1, \dots, N_{\rm{S}}), \\
-\pdv{ρ E}{t} + \vnab  \cdot (ρ E \vb{u})
-&= -\vnab \cdot \vb{E} + \vnab \cdot(\mathbf{S} \vb{u}) + ρ\dot{\cl{E}} + ρ \sum_α Y_α \vb{g} \cdot (\vb{u} + \vb{V}_{\!α}),
-\end{boxali}
+\begin{boxaliat}{2}
+\pdv{ρ}{t} &+ \vnab \cdot(ρ\vb{u})
+&&= 0, \\
+\pdv{ρ \vb{u}}{t} &+ \vnab  \cdot (ρ \vb{u} \otimes \vb{u})
+&&= -\vnab p + \vnab \cdot\mathbf{T} + ρ \vb{g} \\ 
+\pdv{ρ Y_α}{t} &+ \vnab  \cdot (ρ Y_α \vb{u})
+&&= \dot{ω}_α - \vnab \cdot(ρ \vb{V}_{\!α} Y_α) \qquad (\text{for } α = 1, \dots, N_{\rm{S}}), \\
+\pdv{ρ E}{t} &+ \vnab  \cdot (ρ E \vb{u})
+&&= -\vnab \cdot \vb{E} + \vnab \cdot(\mathbf{S} \vb{u}) + ρ\dot{\cl{E}} + ρ \sum_α Y_α \vb{g} \cdot (\vb{u} + \vb{V}_{\!α}),
+\end{boxaliat}
 \end{subequations}
 along with the algebraic equations for closure:
 \begin{subequations} \label{eqn:EQUATIONS-ALGE}
@@ -32,15 +32,15 @@ p &= ρ \frac{R_0}{W} T, \\
 where $R_0 = 8.314$ J K$^{-1}$ mol$^{-1}$ is the universal gas constant, $ρ E_{\rm{th}}$ is the thermal (or \emph{sensible} \cite{poinsot2001TheoreticalNumericalCombustion}) energy, $T_0$ is some reference temperature, $ρ E_{\rm{ch}}$ is the chemical energy and $ρ E_{\rm{ki}}$ is the kinetic energy. The terms $ρ \vb{g}$ and $ρ\dot{\cl{E}}$ are the body force and energy source terms, both of which may take any form depending on the system we are modelling. In most cases in this report, these terms will be neglected. The tensors $\mathbf{S}$ and $\mathbf{T}$ are the stress and viscous stress tensors respectively and are given in their usual form by
 \begin{subequations}
 \begin{align}
-\mathbf{S} &= -p \mathbf{I} + \mathbf{T} \\
-\mathbf{T} &= μ \left( - \frac{2}{3}\vnab \cdot\vb{u} \mathbf{I} + \vnab \vb{u} + (\vnab \vb{u})^T \right)
+\mathbf{S} &\equiv -p \mathbf{I} + \mathbf{T} \\
+\mathbf{T} &\equiv μ \left( - \frac{2}{3}\vnab \cdot\vb{u} \mathbf{I} + \vnab \vb{u} + (\vnab \vb{u})^T \right)
 \end{align}
 \end{subequations}
-where $\mathbf{I}$ is the three-dimensional identity matrix, we define $\vnab \vb{u}$ by its elements $(\vnab \vb{u})_{ij} = \partial u_j / \partial x_i$ and $μ$ is kinematic viscosity. The energy flux \emph{not} due to fluid stresses is given by
+where $\mathbf{I}$ is the three-dimensional identity matrix, we define $\vnab \vb{u}$ by its elements $(\vnab \vb{u})_{ij} = \partial u_j / \partial x_i$ and $μ(T)$ is kinematic viscosity. The energy flux \emph{not} due to fluid stresses is given by
 \begin{align}
-\vb{E} = -λ \vnab  T + \sum_α \left( \int_{T_0}^T c_{p, α}(T') \dd{T'} + Δ h_{f, α}^\plimsoll \right) (ρ \vb{V}_{\!α} Y_α),
+\vb{E} \equiv -λ \vnab  T + \sum_α \left( \int_{T_0}^T c_{p, α}(T') \dd{T'} + Δ h_{f, α}^\plimsoll \right) (ρ \vb{V}_{\!α} Y_α),
 \end{align}
-where $λ$ is heat conductivity.
+where $λ(T)$ is heat conductivity.
 
 Generally speaking one of two models are used for the diffusion velocity $\vb{V}_{\!α}$: the Fick's law approximation \cite{fick1855UeberDiffusion} and mixture averaging \cite{hirschfelder1964MolecularTheoryGases, comsol2023MulticomponentDiffusionMixtureAveraged}. In the case of the former, we choose a diffusion coefficient $D_α$ for each species and impose Fick's law $ρ \vb{V}_{\!α} Y_α = - ρ D_α \vnab  Y_α$ which assumes each species behaves as though it is diffusing into a single other species (c.f. binary mass diffusion). In the other case, mixture averaging provides a much more detailed model of the diffusion of each species $α$ into another species $β$ via the diffusion coefficients $D_{αβ}$. The full mixture averaging equations are omitted for brevity. This is good enough for theoretical work, but numerical tools under these schemes do not usually impose that $Y_α \nless 0$ and $Y_α \ngtr 1$. To rectify this, we instead use \emph{corrected diffusion velocities}, $\vb{V}_{\!α}^c$, where:
 \begin{equation}
@@ -50,18 +50,19 @@ Generally speaking one of two models are used for the diffusion velocity $\vb{V}
 The term remaining is the chemical production rate of species $α$ by mass, $\dot{ω}_α$. Considering a general reaction mechanism of $N_{\rm{R}}$ reversible steps:
 \begin{equation}
 \sum_α \nu_{α, j}^{\rm{L}} \rm{C}_α \leftrightharpoons \sum_α \nu_{α, j}^{\rm{R}} \rm{C}_α
+\qquad \text{for}~j = 1, \dots, N_{\rm{R}},
 \end{equation}
-where $\rm{C}_α$ are the chemical formulae of each species, the individual steps progress at a rate $\cl{Q}_j$ according to \cite{poinsot2001TheoreticalNumericalCombustion}:
+where $\rm{C}_α$ are the chemical formulae of each species and individual steps progress at a rate $\cl{Q}_j$ according to \cite{poinsot2001TheoreticalNumericalCombustion}:
 \begin{equation}
-\cl{Q}_j = K_{f, j}\prod_{α = 1}^{N_{\rm{S}}} \left(ρ \frac{Y_α}{W_α}\right)^{\nu_{α, j}^{\rm{L}}} - K_{b, j}\prod_{α = 1}^{N_{\rm{S}}} \left(ρ \frac{Y_α}{W_α}\right)^{\nu_{α, j}^{\rm{R}}}
+\cl{Q}_j = K_{f, j}\prod_{α = 1}^{N_{\rm{S}}} \left(ρ \frac{Y_α}{W_α}\right)^{\nu_{α, j}^{\rm{L}}} - K_{b, j}\prod_{α = 1}^{N_{\rm{S}}} \left(ρ \frac{Y_α}{W_α}\right)^{\nu_{α, j}^{\rm{R}}},
 \quad \text{where} \quad
 K_{f} = A T^b \exp\left(-\frac{E_a}{R_0 T}\right)
 \end{equation}
-is the forward reaction rate. The backward reaction rate, $K_{b, j}$ is determined by local entropy and is omitted for brevity. This may be transformed into the chemical production rate of an individual species $\dot{ω}_α$ by considering its contributions from progress rates for each reaction step:
+is the forward reaction rate. The backward reaction rate, $K_{b, j}$ is determined by local entropy and is omitted for brevity. This may be transformed into the chemical production rate of an individual species $\dot{ω}_α$ by considering its contributions from progress rates at each reaction step:
 \begin{equation}
-\dot{ω}_α = W_α \sum_{j = 1}^{N_\rm{R}} \nu_{α, j} \cl{Q}_j,
+\dot{ω}_α = W_α \sum_{j = 1}^{N_\rm{R}} \nu_{α, j} \cl{Q}_j.
 \end{equation}
-and although it doesn't appear in the equations shown, the rate of heat release, $\dot{ω}_T$, is also useful:
+Although it doesn't appear in the equations shown, the rate of heat release, $\dot{ω}_T$, is also useful:
 \begin{equation}
 \dot{ω}_T = -\sum_α Δ h_{f, α}^\plimsoll \dot{ω}_α.
 \end{equation}
@@ -75,39 +76,39 @@ Notably excluded in this formulation \cite{williams1985CombustionTheory} are: So
 
 The following chapters will make use of the above model alongside several models and the constants which are used in them. Here we introduce those dimensional constants as a pretext to this:
 \begin{itemize}
-\item $S_L$ is the laminar flame speed, which we define as the inflow required to keep a one-dimensional flame steady, such that flame curvature and strain effects are implicitly ignored. Mathematically, it can be written as the sum of heat released:
+\item $S_L$ is the laminar flame speed, which we define as the flow required to keep a one-dimensional flame steady. Flame curvature and strain effects are implicitly ignored. Mathematically, it can be written as the integral of heat released:
 \begin{equation}
-S_L \equiv \frac{1}{ρ_{\rm{U}} (T_{\rm{U}} - T_{\rm{U}})} \int_{\bb{R}} \frac{\dot{ω}_T}{c_p} \dd{x}
+S_L \equiv \frac{1}{ρ_{\rm{U}} (T_{\rm{D}} - T_{\rm{U}})} \int_{\bb{R}} \frac{\dot{ω}_T}{c_p} \dd{x}
 \end{equation}
 where subscripts $\cdot_{\rm{U}}$ and $\cdot_{\rm{D}}$ represent upstream and downstream values respectively.
-\item $l_{\rm{th}} \equiv D_{\rm{th}, \rm{U}} / S_L$ where $D_{\rm{th}} = λ / ρ c_p$ is the diffusive flame thickness, calculated a priori from dimensional analysis of thermal diffusion.
-\item In contrast, $l_L$ is the laminar flame thickness, calculated a posteriori from a flame:
+\item $l_{\rm{th}} \equiv D_{\rm{th}, \rm{U}} / S_L$ where $D_{\rm{th}} = λ / ρ c_p$ is the diffusive flame thickness, calculated \emph{a priori} from the dimensional analysis of thermal diffusion.
+\item In contrast, $l_L$ is the laminar flame thickness, calculated \emph{a posteriori} from a flame:
 \begin{equation}
-l_L \equiv (T_{\rm{D}} - T_{\rm{U}}) \big/ \max\abs{\vb{\nabla}T}
+l_L \equiv (T_{\rm{D}} - T_{\rm{U}}) \big/ \max\abs{\vb{\nabla}T\,}
 \end{equation}
-Note that this can be calculated from one or higher dimensional flame simulations.
-\item In the case of higher dimensional flames, the flame is allowed to curve, resulting in higher thermal output and therefore speed. This inspires the flame consumption speed:
+Note that this can be calculated from one- or higher-dimensional flame simulations.
+\item Higher dimensional flames are allowed to curve, resulting in higher thermal output and flame speed. This inspires the flame consumption speed:
 \begin{equation}
-S_c \equiv \frac{1}{w ρ_{\rm{U}} (T_{\rm{U}} - T_{\rm{U}})} \int_{Ω} \frac{\dot{ω}_T}{c_p} \dd{V}
+S_c \equiv \frac{1}{A(Ω) ρ_{\rm{U}} (T_{\rm{D}} - T_{\rm{U}})} \int_{Ω} \frac{\dot{ω}_T}{c_p} \dd{V}
 \end{equation}
-where $w$ is the constant width of the domain $Ω$.
+where $A(Ω)$ is the constant area of the domain $Ω$.
 \end{itemize}
 
-The following are non-dimensional constants, used primarily to relate the effects of the different physical phenomena and derive scaling laws:
+The following are non-dimensional constants, used primarily to relate the effects of the different physical phenomena and to derive scaling laws:
 \begin{itemize}
 \item $r \equiv ρ_{\rm{U}} / ρ_{\rm{D}}$ is the ratio of densities and $q \equiv r - 1$ is the heat release parameter.
 \item $\Ma \equiv S_L / c_{\rm{U}}$ is the Mach number for in the upstream flow given the sound speed defined by $c \equiv \sqrt{γ \, p / ρ}$. A different, higher Mach number could also be defined based on the downstream gas.
 \item $\rm{Re} \equiv ρ_{\rm{U}} S_L l_{\rm{th}} / μ_{\rm{U}}$ is the laminar Reynolds number. Different Reynolds numbers may be defined for different phenomena, e.g. turbulent flow. In all cases it compares the viscous time scale to the inertial time scale.
-\item $\Pr \equiv μ c_{p, \rm{U}} / λ$ is the Prandtl number, relating thermal to viscous rates of diffusion. Provided $μ$ and $λ$ scale proportionally, this is a constant value.
+\item $\Pr \equiv c_{p, \rm{U}} μ / λ$ is the Prandtl number, relating thermal to viscous rates of diffusion. Provided $μ$ and $λ$ scale proportionally, this is a constant value.
 \item $\Pe \equiv L_{\rm{char}} / l_{\rm{th}}$ is Peclet number for a given characteristic length scale $L_{\rm{char}}$. It is often used as the inverse of non-dimensional diffusive flame thickness and relates advective to diffusional length scales.
-\item $\Fr \equiv S_L / \sqrt{|\vb{g}| L_{\rm{char}}}$ is the Froude number, relating the body force time scale to the inertial time scale.
-\item $\Ze \equiv E_a (T_{\rm{D}} - T_{\rm{U}}) / R_0 T_{\rm{D}}^2$ is the Zel'dovich number, which is a non-dimensional measure of activation energy based of heat release.
-\item $\Le_α \equiv \frac{λ_{\rm{U}}}{ρ_{\rm{U}} c_{p, \rm{U}} D_{α, \rm{U}}}$ is the Lewis number for species $α$, which relates the effects of viscous to mass diffusion. Often a constant Lewis number approximation is used, where $D_α = D_β$ and $\Le = \Le_α$ for all $α$, $β$.
+\item $\Fr \equiv S_L / \sqrt{|\vb{g}| L_{\rm{char}}}$ is the Froude number, relating the body acceleration time scale to the inertial time scale.
+\item $\Ze \equiv E_a (T_{\rm{D}} - T_{\rm{U}}) / R_0 T_{\rm{D}}^2$ is the Zel'dovich number, which is a non-dimensional measure of a reaction's activation energy.
+\item $\Le_α \equiv λ_{\rm{U}} / ρ_{\rm{U}} c_{p, \rm{U}} D_{α, \rm{U}}$ is the Lewis number for species $α$, which relates the effects of viscous to mass diffusion. Often a constant Lewis number approximation is used, where $D_α = D_β$ and $\Le = \Le_α$ for all $α$, $β$.
 \item $\Mk$, the Markstein number, is a crucial flame parameter connecting the sensitivity of the flame's speed to perturbations to its shape and surrounding hydrodynamics. Mathematically, this is modelled for single-step reactions as:
 \begin{equation}
 S_c = S_L - \Mk \, l_{\rm{th}} K
 \end{equation}
-where $K$ is the flame stretch which is the sum of flame curvature and strain.
+where $K$ is the flame stretch, which is the sum of flame curvature and strain.
 \end{itemize}
 
 

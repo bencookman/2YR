@@ -25,7 +25,7 @@ Parallelism is primarily implemented via domain decomposition, exploiting the lo
 \section{The Local Anisotropic Basis Function Method}
 \sectionmark{LABFM}
 
-LABFM \cite{king2024MeshFreeFrameworkHighOrder, king2020HighOrderDifference, king2024MeshFreeFrameworkHighOrdera, king2022HighOrderSimulationsIsothermal, broadley2025HighorderMeshfreeDirect, starepravo2025CanNeuralNetworks} is a high order spatial method used particularly in the computation of fluid flows. It allows for the calculation of arbitrary order approximations to spatial derivatives with arbitrary orders of accuracy, all on unstructured, mesh-free node sets. In keeping with the tradition set forth in prior methods (e.g. finite differences), polynomial interpolation is used as a first step before making derivative approximations. Specifically, we choose to set out the method in the context of making a high order interpolation based off finitely many discrete function values $φ_j$, before extending this to high-order derivatives, where further assumptions can be made to simplify derivation
+LABFM \cite{king2024MeshFreeFrameworkHighOrder, king2020HighOrderDifference, king2024MeshFreeFrameworkHighOrdera, king2022HighOrderSimulationsIsothermal, broadley2025HighorderMeshfreeDirect, starepravo2025CanNeuralNetworks} is a high order spatial method used particularly in the computation of fluid flows. It allows for the calculation of arbitrary order approximations to spatial derivatives with arbitrary orders of accuracy, all on unstructured, mesh-free node sets. In keeping with the tradition set forth in prior methods (e.g.\ finite differences), polynomial interpolation is used as a first step before making derivative approximations. Specifically, we choose to set out the method in the context of making a high order interpolation based off finitely many discrete function values $φ_j$, before extending this to high-order derivatives, where further assumptions can be made to simplify derivation
 
 
 \subsection{High-Order Interpolations}
@@ -192,7 +192,7 @@ P_{ij} \equiv \pdv{U_i}{u_j},
 \quad \text{and} \quad
 \und{b} \equiv \undt{{P}}^{-1}\und{B}.
 \end{equation}
-The matrix $\undt{P}$ is the Jacobian matrix, $\undt{\vb{A}}$ represents the convection of the variables due to the other variables and themselves (e.g. resulting in $(\vb{u} \cdot \vnab )\vb{u}$ in the momentum equation) and $\und{b}$ are source terms acting on primitive variables. Using this form, we can isolate the $x$-derivatives to observe the characteristics in that direction:
+The matrix $\undt{P}$ is the Jacobian matrix, $\undt{\vb{A}}$ represents the convection of the variables due to the other variables and themselves (e.g.\ resulting in $(\vb{u} \cdot \vnab )\vb{u}$ in the momentum equation) and $\und{b}$ are source terms acting on primitive variables. Using this form, we can isolate the $x$-derivatives to observe the characteristics in that direction:
 \begin{equation} \label{eqn:with_A}
 \pdv{\und{V}}{t} + \undt{A}^x \pdv{\und{V}}{x} + \und{c} = 0
 \quad \text{where, in 3D} \quad
@@ -210,7 +210,7 @@ Multiplying equation \equ{eqn:with_A} by an eigenvector we project our equation 
 \quad \iff \quad
 \pdv{J_m}{t} + λ_m \pdv{J_m}{x} = 0.
 \end{boxequ}
-We notice that along any trajectory $\vb{x}_m(t)$ which satisfies $\dd{\vb{x}_m}/\dd{t} = λ_m$ (i.e. the m\sus{th} characteristic has velocity $λ_m$), the invariant obeys:
+We notice that along any trajectory $\vb{x}_m(t)$ which satisfies $\dd{\vb{x}_m}/\dd{t} = λ_m$ (i.e.\ the m\sus{th} characteristic has velocity $λ_m$), the invariant obeys:
 \begin{equation}
 \dv{J_m}{t} = 0.
 \end{equation}
@@ -225,7 +225,7 @@ This tells us the $J_m$ are constant along the trajectories $\vb{x}_m(t)$, which
 }
 \label{eqn:char-bcs-end}
 \end{gather}
-where $\und{\cl{L}} = (\cl{L}_1, \dots, \cl{L}_{N_\rm{V}})$. So each value $\cl{L}_m$ then represents the convection of the m\sus{th} characteristic wave at a point in space. The \emph{Locally One-Dimensional Inviscid} (LODI) characteristic boundary formulation\footnote{So-called as we preclude diffusive effects in any hyperbolic system of equations and we only observe characteristic waves moving over a boundary normal to a single dimension, i.e. not at a corner.} focuses on points at the boundary of a computational domain, and posits that outgoing characteristics through this boundary can be calculated as normal using one-sided derivatives -- which are innately upwinded -- but characteristics entering the domain, such as an acoustic reflection, must instead be modelled. The key to LODI then, is that these incoming waves may be controlled by imposing their respective values of $\cl{L}_m$ at that boundary.
+where $\und{\cl{L}} = (\cl{L}_1, \dots, \cl{L}_{N_\rm{V}})$. So each value $\cl{L}_m$ then represents the convection of the m\sus{th} characteristic wave at a point in space. The \emph{Locally One-Dimensional Inviscid} (LODI) characteristic boundary formulation\footnote{So-called as we preclude diffusive effects in any hyperbolic system of equations and we only observe characteristic waves moving over a boundary normal to a single dimension, i.e.\ not at a corner.} focuses on points at the boundary of a computational domain, and posits that outgoing characteristics through this boundary can be calculated as normal using one-sided derivatives -- which are innately upwinded -- but characteristics entering the domain, such as an acoustic reflection, must instead be modelled. The key to LODI then, is that these incoming waves may be controlled by imposing their respective values of $\cl{L}_m$ at that boundary.
 
 Note that, because we have the matrix $\undt{S}^{-1}$ not $\undt{S}$, we find the flux term $\und{d} \equiv \undt{S} \, \und{\cl{L}}$ by solving the linear system:
 \begin{equation}

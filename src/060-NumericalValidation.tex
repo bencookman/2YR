@@ -151,7 +151,7 @@ Now we test the ability of the ADCBCs to successfully model a DNS domain which i
 \quad \text{and} \quad
 τ_{\rm{D}}(t) = \frac{2}{c} (l_{\rm{D}, 0} + \overline{u}_{\rm{in}} t),
 \end{equation}
-where $l_{\rm{U/D}, 0}$ are the initial up- and downstream acoustic region lengths and $\overline{u}_{\rm{in}}$ is the non-acoustic inflow velocity. In later simulations, if the non-acoustic inflow velocity is changing (e.g. to stabilise a thermoacoustic flame), we would instead use:
+where $l_{\rm{U/D}, 0}$ are the initial up- and downstream acoustic region lengths and $\overline{u}_{\rm{in}}$ is the non-acoustic inflow velocity. In later simulations, if the non-acoustic inflow velocity is changing (e.g.\ to stabilise a thermoacoustic flame), we would instead use:
 \begin{equation}
 δτ_{\rm{U}}(t^n) = - \frac{2 \overline{u}_{\rm{in}}(t^n)}{c} δt^n
 \quad \text{and} \quad
@@ -223,7 +223,7 @@ The complementary functions of this equation are defined on either side of $x_f$
 \begin{equation}
 φ_{\rm{U/D}}(x) = a_{\rm{U/D}} \exp\left(- i \frac{ω}{\sqrt{\oT}} x\right) + b_{\rm{U/D}} \exp\left(i \frac{ω}{\sqrt{\oT}} x\right),
 \end{equation}
-where $a_{\rm{U/D}}, b_{\rm{U/D}} \in \bb{C}$ represent an extra four degrees of freedom for each side of each eigenmode. Because the boundary conditions for $φ$ are linear in $a_{\rm{U/D}}$ and $b_{\rm{U/D}}$, however, the problem of satisfying the boundary constraints boils down to finding the non-trivial (i.e. non-zero) solutions to the linear equation:
+where $a_{\rm{U/D}}, b_{\rm{U/D}} \in \bb{C}$ represent an extra four degrees of freedom for each side of each eigenmode. Because the boundary conditions for $φ$ are linear in $a_{\rm{U/D}}$ and $b_{\rm{U/D}}$, however, the problem of satisfying the boundary constraints boils down to finding the non-trivial (i.e.\ non-zero) solutions to the linear equation:
 \begin{subequations}
 \begin{equation}
 \vb{0} = \begin{pmatrix}
@@ -256,7 +256,7 @@ Hence, these non-trivial solutions occur only when $\det(A) = 0$, which can be s
 t_{\rm{fund}} \equiv 4 \left( \frac{l_{\rm{U}}}{c_{\rm{U}}} + \frac{l_{\rm{D}}}{c_{\rm{D}}} \right)
 = 4x_f + \frac{4(1 - x_f)}{\sqrt{r}}
 \end{equation}
-assuming lengths and sound speeds are in the non-dimensional variables. Lines are drawn at odd integers representing the expected frequency for the 1/4, 3/4, 5/4 etc. isothermal harmonics. As expected, all of the eigenmodes lie on the real line, $ω_i = 0$ and lie close to the expected isothermal harmonic. \fig{fig:flame-harmonics} shows these true harmonics as well as the expected harmonics for a range of flame positions with $r = 7$. In the right graph at $x_f = 0.5$ we have the same frequencies found in \fig{fig:flame-harmonics-complex} and we can see how these frequencies oscillate about the expected fundamental frequency for different values of $x_f$. In the left graph we see how the true frequencies $ω_r$ get higher as $x_f$ approaches zero since more of the tube is filled with the hot gas which the acoustics travel fast through.
+assuming lengths and sound speeds are in the non-dimensional variables. Lines are drawn at odd integers representing the expected frequency for the 1/4, 3/4, 5/4 etc.\ isothermal harmonics. As expected, all of the eigenmodes lie on the real line, $ω_i = 0$ and lie close to the expected isothermal harmonic. \fig{fig:flame-harmonics} shows these true harmonics as well as the expected harmonics for a range of flame positions with $r = 7$. In the right graph at $x_f = 0.5$ we have the same frequencies found in \fig{fig:flame-harmonics-complex} and we can see how these frequencies oscillate about the expected fundamental frequency for different values of $x_f$. In the left graph we see how the true frequencies $ω_r$ get higher as $x_f$ approaches zero since more of the tube is filled with the hot gas which the acoustics travel fast through.
 
 
 \begin{figure}[t]

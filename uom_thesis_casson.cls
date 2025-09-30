@@ -132,8 +132,8 @@
     \newlength{\marginbottom} \setlength{\marginbottom}{1.5cm}%
   }%
   {% No hard rule for first and second year reports. Defaults to 2cm, UKRI style
-    \newlength{\marginleft}   \setlength{\marginleft  }{2.0cm}%{1.5cm}
-    \newlength{\marginright}  \setlength{\marginright }{2.0cm}%{1.5cm}
+    \newlength{\marginleft}   \setlength{\marginleft  }{2.5cm}%{1.5cm}
+    \newlength{\marginright}  \setlength{\marginright }{2.5cm}%{1.5cm}
     \newlength{\margintop}    \setlength{\margintop   }{2.5cm}%{1.5cm}
     \newlength{\marginbottom} \setlength{\marginbottom}{2.5cm}%{1.5cm}
   }%

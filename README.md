@@ -1,6 +1,6 @@
 # 2YR
 
-My (Benjamin L Cookman's) second year report for my PhD at UoM.
+My second year report for my PhD at UoM.
 
 ## LaTeX Compilation
 

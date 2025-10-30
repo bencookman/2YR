@@ -143,8 +143,9 @@
 
 
 %% Formatting options - mainly for font size
-\setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
-\setlength{\parindent}{1cm}
+% \setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
+\setlength{\parskip}{0pt plus 0.1pt}
+\setlength{\parindent}{2cm}
 \linespread{1.5}
 % \pagestyle{plain} % simple page numbering
 \AtBeginDocument{

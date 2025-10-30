@@ -78,22 +78,22 @@ Notably excluded in this formulation \cite{williams1985CombustionTheory} are: So
 
 The following chapters will make use of the above model alongside several models and the constants which are used in them. Here we introduce those dimensional constants as a pretext to this:
 \begin{itemize}
-\item $S_L$ is the laminar flame speed, which we define as the flow required to keep a one-dimensional flame steady. Flame curvature and strain effects are implicitly ignored. Mathematically, it can be written as the integral of heat released:
+\item $S_L$ is the laminar flame speed, which we define as the flow required to keep a one-dimensional flame steady. Flame curvature and strain effects are ignored under this assumption. Mathematically, it can be written as the integral of heat released:
 \begin{equation}
-S_L \equiv \frac{1}{ρ_{\rm{U}} (T_{\rm{D}} - T_{\rm{U}})} \int_{\bb{R}} \frac{\dot{ω}_T}{c_p} \dd{x}
+S_L \equiv \frac{1}{ρ_{\rm{U}} (T_{\rm{D}} - T_{\rm{U}})} \int_{\bb{R}} \frac{\dot{ω}_T}{c_p} \dd{x},
 \end{equation}
 where subscripts $\cdot_{\rm{U}}$ and $\cdot_{\rm{D}}$ represent upstream and downstream values respectively.
 \item $l_{\rm{th}} \equiv D_{\rm{th}, \rm{U}} / S_L$ where $D_{\rm{th}} = λ / ρ c_p$ is the diffusive flame thickness, calculated \emph{a priori} from the dimensional analysis of thermal diffusion.
 \item In contrast, $l_L$ is the laminar flame thickness, calculated \emph{a posteriori} from a flame:
 \begin{equation}
-l_L \equiv (T_{\rm{D}} - T_{\rm{U}}) \big/ \max\abs{\vb{\nabla}T\,}
+l_L \equiv (T_{\rm{D}} - T_{\rm{U}}) \big/ \max\abs{\vb{\nabla}T\,}.
 \end{equation}
 Note that this can be calculated from one- or higher-dimensional flame simulations.
 \item Higher dimensional flames are allowed to curve, resulting in higher thermal output and flame speed. This inspires the flame consumption speed:
 \begin{equation}
-S_c \equiv \frac{1}{A(Ω) ρ_{\rm{U}} (T_{\rm{D}} - T_{\rm{U}})} \int_{Ω} \frac{\dot{ω}_T}{c_p} \dd{V}
+S_c \equiv \frac{1}{A(Ω) ρ_{\rm{U}} (T_{\rm{D}} - T_{\rm{U}})} \int_{Ω} \frac{\dot{ω}_T},{c_p} \dd{V}
 \end{equation}
-where $A(Ω)$ is the constant area of the domain $Ω$.
+where $A(Ω)$ is the cross-sectional area of the domain $Ω$, assuming it has a constant cross-section.
 \end{itemize}
 
 The following are non-dimensional constants, used primarily to relate the effects of the different physical phenomena and to derive scaling laws:
@@ -108,9 +108,9 @@ The following are non-dimensional constants, used primarily to relate the effect
 \item $\Le_α \equiv λ_{\rm{U}} / ρ_{\rm{U}} c_{p, \rm{U}} D_{α, \rm{U}}$ is the Lewis number for species $α$, which relates the effects of viscous to mass diffusion. Often a constant Lewis number approximation is used, where $D_α = D_β$ and $\Le = \Le_α$ for all $α$, $β$.
 \item $\Mk$, the Markstein number, is a crucial flame parameter connecting the sensitivity of the flame's speed to perturbations to its shape and surrounding hydrodynamics. Mathematically, this is modelled for single-step reactions as:
 \begin{equation}
-S_c = S_L - \Mk \, l_{\rm{th}} K
+S_c = S_L - \Mk \, l_{\rm{th}} K.
 \end{equation}
-where $K$ is the flame stretch, which is the sum of flame curvature and strain.
+The flame stretch $K$ is the sum of flame curvature and strain and has units of inverse time. Various definitions of flame stretch are given in the literature and its definition is omitted here.
 \end{itemize}
 
 

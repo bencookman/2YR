@@ -1,6 +1,7 @@
 \section{The SUNSET Combustion Code}
 
-For the simulations performed in the remainder of this report, we use the \emph{Scalable Unstructured Node-SET} (SUNSET) code \cite{kingSunsetFlames,king2024MeshFreeFrameworkHighOrdera}, to perform DNS of the governing equations (described in \chap{ch:combust-model}) with high accuracy in domains of arbitrary complex geometries and highly variable node densities. The DNS allows us to simulate combustion without requiring any model for the flame. For the simulations performed in \chap{ch:results} we actually simulate laminar, not turbulent flows, but the simulation code nevertheless provides high accuracy discretisations such that discretisation error is reliably small. The method used to this end is the \emph{Local Anisotropic Basis Function Method} (LABFM), and is explained thoroughly in the proceeding section. Boundary conditions are provided via the \emph{Navier-Stokes Characteristic Boundary Conditions} (NSCBC) formalism, and are detailed in \sect{sec:NSCBC}.
+%%%%% ROB HAD SOMETHING TO SAY HERE THAT I DON'T QUITE UNDERSTAND???
+For the simulations performed in the remainder of this report, we use the \emph{Scalable Unstructured Node-SET} (SUNSET) code \cite{kingSunsetFlames,king2024MeshFreeFrameworkHighOrdera}, to perform DNS of the governing equations (described in \chap{ch:combust-model}) with high accuracy in domains of arbitrary complex geometries and highly variable node densities. DNS allows us to simulate combustion without requiring a model for the flame. For the simulations performed in \chap{ch:results} we actually simulate laminar, not turbulent flows, but the simulation code nevertheless provides high accuracy discretisations such that discretisation error is reliably small. The method used to this end is the \emph{Local Anisotropic Basis Function Method} (LABFM), and is explained thoroughly in the next section. Boundary conditions are provided via the \emph{Navier-Stokes Characteristic Boundary Conditions} (NSCBC) formalism, and are detailed in \sect{sec:NSCBC}.
 
 Time integration makes use of the explicit Runge-Kutta scheme denoted as RK3(2)4[2R+]C under the classification of \cite{kennedy2000LowStorageExplicitRunge}, which is a third order, low storage (only requiring two or three registers per field per node), four step method in time with embedded second order error estimation. Even under turbulent combustion, error accumulated in time stems primarily from spatial detail (such as thin reacting zones, small Kolmogorov vortices etc.) rather than temporal dynamics (such as the vortex energy cascade, acoustics and diffusion). Thus, a third order error correcting scheme is suitable and our focus remains on the discretisation scheme used.
 
@@ -25,7 +26,7 @@ Parallelism is primarily implemented via domain decomposition, exploiting the lo
 \section{The Local Anisotropic Basis Function Method}
 \sectionmark{LABFM}
 
-LABFM \cite{king2020HighOrderDifference} is a high order spatial method used particularly in the computation of fluid flows. It allows for the calculation of arbitrary order approximations to spatial derivatives with arbitrary orders of accuracy, all on unstructured, mesh-free node sets. In keeping with the tradition set forth in prior methods (e.g.\ finite differences), polynomial interpolation is used as a first step before making derivative approximations. Specifically, we choose to set out the method in the context of making a high order interpolation based off finitely many discrete function values $φ_j$, before extending this to high-order derivatives, where further assumptions can be made to simplify the derivation.
+LABFM \cite{king2020HighOrderDifference} is a high order spatial method used particularly in the computation of fluid flows. It allows for the calculation of arbitrary order approximations to spatial derivatives with arbitrary orders of accuracy, all on unstructured, mesh-free node sets. In keeping with the tradition set forth in prior methods (e.g.\ finite differences), polynomial interpolation is used as a first step before making derivative approximations. Specifically, we choose to set out the method in the context of making a high order interpolation based on finitely many discrete function values $φ_j$, before extending this to high-order derivatives, where further assumptions can be made to simplify the derivation.
 
 
 \subsection{High-Order Interpolations}
@@ -36,9 +37,9 @@ L^{\rm{int}}[φ](\vb{x}) \equiv \sum_{j \in \cl{N}(\vb{x})} φ_j w^{\rm{int}}(\v
 \end{equation}
 To find the weights $w^{\rm{int}}(\vb{x}, \vb{x}_j)$, we will be evaluating $φ_j$ by means of Taylor series via derivatives of $φ$. Each derivative is a projection from the vector of derivatives of $φ$:
 \begin{equation}
-\vv{D}[φ] = \left(φ, \pdv{φ}{x}, \pdv{φ}{x}, \pdv[2]{φ}{x}, \pdv[2]{φ}{x}{y}, \pdv[2]{φ}{x}, \dots \right)^T
+\vv{D}[φ] = \left(φ, \pdv{φ}{x}, \pdv{φ}{y}, \pdv[2]{φ}{x}, \pdv[2]{φ}{x}{y}, \pdv[2]{φ}{x}, \dots \right)^T
 \quad \text{and} \quad
-\vv{D}^k[φ] = \left(φ, \pdv{φ}{x}, \pdv{φ}{x}, \dots, \pdv[k]{φ}{x}, \dots, \pdv[k]{φ}{y} \right)^T,
+\vv{D}^k[φ] = \left(φ, \pdv{φ}{x}, \pdv{φ}{y}, \dots, \pdv[k]{φ}{x}, \dots, \pdv[k]{φ}{y} \right)^T,
 \end{equation}
 where we have assumed that $φ$ is a scalar field over two spatial dimensions $\vb{x}=(x, y)$, although the method may be simply extended to any number of dimensions (with the caveat that the number of nodes required increases greatly with dimension). In this notation, interpolation becomes $φ(\vb{x}) = \vv{D}[φ](\vb{x}) \cdot \vv{C}^{\rm{int}} = \vv{D}^k[φ](\vb{x}) \cdot \vv{C}^{\rm{int}, k}$ where $\vv{D}[φ](\vb{x})$ is the vector $\vv{D}[φ]$ evaluated at the location $\vb{x}$, $\vv{C}^{\rm{int}} = (1, 0, 0, 0, 0, 0, \dots)^T$ and $\vv{C}^{\rm{int}, k} = (1, 0, 0, \dots, 0)^T$, is of the same length as $\vv{D}^k$. Introducing the vectors of monomials:
 \begin{equation}
@@ -82,6 +83,8 @@ where the anisotropy is seen in the dependence of $\vv{W}^k$ on $(\vb{x}_j - \vb
 \equiv M(\vb{x}) \, \vv{\Psi}^{\rm{int}, k}(\vb{x})
 \end{align}
 where $M$ is a $n \times n$ matrix and $n$ is the number of components of $\vv{C}^{\rm{int}, k}$. The vector of weights $\vv{\Psi}^{\rm{int}, k}(\vb{x})$ is found when the linear system is solved. Carrying over the error terms from previous steps, we expect convergence on the order $(k + 1)$ as long as the matrix $M$ is well-posed and the values of nodes $\vb{x}_j$ are close enough to $\vb{x}$ such that $h$ is small.
+%%%%%% THIS CROSS IS THE DIRECT PRODUCT!!
+
 
 
 \subsection{High-Order Derivatives}
@@ -93,13 +96,14 @@ where $M$ is a $n \times n$ matrix and $n$ is the number of components of $\vv{C
 \label{fig:labfm-stencil}
 \end{figure}
 
-If we choose to evaluate a derivative at $\vb{x}$ instead, very little changes besides the following. Firstly, we assume that the point $\vb{x}$ is itself a node in our stencil, $\vb{x} = \vb{x}_i$, such that $\abs{\vb{x}_{ij}} < h_i$ for all $\vb{x}_j$ provided $\vb{x}_{ij} \equiv \vb{x}_j - \vb{x}_i$. An example discretisation and stencil is shown in \fig{fig:labfm-stencil}. Then, taking a page out of centred finite differences, we redefine our operator via a weighted sum of the differences $φ_{ij} \equiv φ_j - φ_i$:
+%%%%%%%% FOR CONSISTENCY WITH THE INTERPOLATIONS, WE NEED THAT THE WEIGHTS ADD UP TO ONE
+If we choose to evaluate a derivative at $\vb{x}$ instead, very little changes besides the following. Firstly, we assume that the point $\vb{x}$ is itself a node in our stencil, $\vb{x} = \vb{x}_i$, such that $\abs{\vb{x}_{ij}} < h_i$ for all $\vb{x}_j$ provided $\vb{x}_{ij} \equiv \vb{x}_j - \vb{x}_i$. An example discretisation and stencil is shown in \fig{fig:labfm-stencil}. Then, inspired by centred finite differences, we redefine our operator via a weighted sum of the differences $φ_{ij} \equiv φ_j - φ_i$:
 \begin{equation} \label{eqn:labfm-L}
 L[φ]_i \equiv \sum_{j \in \cl{N}_i} φ_{ij} w_{i, j}.
 \end{equation}
 This simplifies the derivation by removing the need to include leading order terms from our vectors. So now:
 \begin{equation}
-\vv{D}^k[φ] \equiv \left(\pdv{φ}{x}, \pdv{φ}{x}, \dots, \pdv[k]{φ}{x}, \dots, \pdv[k]{φ}{y} \right)^T,
+\vv{D}^k[φ] \equiv \left(\pdv{φ}{x}, \pdv{φ}{y}, \dots, \pdv[k]{φ}{x}, \dots, \pdv[k]{φ}{y} \right)^T,
 \qquad
 \vv{X}^k_j \equiv \left(x_j, y_j, \dots, \frac{1}{k!} x_j^k, \dots, \frac{1}{k!} y_j^k \right)^T
 \end{equation}
@@ -229,7 +233,7 @@ where $\und{\cl{L}} \equiv (\cl{L}_1, \dots, \cl{L}_{N_\rm{V}})$. So each value 
 \end{equation}
 
 The LODI formulation focuses on boundary nodes, and posits that outgoing characteristics through this boundary can be calculated as normal using one-sided derivatives -- which are innately upwinded -- but characteristics entering the domain, such as an acoustic reflection, must instead be modelled. The key to LODI then, is that these incoming waves may be controlled by imposing their respective values of $\cl{L}_m$ at that boundary.
-
+%%%%%%% ROB HAD SOMETHING TO SAY ABOUT THIS
 
 
 

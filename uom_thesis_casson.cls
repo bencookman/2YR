@@ -47,7 +47,7 @@
     breaklinks=true,
     bookmarksdepth=2
 }  % have no highlighting on links and break lines in the LOF and LOT
-\RequirePackage[explicit]{titlesec}      % re-format section titles
+\RequirePackage[explicit, noindentafter]{titlesec}      % re-format section titles
 \RequirePackage{geometry}                % set paper margins
 \RequirePackage{setspace}                % set line spacing
 % \RequirePackage[document]{ragged2e}      % set to be left aligned

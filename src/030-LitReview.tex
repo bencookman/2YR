@@ -96,7 +96,7 @@ In \cite{jun2023ParametricInstabilityPropagating} the secondary instability in h
 
 
 
-
+\iffalse
 \subsection{G-Equation Model}
 
 % Aimee morgans
@@ -170,7 +170,7 @@ Simpler analysis is performed by Gatón-Pérez et al. \cite{gaton-perez2025Mitig
 % Polifke?
 
 
-
+\fi
 
 
 
@@ -183,7 +183,7 @@ The combustion equations from \chap{ch:combust-model} are only analytically solu
 
 A brute force way to simulate a fluid system would be one where every fluid phenomena under the governing equations are accurately simulated. This idea was first studied by Orszag \cite{orszag1970AnalyticalTheoriesTurbulence}, where he defines \emph{Direct Numerical Simulation} (DNS) as a numerical simulation with enough grid points to full resolve the smallest physical phenomena in the system. Originally, Orszag studied this in the context of turbulent flows \cite{orszag1970AnalyticalTheoriesTurbulence,orszag1972NumericalSimulationThreeDimensional}. A turbulent incompressible flow is largely determined by the transit of its vortices, as expressed by the vorticity equation:
 \begin{equation}
-\pdv{\vb{ω}}{t} + (\vb{u} \cdot \vnab ) \vb{ω} = (\vb{ω} \cdot \vnab ) \vb{u} + \frac{μ}{ρ} \tilde{Δ} \vb{ω}
+\pdv{\vb{ω}}{t} + (\vb{u} \cdot \vnab ) \vb{ω} = (\vb{ω} \cdot \vnab ) \vb{u} + \frac{μ}{ρ} Δ \vb{ω}
 \end{equation}
 where $\vb{ω} \equiv \vnab  \times \vb{u}$ and $\vnab  \cdot \vb{u} = 0$. Hence, turbulence is a fundamentally three-dimensional phenomenon: the energy cascade from large to small vortices depends largely on the $(\vb{ω} \cdot \vnab )\vb{u}$ term above, which is not present for two-dimensional flows. In such flows, we have vortices not only on the order of the typical flow length scale $l_T$, called the integral length scale, but also down to the smallest turbulence scale, the kolmogorov length scale $l_K$ \cite{kolmogorov1941LocalStructureTurbulence}, where the rate at which viscous dissipation effects dampen vortices far exceeds the inertial forces of the vortex \cite{tennekes1972FirstCourseTurbulence,moin1998DirectNumericalSimulation}. In DNS of turbulent combustion, the smallest scale vortices must be resolved in addition to the smallest chemical and diffusive length scales. In this context, the relevant time scales are chemical $τ_C = l_{\rm{th}} / S_L$, integral $τ_T = l_T / u'$ and Kolmogorov $τ_K = l_K / u'$ given an RMS (root mean squared) velocity scale $u'$. Hence, the number of degrees of freedom required to resolve a three-dimensional box of size $L_{\rm{char}}$ is \cite{domingo2023RecentDevelopmentsDNS}:
 \begin{equation}

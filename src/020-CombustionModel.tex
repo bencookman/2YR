@@ -42,10 +42,11 @@ where $\mathbf{I}$ is the three-dimensional identity matrix, the matrix $\vnab \
 \end{align}
 where $λ(T)$ is heat conductivity.
 
-Generally speaking one of two models are used for the diffusion velocity $\vb{V}_{\!α}$: the Fick's law approximation \cite{fick1855UeberDiffusion} and mixture averaging \cite{hirschfelder1964MolecularTheoryGases, comsol2023MulticomponentDiffusionMixtureAveraged}. In the case of the former, we choose a diffusion coefficient $D_α$ for each species and impose Fick's law $ρ \vb{V}_{\!α} Y_α = - ρ D_α \vnab  Y_α$ which assumes each species behaves as though it is diffusing into a single other species (c.f. binary mass diffusion). In the other case, mixture averaging provides a much more detailed model of the diffusion of each species $α$ into another species $β$ via the diffusion coefficients $D_{αβ}$. The full mixture averaging equations are omitted for brevity. This is good enough for theoretical work, but numerical tools under these schemes do not usually impose that $Y_α \nless 0$ and $Y_α \ngtr 1$. To rectify this, we instead use \emph{corrected diffusion velocities}, $\vb{V}_{\!α}^c$, where:
+Generally speaking, one of two models are used for the diffusion velocity $\vb{V}_{\!α}$: the Fick's law approximation \cite{fick1855UeberDiffusion} and mixture averaging \cite{hirschfelder1964MolecularTheoryGases, comsol2023MulticomponentDiffusionMixtureAveraged}. In the case of the former, we choose a diffusion coefficient $D_α$ for each species and impose Fick's law $ρ \vb{V}_{\!α} Y_α = - ρ D_α \vnab  Y_α$ which assumes each species behaves as though it is diffusing into a single other species (c.f. binary mass diffusion). In the other case, mixture averaging provides a much more detailed model of the diffusion of each species $α$ into another species $β$ via the diffusion coefficients $D_{αβ}$. The full mixture averaging equations are omitted for brevity. These are sufficient for theoretical work, but numerical tools under these schemes do not usually impose that $Y_α \nless 0$ and $Y_α \ngtr 1$. To rectify this, we instead use \emph{corrected diffusion velocities}, $\vb{V}_{\!α}^c$, where:
 \begin{equation}
 ρ \vb{V}_{\!α}^c Y_α = ρ \vb{V}_{\!α} Y_α - Y_α \sum_{β} ρ \vb{V}_β Y_β.
 \end{equation}
+%%%%%%% A THESIS SHOULD INCLUDE MIXTURE AVERAGING!!
 
 The term remaining is the chemical production rate of species $α$ by mass, $\dot{ω}_α$. Considering a general reaction mechanism of $N_{\rm{R}}$ reversible steps:
 \begin{equation}
@@ -70,6 +71,7 @@ Although it doesn't appear in the equations shown, the rate of heat release, $\d
 Notably excluded in this formulation \cite{williams1985CombustionTheory} are: Soret and Dufour effects \cite{dufour1872DiffusionThermoeffect, mortimer1980ElementaryTransitionState, soret1879LetatDequilibreQue, kohler2016SoretEffectLiquid}, pressure-gradient diffusion, bulk viscosity \cite{buresti2015NoteStokesHypothesis} and radiant heat flux.
 
 
+%%%%%%% ROB SAYS THIS SECTION FEELS TO SHORT AND RUSHED?
 
 
 \section{Useful Constants}

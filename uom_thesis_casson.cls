@@ -143,10 +143,6 @@
 
 
 %% Formatting options - mainly for font size
-% \setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
-\setlength{\parskip}{0pt plus 0.1pt}
-\setlength{\parindent}{2cm}
-\linespread{1.5}
 % \pagestyle{plain} % simple page numbering
 \AtBeginDocument{
   \fontsize{\@@ptsize}{\@@ptsize+1pt}\selectfont
@@ -167,13 +163,13 @@
 %% Format titles
 % \titleformat{\chapter}{\bfseries\Huge\raggedright}{\thechapter}{1ex}{#1} % default formatting for non-theses
 \titleformat{\chapter}{\bfseries\Huge}{\thechapter}{1ex}{#1} % default formatting for non-theses
-\titlespacing{\chapter}{0pt}{\@@ptsize}{\baselineskip}
+\titlespacing{\chapter}{0pt}{\@@ptsize}{0pt}
 \ifthenelse{\equal{\reportyear}{thesis}}{\titleformat{\chapter}[display]{\bfseries\Huge\raggedright}{\chaptername~\thechapter}{0.5ex}{#1}}{}
 \renewcommand{\contentsname}{\bfseries\Huge Contents}
 \renewcommand{\listfigurename}{\bfseries\Huge List of figures}
 \renewcommand{\listtablename}{\bfseries\Huge List of tables}
 \titleformat{\section}{\bfseries\Large}{\thesection}{1ex}{#1}
-\titlespacing{\section}{0pt}{\baselineskip}{0.2\baselineskip}
+\titlespacing{\section}{0pt}{\@@ptsize}{0pt}
 \titleformat{\subsection}{\bfseries\large}{\thesubsection}{1ex}{#1}
 
 
